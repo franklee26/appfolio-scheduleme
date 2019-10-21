@@ -20,9 +20,9 @@ development:
 test:
   <<: *default
   #database: db/test.sqlite3
-  database: flatiron_mod3_development
+  database: flatiron_mod3_test
 
 production:
   <<: *default
   # database: db/production.sqlite3
-  database: flatiron_mod3_development
+  database: flatiron_mod3_production

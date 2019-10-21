@@ -1,24 +1,13 @@
-# README
+# Appfolio: Uber for Vendors
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Versioning
+* Rails 5.1.7
+* PostgreSQL 11.5
 
-Things you may want to cover:
+## Workflow
 
-* Ruby version
+1.) Make edits off of your own feature branch. Makes sure to name your branch something specific and understandable. 
 
-* System dependencies
+2.) Ensure all tests and checks pass.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+3.) Request and receieve at least 2 code review approvals before merging into master.
