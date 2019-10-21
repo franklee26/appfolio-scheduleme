@@ -1,6 +1,7 @@
 *.gem
 *.rbc
 *.log
+log/development.log
 /.config
 /coverage/
 /InstalledFiles
