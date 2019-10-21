@@ -1,5 +1,7 @@
 # Appfolio: Uber for Vendors
 
+## About
+
 ## Versioning
 * Rails 5.1.7
 * PostgreSQL 11.5
