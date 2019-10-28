@@ -10,7 +10,7 @@ Rails webapp developed by Frank (lead), Raul (scribe), Edward (developer), Eric 
 
 ## Workflow
 
-1.) Make edits off of your own feature branch. Makes sure to name your branch something specific and understandable. 
+1.) Make edits off of your own feature branch. Your branch should be formatted as `firstName_lastName_taskName`.
 
 2.) Ensure all tests and checks pass.
 
