@@ -475,3 +475,615 @@ Processing by HomepageController#index as HTML
 Completed 200 OK in 27ms (Views: 25.0ms | ActiveRecord: 0.4ms)
 
 
+Started GET "/" for ::1 at 2019-10-24 13:32:11 -0700
+  [1m[35m (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  Rendering homepage/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.8ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered homepage/index.html.erb within layouts/application (7.7ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 15496ms (Views: 15479.6ms | ActiveRecord: 3.5ms)
+
+
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(5904349680232060365)[0m
+  [1m[35m (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to AddEmailToTenants (20191024204643)
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.3ms)[0m  [1m[35mALTER TABLE "tenants" ADD "email" character varying[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20191024204643"]]
+  [1m[35m (0.8ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(5904349680232060365)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/" for ::1 at 2019-10-24 22:41:34 -0700
+  [1m[35m (1.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  Rendering homepage/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered homepage/index.html.erb within layouts/application (3.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 9634ms (Views: 9625.1ms | ActiveRecord: 1.6ms)
+
+
+Started GET "/about" for ::1 at 2019-10-24 22:42:00 -0700
+Processing by AboutController#index as HTML
+  Rendering about/index.html.erb within layouts/application
+  Rendered about/index.html.erb within layouts/application (4.7ms)
+Completed 200 OK in 110ms (Views: 106.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:42:37 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.5ms)
+Completed 200 OK in 37ms (Views: 28.3ms | ActiveRecord: 1.5ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:43:17 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6014ms (Views: 6009.5ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:43:50 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (8.9ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (26.1ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5645ms (Views: 5610.0ms | ActiveRecord: 21.9ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:45:05 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.7ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (21.9ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 8531ms (Views: 8515.8ms | ActiveRecord: 3.7ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:49:18 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.9ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (28.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 8818ms (Views: 8786.0ms | ActiveRecord: 21.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:51:17 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (4.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5170ms (Views: 5164.1ms | ActiveRecord: 2.0ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:53:25 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.1ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5492ms (Views: 5487.6ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 22:54:39 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 7047ms (Views: 7041.7ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 23:24:27 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.1ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5501ms (Views: 5496.9ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 23:32:12 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.1ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5402ms (Views: 5397.4ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 23:34:53 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5118ms (Views: 5112.2ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 23:36:09 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.9ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.5ms)
+Completed 200 OK in 34ms (Views: 31.0ms | ActiveRecord: 0.9ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 23:36:11 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.0ms)
+Completed 200 OK in 37ms (Views: 34.5ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-24 23:36:15 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 39ms (Views: 36.1ms | ActiveRecord: 0.5ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:14:58 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.5ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6000ms (Views: 5995.8ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:17:35 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (4.5ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4696ms (Views: 4688.9ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/" for ::1 at 2019-10-25 00:17:43 -0700
+Processing by HomepageController#index as HTML
+  Rendering homepage/index.html.erb within layouts/application
+  [1m[36mTenant Load (9.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered homepage/index.html.erb within layouts/application (92.9ms)
+Completed 200 OK in 167ms (Views: 152.0ms | ActiveRecord: 9.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:17:50 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (7.9ms)
+Completed 200 OK in 165ms (Views: 162.2ms | ActiveRecord: 1.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:18:17 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.9ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5802ms (Views: 5796.1ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:18:42 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5190ms (Views: 5185.2ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:20:42 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (5.3ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 7661ms (Views: 7650.9ms | ActiveRecord: 1.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:23:05 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5290ms (Views: 5285.1ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:23:38 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.0ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (12.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5422ms (Views: 5405.2ms | ActiveRecord: 3.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:26:06 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5236ms (Views: 5230.9ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:27:01 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (7.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5865ms (Views: 5853.6ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:27:58 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 7528ms (Views: 7522.1ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:28:31 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (9.4ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6078ms (Views: 6063.7ms | ActiveRecord: 2.7ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:29:11 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5353ms (Views: 5346.7ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:32:05 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (2.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (10.7ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5436ms (Views: 5416.6ms | ActiveRecord: 5.8ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:37:06 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5522ms (Views: 5516.9ms | ActiveRecord: 1.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:37:33 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.9ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (12.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5940ms (Views: 5920.6ms | ActiveRecord: 3.4ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-25 00:40:32 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.7ms)
+Completed 200 OK in 44ms (Views: 41.4ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/" for ::1 at 2019-10-26 16:44:32 -0700
+  [1m[35m (13.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  Rendering homepage/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered homepage/index.html.erb within layouts/application (5.1ms)
+[Webpacker] Compiling…
+Started GET "/" for ::1 at 2019-10-26 16:44:40 -0700
+Processing by HomepageController#index as HTML
+  Rendering homepage/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered homepage/index.html.erb within layouts/application (64.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 8468ms (Views: 8455.5ms | ActiveRecord: 1.9ms)
+
+
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 16915ms (Views: 16885.7ms | ActiveRecord: 27.1ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 16:45:05 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (8.7ms)
+Completed 200 OK in 107ms (Views: 99.9ms | ActiveRecord: 0.5ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 16:45:12 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.0ms)
+Completed 200 OK in 53ms (Views: 50.5ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:05:50 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.6ms)
+Completed 200 OK in 81ms (Views: 78.8ms | ActiveRecord: 0.5ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:05:54 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (4.4ms)
+Completed 200 OK in 34ms (Views: 31.8ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:34:40 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (1.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5018ms (Views: 5014.3ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:36:40 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (11.5ms)
+Completed 200 OK in 58ms (Views: 53.6ms | ActiveRecord: 1.4ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:37:03 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (8.5ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5152ms (Views: 5141.5ms | ActiveRecord: 2.7ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:38:22 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (1.9ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5126ms (Views: 5122.0ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:40:02 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (1.9ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5239ms (Views: 5236.2ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:41:55 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.8ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (10.3ms)
+[Webpacker] Compiling…
+Started GET "/tenant" for ::1 at 2019-10-26 17:41:57 -0700
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6171ms (Views: 6159.8ms | ActiveRecord: 1.8ms)
+
+
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 25ms (Views: 21.2ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:43:21 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (1.7ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5483ms (Views: 5476.7ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:50:10 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (4.3ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5538ms (Views: 5534.0ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:50:23 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (3.7ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (5.8ms)
+Completed 200 OK in 49ms (Views: 42.7ms | ActiveRecord: 3.7ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:50:38 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (10.3ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5477ms (Views: 5465.8ms | ActiveRecord: 2.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:51:15 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (2.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (6.5ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4690ms (Views: 4680.0ms | ActiveRecord: 2.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:51:45 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4762ms (Views: 4757.8ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:52:10 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (3.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5369ms (Views: 5364.8ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:52:30 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (6.4ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5709ms (Views: 5695.6ms | ActiveRecord: 0.5ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:52:50 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6993ms (Views: 6988.3ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:57:59 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.1ms)
+Completed 200 OK in 41ms (Views: 38.8ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:59:45 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 43ms (Views: 41.2ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 17:59:54 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 42ms (Views: 39.7ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-26 20:42:32 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 47ms (Views: 45.3ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/" for ::1 at 2019-10-27 22:33:17 -0700
+Processing by HomepageController#index as HTML
+  Rendering homepage/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered homepage/index.html.erb within layouts/application (18.2ms)
+Completed 200 OK in 122ms (Views: 112.9ms | ActiveRecord: 1.3ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-27 22:33:21 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (11.0ms)
+Completed 200 OK in 97ms (Views: 92.3ms | ActiveRecord: 1.4ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-27 22:41:21 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (1.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (4.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 9468ms (Views: 9460.0ms | ActiveRecord: 1.2ms)
+
+
