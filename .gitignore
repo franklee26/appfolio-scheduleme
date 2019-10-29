@@ -2,6 +2,7 @@
 *.rbc
 *.log
 log/development.log
+.DS_Store
 /.config
 /coverage/
 /InstalledFiles
