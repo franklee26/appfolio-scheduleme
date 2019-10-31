@@ -1208,3 +1208,39 @@ Processing by HomepageController#index as HTML
 Completed 200 OK in 95ms (Views: 68.5ms | ActiveRecord: 22.4ms)
 
 
+Started GET "/" for ::1 at 2019-10-29 23:33:29 -0700
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 1513ms (Views: 1503.5ms | ActiveRecord: 1.6ms)
+
+
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (4.4ms)[0m  [1m[32mINSERT INTO "tenants" ("id", "name", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 1], ["name", "John Lennon"], ["created_at", "2019-10-30 06:34:42.440567"], ["updated_at", "2019-10-30 06:34:42.440567"]]
+  [1m[35m (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (1.1ms)[0m  [1m[32mINSERT INTO "tenants" ("id", "name", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 2], ["name", "Benedino Cucumberpatch"], ["created_at", "2019-10-30 06:34:42.447852"], ["updated_at", "2019-10-30 06:34:42.447852"]]
+  [1m[35m (0.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "tenants" ("id", "name", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 3], ["name", "Steve Jobs"], ["created_at", "2019-10-30 06:34:42.450606"], ["updated_at", "2019-10-30 06:34:42.450606"]]
+  [1m[35m (0.3ms)[0m  [1m[35mCOMMIT[0m
+Started GET "/" for ::1 at 2019-10-29 23:35:01 -0700
+  [1m[35m (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 1513ms (Views: 1491.7ms | ActiveRecord: 3.9ms)
+
+
+Started GET "/tenant" for ::1 at 2019-10-29 23:35:08 -0700
+Processing by TenantController#index as HTML
+  Rendering tenant/index.html.erb within layouts/application
+  [1m[36mTenant Load (0.7ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendered tenant/index.html.erb within layouts/application (50.2ms)
+Completed 200 OK in 83ms (Views: 51.6ms | ActiveRecord: 28.0ms)
+
+
