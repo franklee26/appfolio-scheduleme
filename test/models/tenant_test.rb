@@ -9,4 +9,9 @@ class TenantTest < ActiveSupport::TestCase
     assert @tenant.valid?
   end
 
+  test "Name should be present" do
+    @tenant.name=""
+    assert_not @tenant.valid?
+  end
+
 end

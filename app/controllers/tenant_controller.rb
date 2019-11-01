@@ -1,5 +1,6 @@
 class TenantController < ApplicationController
+  def new
+  end
   def index
-    @tenants = Tenant.all
   end
 end
