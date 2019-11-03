@@ -1,7 +1,8 @@
 *.gem
 *.rbc
-*.log
-log/development.log
+/log
+.vscode/
+config/local_env.yml
 /.config
 /coverage/
 /InstalledFiles
