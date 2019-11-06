@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
+<<<<<<< HEAD
   get 'calendar/index'
+=======
+  get 'tenants/new'
+>>>>>>> added email to tenant, and validation tests
 
   root 'homepage#index'
   get 'about' => 'about#index'
