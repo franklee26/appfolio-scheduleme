@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   root 'homepage#index'
   get 'about' => 'about#index'
   get 'auth' => 'calendar#auth'
-  get 'calendar' => 'calendar#index'
-  get 'calendar/auth' => 'calendar#auth'
-  get 'calendar/callback' => 'calendar#callback'
+  get 'calendar', to: 'calendar#index'
+  get 'calendar/auth', to: 'calendar#auth'
+  get 'calendar/callback', to: 'calendar#callback'
+  get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
 end
