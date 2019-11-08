@@ -4,16 +4,12 @@ const VendorList = props => {
   return (
     <div>
       <h1 align="center">List of Vendors</h1>
-      <h1>
-        This is being called from React! Mapping tenant objects from database
-        below:
-      </h1>
-      {props.tenants.length ? (
-        props.tenants.map(tenant => (
-          <li key={tenant.id}>{`ID: ${tenant.id}\tName: ${tenant.name}`}</li>
+      {props.vendors.length ? (
+        props.vendors.map(vendor => (
+          <li key={vendor.id}>{`Name: ${vendor.name}\tOcupation: ${vendor.occupation}`}</li>
         ))
       ) : (
-        <h1> No tenants in database </h1>
+        <h1> No vendors in database </h1>
       )}
     </div>
   );

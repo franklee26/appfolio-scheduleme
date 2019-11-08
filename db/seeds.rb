@@ -9,3 +9,6 @@
 Tenant.create(id: 1, name: "John Lennon")
 Tenant.create(id: 2, name: "Benedino Cucumberpatch")
 Tenant.create(id: 3, name: "Steve Jobs")
+
+Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician")
+Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber")
