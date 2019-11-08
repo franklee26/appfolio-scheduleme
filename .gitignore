@@ -1,6 +1,6 @@
 *.gem
 *.rbc
-/log
+log/
 .vscode/
 config/local_env.yml
 /.config
