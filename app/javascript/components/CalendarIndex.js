@@ -5,7 +5,7 @@ const CalendarIndex = props => {
     <div>
       <h1>My list of calendars:</h1>
       {props.calendars.map(calendar => (
-        <li key={calendar.id}>{calendar.summary}</li>
+        <li key={calendar.id}><a href={`/calendar/${calendar.id}`}>{calendar.summary}</a></li>
       ))}
     </div>
   );

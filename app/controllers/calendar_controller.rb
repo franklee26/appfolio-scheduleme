@@ -13,6 +13,16 @@ class CalendarController < ApplicationController
     client = Signet::OAuth2::Client.new(clientOptions)
     redirect_to client.authorization_uri.to_s
   end
+
+  def events
+    client = Signet::OAuth2::Client.new(clientOptions)
+    client.update!(session[:authorization])
+
+    service = Google::Apis::CalendarV3::CalendarService.new
+    service.authorization = client
+
+    @events = service.list_events(params[:calendar_id]).items
+  end
   
   def callback
     client = Signet::OAuth2::Client.new(clientOptions)
