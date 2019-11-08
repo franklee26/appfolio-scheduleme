@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get 'calendar/index'
+  get 'tenants/new'
 
   # home page
   root 'homepage#index'
