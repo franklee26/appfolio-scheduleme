@@ -796,3 +796,295 @@ Processing by TenantsController#login as HTML
 Completed 200 OK in 2034ms (Views: 2031.2ms | ActiveRecord: 0.0ms)
 
 
+Started GET "/tenants/login" for ::1 at 2019-11-07 15:58:54 -0800
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  
+ActionController::RoutingError (No route matches [GET] "/tenants/login"):
+  
+actionpack (5.1.7) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.7.0) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.7.0) lib/web_console/middleware.rb:30:in `block in call'
+web-console (3.7.0) lib/web_console/middleware.rb:20:in `catch'
+web-console (3.7.0) lib/web_console/middleware.rb:20:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.7) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.7) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.7) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.7) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.7) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.7) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.7) lib/rack/method_override.rb:22:in `call'
+rack (2.0.7) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.7) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.7) lib/rack/sendfile.rb:111:in `call'
+webpacker (4.0.7) lib/webpacker/dev_server_proxy.rb:29:in `perform_request'
+rack-proxy (0.6.5) lib/rack/proxy.rb:57:in `call'
+railties (5.1.7) lib/rails/engine.rb:522:in `call'
+puma (3.12.1) lib/puma/configuration.rb:227:in `call'
+puma (3.12.1) lib/puma/server.rb:660:in `handle_request'
+puma (3.12.1) lib/puma/server.rb:474:in `process_client'
+puma (3.12.1) lib/puma/server.rb:334:in `block in run'
+puma (3.12.1) lib/puma/thread_pool.rb:135:in `block in spawn_thread'
+Started GET "/" for ::1 at 2019-11-07 15:59:08 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (1.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (1.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 8180ms (Views: 8123.4ms | ActiveRecord: 18.4ms)
+
+
+Started GET "/calendar/auth" for ::1 at 2019-11-07 15:59:41 -0800
+Processing by CalendarController#auth as HTML
+Completed 500 Internal Server Error in 4ms (ActiveRecord: 0.0ms)
+
+
+  
+ArgumentError (Missing required client identifier.):
+  
+app/controllers/calendar_controller.rb:14:in `auth'
+Started GET "/" for ::1 at 2019-11-07 15:59:47 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (0.7ms)
+Completed 200 OK in 49ms (Views: 44.6ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/" for ::1 at 2019-11-07 15:59:48 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (0.7ms)
+Completed 200 OK in 43ms (Views: 40.2ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/about" for ::1 at 2019-11-07 15:59:49 -0800
+Processing by AboutController#index as HTML
+  Rendering about/index.html.erb within layouts/application
+  Rendered about/index.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 41ms (Views: 38.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for ::1 at 2019-11-07 15:59:50 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 56ms (Views: 51.4ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 15:59:57 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 63ms (Views: 59.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:01:36 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 58ms (Views: 55.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:01:56 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5211ms (Views: 5209.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:02:22 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.4ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5168ms (Views: 5165.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:02:37 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.1ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5351ms (Views: 5347.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:08:36 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5280ms (Views: 5277.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:09:55 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5089ms (Views: 5087.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:10:14 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.7ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6440ms (Views: 6438.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:11:53 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5374ms (Views: 5373.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:13:13 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.2ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5311ms (Views: 5309.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:13:35 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5383ms (Views: 5381.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:17:15 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.9ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5261ms (Views: 5258.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:17:56 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 7685ms (Views: 7682.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:19:07 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.0ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4347ms (Views: 4340.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:20:19 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (2.7ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 6248ms (Views: 6246.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:22:21 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.6ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4193ms (Views: 4190.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:23:31 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 5020ms (Views: 5018.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:23:41 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4376ms (Views: 4374.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new" for ::1 at 2019-11-07 16:26:37 -0800
+Processing by TenantsController#new as HTML
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (0.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 4150ms (Views: 4148.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/new?inlineRadioOptions=option3" for ::1 at 2019-11-07 16:30:37 -0800
+Processing by TenantsController#new as HTML
+  Parameters: {"inlineRadioOptions"=>"option3"}
+  Rendering tenants/new.html.erb within layouts/application
+  Rendered tenants/new.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 42ms (Views: 40.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for ::1 at 2019-11-07 16:32:09 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 33ms (Views: 22.8ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/" for ::1 at 2019-11-07 16:32:10 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (4.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 60ms (Views: 48.7ms | ActiveRecord: 4.4ms)
+
+
+Started GET "/" for ::1 at 2019-11-07 16:32:12 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (0.5ms)
+Completed 200 OK in 54ms (Views: 51.5ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/calendar/auth" for ::1 at 2019-11-07 16:32:13 -0800
+Processing by CalendarController#auth as HTML
+Completed 500 Internal Server Error in 1ms (ActiveRecord: 0.0ms)
+
+
+  
+ArgumentError (Missing required client identifier.):
+  
+app/controllers/calendar_controller.rb:14:in `auth'
