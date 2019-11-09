@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get 'calendar/index'
-  get 'tenants/new'
+  get 'tenants/login'
 
   # home page
   root 'homepage#index'
@@ -16,4 +16,7 @@ Rails.application.routes.draw do
   get 'calendar/auth', to: 'calendar#auth'
   get 'calendar/callback', to: 'calendar#callback'
   get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
+
+  # resources
+  resources :tenants
 end

@@ -33,10 +33,7 @@ class CustomNavbar extends React.Component {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+            <Button variant="outline-success" href="/tenants/login">Login</Button>
         </Navbar.Collapse>
       </Navbar>
     );
