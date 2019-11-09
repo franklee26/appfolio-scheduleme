@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   get 'calendar/callback', to: 'calendar#callback'
   get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
 
+  # landowner page
+  get 'landowner' => 'landowners#index'
+
   # resources
   resources :tenants
 end

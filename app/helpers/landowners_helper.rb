@@ -1,0 +1,2 @@
+module LandownersHelper
+end
