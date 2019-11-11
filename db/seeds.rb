@@ -9,6 +9,7 @@
 one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com")
 two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com")
 three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com")
-Job.create(id:1, content:"zoom1",Tenant_id: one.id)
-Job.create(id:2, content:"zoom2",Tenant_id: one.id)
-Job.create(id:3, content:"zoom3",Tenant_id: two.id)
+
+#Job.create(id:1, content:"zoom1",Tenant_id: one.id)
+#Job.create(id:2, content:"zoom2",Tenant_id: one.id)
+#Job.create(id:3, content:"zoom3",Tenant_id: two.id)
