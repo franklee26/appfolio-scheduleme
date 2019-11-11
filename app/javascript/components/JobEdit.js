@@ -2,24 +2,25 @@ import React from "react";
 class JobEdit extends React.Component {
   render() {
     var errors = null;
-      if(this.props.errors.length > 0) {
-        var errorsList = [];
-        for(var i = 0; i < this.props.errors.length; ++i) {
-          errorsList.push(<li key={"error-" + i}>{this.props.errors[i]}</li>)
-        }
-  
-        errors = (
-          <div id="error_explanation">
-            <h2>Errors prohibited this job from being saved:</h2>
-            <ul>
-              {errorsList}
-            </ul>
-          </div>
-        );
-      }
-  
-      return (
-        <form action={this.props.form_path} method="post">
+    var errorsList = [];
+    if(this.props.errors.length > 0) {
+      {this.props.errors.length ? (
+        this.props.errors.map(errors => (
+          errorsList.push(<li key={"error-"}>{this.props.errors}</li>)
+        ))
+      ) : (
+        <h1></h1>
+      )}
+      errors = (
+        <div id="error_explanation">
+          <h2>Errors prohibited this job from being saved:</h2>
+          <ul>{errorsList}</ul>
+        </div>
+      );
+    }
+    return (
+      <form action={this.props.form_path} method="post">
+          <h1>Edit Job</h1>
           {errors}
           <input type="hidden" name="_method" defaultValue={this.props.form_method} />
           <input type="hidden" name="authenticity_token" defaultValue={this.props.csrf_token} />
@@ -37,7 +38,7 @@ class JobEdit extends React.Component {
             <a href={this.props.show_path}>Show</a> |
             <a href={this.props.back_path}>Back</a>
           </div>
-        </form>
+      </form>
       );
   };
 }
