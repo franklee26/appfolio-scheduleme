@@ -1,8 +1,9 @@
 *.gem
 *.rbc
-*.log
-log/development.log
 .DS_Store
+log/
+.vscode/
+config/local_env.yml
 /.config
 /coverage/
 /InstalledFiles

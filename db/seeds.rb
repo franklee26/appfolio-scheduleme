@@ -6,9 +6,9 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Tenant.create(id: 1, name: "John Lennon")
-Tenant.create(id: 2, name: "Benedino Cucumberpatch")
-Tenant.create(id: 3, name: "Steve Jobs")
+Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com")
+Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com")
+Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com")
 
 Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician")
 Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber")
