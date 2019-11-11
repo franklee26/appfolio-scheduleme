@@ -6,10 +6,12 @@ const VendorList = props => {
       <h1 align="center">List of Vendors</h1>
       {props.vendors.length ? (
         props.vendors.map(vendor => (
-          <li key={vendor.id}>{`Name: ${vendor.name}\tOcupation: ${vendor.occupation}`}</li>
+          <li>
+            <a href="/vendors/profile">{`Name: ${vendor.name}\tOcupation: ${vendor.occupation}`}</a>
+          </li>
         ))
       ) : (
-        <h1> No vendors in database </h1>
+        <h1> No results found. </h1>
       )}
     </div>
   );
