@@ -41,7 +41,7 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1.json
   def update
     respond_to do |format|
-      if @job.update(job_params)
+      if @job.update(job_params2)
         format.html { redirect_to @job, notice: 'Job was successfully updated.' }
         format.json { render :show, status: :ok, location: @job }
       else
@@ -70,5 +70,8 @@ class JobsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
       params.require(:job).permit(:content, :Tenant_id)
+    end
+    def job_params2
+      params.require(:job).permit(:content)
     end
 end

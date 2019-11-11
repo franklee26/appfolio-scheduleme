@@ -30,7 +30,7 @@ class JobEdit extends React.Component {
           </div>
           <div className="field">
             <label htmlFor="Tenant_id">Tenant_id:</label>
-            <input type="number" id="price" name="job[Tenant_id]" defaultValue={this.props.Tenant_id} />
+            <a>{this.props.Tenant_id}</a>
           </div>
           <div className="actions">
             <button type="submit">Submit</button>
