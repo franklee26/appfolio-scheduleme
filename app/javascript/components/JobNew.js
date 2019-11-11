@@ -1,24 +1,23 @@
 import React from "react";
 class JobNew extends React.Component {
     render() {
-        
-        var errors = null;
+      var errors = null;
+      var errorsList = [];
       if(this.props.errors.length > 0) {
-        var errorsList = [];
-        for(var i = 0; i < this.props.errors.length; ++i) {
-          errorsList.push(<li key={"error-" + i}>{this.props.errors[i]}</li>)
-        }
-  
+        {this.props.errors.length ? (
+          this.props.errors.map(errors => (
+            errorsList.push(<li key={"error-"}>{this.props.errors}</li>)
+          ))
+        ) : (
+          <h1></h1>
+        )}
         errors = (
           <div id="error_explanation">
             <h2>Errors prohibited this job from being saved:</h2>
-            <ul>
-              {errorsList}
-            </ul>
+            <ul>{errorsList}</ul>
           </div>
         );
       }
-  
       return (
         <form action={this.props.form_path} method="post">
           {errors}
