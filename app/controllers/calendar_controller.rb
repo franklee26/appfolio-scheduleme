@@ -49,7 +49,6 @@ class CalendarController < ApplicationController
 	private
 
   # configure your own local_env.yml file (DONT HARD CODE UR OWN API TOKENS)
-  require 'google/apis/identitytoolkit_v3'
 	def clientOptions
 		{
 			client_id: ENV["google_client_id"],
