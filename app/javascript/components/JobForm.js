@@ -36,6 +36,8 @@ class JobForm extends React.Component {
             <button type="submit">Submit</button>
           </div>
         </form>
+        <a href={this.props.show_path}>Show</a> |
+        <a href={this.props.back_path}>Back</a>
       );
   };
 }
