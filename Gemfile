@@ -7,13 +7,14 @@ end
 
 gem 'webpacker'
 gem 'react-rails'
-gem 'google-api-client', require: 'google/apis/calendar_v3'
+gem 'google-api-client', :require => ['google/apis/calendar_v3', 'google/apis/identitytoolkit_v3']
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.7'
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
 gem 'pg'
+gem 'pry', '~> 0.12.2'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
