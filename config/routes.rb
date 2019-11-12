@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   # calendar calls
   get 'calendar', to: 'calendar#index'
   get 'calendar/login', to: 'calendar#user_selection'
-  get 'calendar/auth', to: 'calendar#auth'
   get 'calendar/callback', to: 'calendar#callback'
   get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
 

@@ -23,11 +23,6 @@ class CalendarController < ApplicationController
   def user_selection
   end
 
-  def auth
-    client = Signet::OAuth2::Client.new(clientOptions)
-    redirect_to client.authorization_uri.to_s
-  end
-
   def events
     client = Signet::OAuth2::Client.new(clientOptions)
     client.update!(session[:authorization])
