@@ -13,7 +13,7 @@ const Homepage = props => {
           >{`ID: ${tenant.id} Name: ${tenant.name} Email: ${tenant.email}`}</li>
         ))
       ) : (
-        <h2> No tenants in database </h2>
+        <p1> No tenants in database </p1>
       )}
 
       <h2>Current registered Landowners:</h2>
@@ -24,8 +24,11 @@ const Homepage = props => {
           >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
         ))
       ) : (
-        <h2> No landowners in database </h2>
+        <p1> No landowners in database </p1>
       )}
+
+      <h2>Current registered Vendors:</h2>
+      <p1> No vendors in database </p1>
     </div>
   );
 };

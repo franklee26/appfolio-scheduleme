@@ -12,10 +12,10 @@ class CalendarController < ApplicationController
     access_token = client.access_token
     json_response = get_json_from_token(access_token)
 
-    @email = json_response["email"]
-    @name = json_response["name"]
+    email = json_response["email"]
+    name = json_response["name"]
     # find or build the user
-    @user = find_or_create_user(session[:user_type], @name, @email)
+    @user = find_or_create_user(session[:user_type], name, email)
 
     @calendars = service.list_calendar_lists.items
   end
