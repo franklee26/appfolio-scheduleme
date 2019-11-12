@@ -18,7 +18,7 @@ const Homepage = props => {
 
       <h2>Current registered Landowners:</h2>
       {props.landowners.length ? (
-        props.landowners.map(tenant => (
+        props.landowners.map(landowner => (
           <li
             key={landowner.id}
           >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
