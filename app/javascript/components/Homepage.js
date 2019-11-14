@@ -28,7 +28,15 @@ const Homepage = props => {
       )}
 
       <h2>Current registered Vendors:</h2>
-      <p1> No vendors in database </p1>
+      {props.vendors.length ? (
+        props.vendors.map(vendor => (
+          <li
+            key={vendor.id}
+          >{`ID: ${vendor.id} Name: ${vendor.name} Email: ${vendor.email}`}</li>
+        ))
+      ) : (
+        <p1> No vendors in database </p1>
+      )}
     </div>
   );
 };

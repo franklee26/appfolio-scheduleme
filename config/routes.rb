@@ -20,6 +20,11 @@ Rails.application.routes.draw do
   get 'landowner' => 'landowners#index'
   get 'landowner/auth', to: 'landowners#auth'
 
+  # vendor pages
+  get 'vendors/profile' => 'vendor#profile'
+  get 'vendors' => 'vendor#index'
+  get 'vendors/show' => 'vendor#show'
+
   # resources
   resources :tenants
 end
