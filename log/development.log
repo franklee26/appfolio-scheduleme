@@ -1088,3 +1088,774 @@ Completed 500 Internal Server Error in 1ms (ActiveRecord: 0.0ms)
 ArgumentError (Missing required client identifier.):
   
 app/controllers/calendar_controller.rb:14:in `auth'
+Started GET "/login" for ::1 at 2019-11-10 00:50:55 -0800
+  [1m[35m (2.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  
+ActiveRecord::PendingMigrationError (
+
+Migrations are pending. To resolve this issue, run:
+
+        bin/rails db:migrate RAILS_ENV=development
+
+):
+  
+activerecord (5.1.7) lib/active_record/migration.rb:576:in `check_pending!'
+activerecord (5.1.7) lib/active_record/migration.rb:553:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/callbacks.rb:26:in `block in call'
+activesupport (5.1.7) lib/active_support/callbacks.rb:97:in `run_callbacks'
+actionpack (5.1.7) lib/action_dispatch/middleware/callbacks.rb:24:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/debug_exceptions.rb:59:in `call'
+web-console (3.7.0) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.7.0) lib/web_console/middleware.rb:30:in `block in call'
+web-console (3.7.0) lib/web_console/middleware.rb:20:in `catch'
+web-console (3.7.0) lib/web_console/middleware.rb:20:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.7) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.7) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.7) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.7) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.7) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.7) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.7) lib/rack/method_override.rb:22:in `call'
+rack (2.0.7) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.7) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.7) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.7) lib/rack/sendfile.rb:111:in `call'
+webpacker (4.0.7) lib/webpacker/dev_server_proxy.rb:29:in `perform_request'
+rack-proxy (0.6.5) lib/rack/proxy.rb:57:in `call'
+railties (5.1.7) lib/rails/engine.rb:522:in `call'
+puma (3.12.1) lib/puma/configuration.rb:227:in `call'
+puma (3.12.1) lib/puma/server.rb:660:in `handle_request'
+puma (3.12.1) lib/puma/server.rb:474:in `process_client'
+puma (3.12.1) lib/puma/server.rb:334:in `block in run'
+puma (3.12.1) lib/puma/thread_pool.rb:135:in `block in spawn_thread'
+  [1m[35m (5.5ms)[0m  [1m[34mSELECT pg_try_advisory_lock(5904349680232060365)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateLandowners (20191104233009)
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (37.3ms)[0m  [1m[35mCREATE TABLE "landowners" ("id" bigserial primary key, "name" character varying, "email" character varying, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20191104233009"]]
+  [1m[35m (1.5ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.6ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_advisory_unlock(5904349680232060365)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/login" for ::1 at 2019-11-10 00:52:21 -0800
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (6.8ms)
+[Webpacker] Compiling…
+[Webpacker] Compiled all packs in /Users/edwardyuen/appfolio-uber-for-vendors/public/packs
+Completed 200 OK in 9344ms (Views: 9334.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:53:36 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (840.1ms)
+Completed 500 Internal Server Error in 844ms (ActiveRecord: 0.0ms)
+
+
+  
+ActionView::Template::Error (undefined local variable or method `signup_path' for #<#<Class:0x00007f839f104d50>:0x00007f83a2ca6598>):
+    14:       <%= f.submit "Log in", class: "btn btn-primary" %>
+    15:     <% end %>
+    16: 
+    17:     <p>New user? <%= link_to "Sign up now!", signup_path %></p>
+    18:   </div>
+    19: </div>”
+  
+app/views/sessions/new.html.erb:17:in `_app_views_sessions_new_html_erb___165990636737471332_70101674309800'
+Started GET "/login" for ::1 at 2019-11-10 00:53:48 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 36ms (Views: 34.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:56:36 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 27ms (Views: 25.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:56:38 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 35ms (Views: 33.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:57:10 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 61ms (Views: 59.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:57:25 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 30ms (Views: 28.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:57:36 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.0ms)
+Completed 200 OK in 37ms (Views: 35.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:57:58 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 30ms (Views: 28.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:58:06 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 38ms (Views: 36.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:58:07 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 37ms (Views: 35.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 00:58:26 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.2ms)
+Completed 500 Internal Server Error in 6ms (ActiveRecord: 0.0ms)
+
+
+  
+SyntaxError (/Users/edwardyuen/appfolio-uber-for-vendors/app/views/sessions/new.html.erb:9: syntax error, unexpected tIDENTIFIER, expecting ')'
+...il, class: 'form-control' align="center");@output_buffer.saf...
+...                          ^~~~~):
+  
+app/views/sessions/new.html.erb:9: syntax error, unexpected tIDENTIFIER, expecting ')'
+Started GET "/login" for ::1 at 2019-11-10 00:58:39 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 36ms (Views: 34.5ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 00:58:44 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"xV47274V+ZFlo5zU7SkOF9Z4K48IQtGHhXo2Ki+/LRH3YnTq/ioytZYzqJ4ztrPvglowmflR96mqcbZXiE/Gfw==", "session"=>{"email"=>""}, "commit"=>"Log in"}
+No template found for SessionsController#create, rendering head :no_content
+Completed 204 No Content in 21ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 01:00:01 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 29ms (Views: 27.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 01:00:02 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 32ms (Views: 30.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 01:00:03 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"czepIuQ8MhWV9QbRmosYx86lPFNeWvd8lVuQJA1GecVBC+YTpAP5MWZlMptEFKU/mocnRa9J0VK6UBBZqraSqw==", "session"=>{"email"=>""}, "commit"=>"Log in"}
+No template found for SessionsController#create, rendering head :no_content
+Completed 204 No Content in 17ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 01:00:03 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 27ms (Views: 25.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/login" for ::1 at 2019-11-10 01:00:06 -0800
+Processing by TenantsController#login as HTML
+  Rendering tenants/login.html.erb within layouts/application
+  Rendered tenants/login.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 35ms (Views: 32.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 01:00:56 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (4.4ms)
+Completed 200 OK in 67ms (Views: 64.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:07:29 -0800
+  [1m[35m (6.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (28.1ms)
+Completed 200 OK in 1831ms (Views: 1824.9ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 13:08:58 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"jCpYs3AEQLns4kUDLZzh2wPIv2xj+Musauvv88b08F++FheCMDuLnR9ycUnzA1wjV+qkepLr7YJF4G+OYQQbMQ==", "session"=>{"email"=>""}, "inlineRadioOptions"=>"option2", "commit"=>"Log in"}
+No template found for SessionsController#create, rendering head :no_content
+Completed 204 No Content in 17ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:09:00 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 27ms (Views: 25.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:09:47 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 38ms (Views: 36.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:10:04 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.6ms)
+Completed 200 OK in 34ms (Views: 31.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 13:10:06 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"yu6NTgw3TAkzmSlgEx64QEaqZh3+eyn5at0UQOHxjWn40sJ/TAiHLcAJHSrNgQW4Eoh9Cw9oD9dF1pQ9RgFmBw==", "session"=>{"email"=>""}, "commit"=>"Log in"}
+No template found for SessionsController#create, rendering head :no_content
+Completed 204 No Content in 24ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:10:17 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 32ms (Views: 30.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:10:25 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 37ms (Views: 35.1ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 13:10:32 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"S5m6qvceBZO1DGQCF/UC8ux3JYSpIdqpCGtlWkxNxZ95pfWbtyHOt0acUEjJar8KuFU+klgy/IcnYOUn670u8Q==", "session"=>{"email"=>""}, "inlineRadioOptions"=>"option3", "commit"=>"Log in"}
+No template found for SessionsController#create, rendering head :no_content
+Completed 204 No Content in 27ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 13:32:40 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.0ms)
+Completed 200 OK in 31ms (Views: 29.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:33:22 -0800
+  
+SyntaxError (/Users/edwardyuen/appfolio-uber-for-vendors/app/controllers/sessions_controller.rb:13: syntax error, unexpected end-of-input, expecting end):
+  
+app/controllers/sessions_controller.rb:13: syntax error, unexpected end-of-input, expecting end
+Started GET "/login" for ::1 at 2019-11-10 14:33:56 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 44ms (Views: 42.8ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:34:02 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"bwU7ieII+yHmNfLKL6qL+/wwAfdFkQUFlQE0ZgK+5h5dOXS4ojcwBRWlxoDxNTYDqBIa4bSCIyu6CrQbpU4NcA==", "session"=>{"email"=>"jlennon@gmail.com"}, "inlineRadioOptions"=>"option2", "commit"=>"Log in"}
+  [1m[36mTenant Load (6.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 72ms (ActiveRecord: 22.8ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-10 14:34:03 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.7ms)
+Completed 200 OK in 43ms (Views: 38.5ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:34:07 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.1ms)
+Completed 200 OK in 38ms (Views: 37.0ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:34:31 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"1QzNYjBJJgZFbJ3l4i3dS6BBt8AUAaFywPIiLciQsVDnMIJTcHbtIrb8qa88smCz9GOs1uUSh1zv+aJQb2BaPg==", "session"=>{"email"=>"sjobs@apple.com"}, "inlineRadioOptions"=>"option2", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "sjobs@apple.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/3
+Completed 302 Found in 6ms (ActiveRecord: 0.4ms)
+
+
+Started GET "/tenants/3" for ::1 at 2019-11-10 14:34:31 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"3"}
+  [1m[36mTenant Load (1.8ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (1.5ms)
+Completed 200 OK in 67ms (Views: 61.2ms | ActiveRecord: 1.8ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:34:32 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.0ms)
+Completed 200 OK in 38ms (Views: 36.0ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:34:38 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"mNy/H3M7CpaloVSf7LQ4MGaMakop8qRFYx+JQ2Gw0nuq4PAuMwTBslYxYNUyK4XIMq5xXNjhgmtMFAk+xkA5FQ==", "session"=>{"email"=>"jonathan@gmail.com"}, "inlineRadioOptions"=>"option2", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jonathan@gmail.com"], ["LIMIT", 1]]
+No template found for SessionsController#create, rendering head :no_content
+Completed 204 No Content in 31ms (ActiveRecord: 0.3ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:36:14 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 34ms (Views: 32.4ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:36:20 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"E0cRjzx+JCDnHLMQuX8MXMRFTqCTIaMcKzUDiiA9jHghe16+fEHvBBSMh1pn4LGkkGdVtmIyhTIEPoP3h81nFg==", "session"=>{"email"=>"jlennon@gmail.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (2.7ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 40ms (ActiveRecord: 11.0ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-10 14:36:20 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (1.0ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 108ms (Views: 103.6ms | ActiveRecord: 1.0ms)
+
+
+Started GET "/" for ::1 at 2019-11-10 14:36:23 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.7ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (2.2ms)
+Completed 200 OK in 53ms (Views: 45.4ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/tenants/login" for ::1 at 2019-11-10 14:36:26 -0800
+Processing by TenantsController#login as HTML
+  Rendering tenants/login.html.erb within layouts/application
+  Rendered tenants/login.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 44ms (Views: 41.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:36:31 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (3.1ms)
+Completed 200 OK in 75ms (Views: 71.9ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:36:39 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"UhyGe919jQLfVllcFo+DZRyk1QeWJZ73X0CGjXrGaWVgIMlKnUJGJizGbRbIED6dSIbOEWc2uNlwSwbw3TaCCw==", "session"=>{"email"=>"george@gmail.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (1.2ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "george@gmail.com"], ["LIMIT", 1]]
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.8ms)
+Completed 200 OK in 58ms (Views: 51.9ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:52:58 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 30ms (Views: 27.5ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:53:03 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"Psh6AJCaoIfLvCKv22Tot/yg/FVvdB8LZkqUUT3DbfsM9DUx0KVrozgsFuUF+1VPqILnQ55nOSVJQRQsmjOGlQ==", "session"=>{"email"=>"jlennon@gmail.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 36ms (ActiveRecord: 10.9ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-10 14:53:03 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.8ms)
+Completed 200 OK in 67ms (Views: 63.5ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 14:53:07 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 40ms (Views: 38.6ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 14:53:10 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"02OPW6FW3njCENl9fEgYmw9Aa2YzpthTb0DLq0XjveThX8Bq4WkVXDGA7Tei16VjW2JwcMK1/n1AS0vW4hNWig==", "session"=>{"email"=>"agadfgjlennon@gmail.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "agadfgjlennon@gmail.com"], ["LIMIT", 1]]
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 65ms (Views: 57.1ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 15:51:59 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.5ms)
+Completed 200 OK in 52ms (Views: 50.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 15:54:02 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"06fgJvnNx1Q4krYf4tnaV0thRYbE9vPCXzJpRX3FBkDhm68XufIMcMsCglU8RmevH0NekDXl1exwOek42jXtLg==", "session"=>{"email"=>"jlennon@gmail.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 31ms (ActiveRecord: 10.9ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-10 15:54:02 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.8ms)
+Completed 200 OK in 57ms (Views: 52.4ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/login" for ::1 at 2019-11-10 15:54:25 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 32ms (Views: 30.1ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-10 15:54:32 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"SMbfZhmPD4eLjwI7roY9X8ZoGSsWbeG0dYcK1szePLt6+pBXWbDEo3gfNnFwGYCnkkoCPed+x5pajIqray7X1Q==", "session"=>{"email"=>"sjobs@apple.com"}, "inlineRadioOptions"=>"option2", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "sjobs@apple.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/3
+Completed 302 Found in 5ms (ActiveRecord: 0.3ms)
+
+
+Started GET "/tenants/3" for ::1 at 2019-11-10 15:54:32 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"3"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 45ms (Views: 41.5ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/" for ::1 at 2019-11-11 22:58:46 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (27.6ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (5.3ms)
+Completed 200 OK in 151ms (Views: 71.0ms | ActiveRecord: 27.6ms)
+
+
+Started GET "/login" for ::1 at 2019-11-11 22:59:02 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (6.5ms)
+Completed 200 OK in 65ms (Views: 61.6ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-11 22:59:04 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"bn1UTj/E9AmttaQvaIPDGbJscNr/LsqOZrFvcLmu1H8enKvItgcK5q9CNXnpvpgLnLVXzV9Odprf3hcaAadRbw==", "session"=>{"email"=>""}, "commit"=>"Log in"}
+  [1m[36mTenant Load (2.1ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", ""], ["LIMIT", 1]]
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 57ms (Views: 49.8ms | ActiveRecord: 2.1ms)
+
+
+Started POST "/login" for ::1 at 2019-11-11 22:59:08 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"dYwY3+ni7SNoZe8Bf69QIR+JzWip2hrFxaYZyPJFoI8FbedZYCETzGqSflf+kgszMVDqfwm6ptF8yWGiSkwlnw==", "session"=>{"email"=>"jlennon@gmail.com"}, "commit"=>"Log in"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 7ms (ActiveRecord: 0.3ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-11 22:59:08 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (8.9ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 82ms (Views: 69.9ms | ActiveRecord: 8.9ms)
+
+
+Started GET "/login" for ::1 at 2019-11-11 23:02:39 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.8ms)
+Completed 200 OK in 41ms (Views: 38.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-11 23:02:41 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"3pMBTqQxIU9zZ7HAC5VmBaMYP0O9cfn9iDdT5+MzOSKucv7ILfLfoHGQIJaKqD0XjcEYVB0RRekxWCuNWzq8Mg==", "session"=>{"email"=>"jlennon@gmail.com"}, "commit"=>"Log in"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 3ms (ActiveRecord: 0.3ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-11 23:02:41 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.7ms)
+Completed 200 OK in 40ms (Views: 37.5ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/" for ::1 at 2019-11-11 23:03:04 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (3.5ms)
+Completed 200 OK in 42ms (Views: 35.2ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/about" for ::1 at 2019-11-11 23:03:06 -0800
+Processing by AboutController#index as HTML
+  Rendering about/index.html.erb within layouts/application
+  Rendered about/index.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 33ms (Views: 31.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/about" for ::1 at 2019-11-11 23:03:07 -0800
+Processing by AboutController#index as HTML
+  Rendering about/index.html.erb within layouts/application
+  Rendered about/index.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 37ms (Views: 32.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/login" for ::1 at 2019-11-11 23:03:08 -0800
+Processing by TenantsController#login as HTML
+  Rendering tenants/login.html.erb within layouts/application
+  Rendered tenants/login.html.erb within layouts/application (0.8ms)
+Completed 200 OK in 69ms (Views: 67.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/login?inlineRadioOptions=option1" for ::1 at 2019-11-11 23:03:18 -0800
+Processing by TenantsController#login as HTML
+  Parameters: {"inlineRadioOptions"=>"option1"}
+  Rendering tenants/login.html.erb within layouts/application
+  Rendered tenants/login.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 49ms (Views: 46.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/tenants/login?inlineRadioOptions=option3" for ::1 at 2019-11-11 23:03:22 -0800
+Processing by TenantsController#login as HTML
+  Parameters: {"inlineRadioOptions"=>"option3"}
+  Rendering tenants/login.html.erb within layouts/application
+  Rendered tenants/login.html.erb within layouts/application (1.0ms)
+Completed 200 OK in 44ms (Views: 40.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/login" for ::1 at 2019-11-11 23:22:16 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (3.1ms)
+Completed 200 OK in 90ms (Views: 87.9ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-11 23:22:21 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"8mkDWG4Ohbj5+F2csheNqFrpn8h3Njd7OeQOp8UXgcaCiPze5817V/sPzMozKta6dDC439dWi2+Ai3bNfR4E1g==", "session"=>{"email"=>"jlennon@gmail.com"}, "commit"=>"Log in"}
+  [1m[36mTenant Load (1.7ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 6ms (ActiveRecord: 1.7ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-11 23:22:21 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 48ms (Views: 41.7ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/" for ::1 at 2019-11-12 00:17:17 -0800
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.2ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (1.0ms)
+Completed 200 OK in 105ms (Views: 38.8ms | ActiveRecord: 53.7ms)
+
+
+Started GET "/login" for ::1 at 2019-11-12 00:17:23 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (2.8ms)
+Completed 200 OK in 52ms (Views: 48.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-12 00:17:26 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"7Kgz/KHYss71Oj3N9fXQu6idmLAujo+3PuwJSiJkxFycScx6KBtMIffNrJt0yIuphkS/p47uM6OHg3Egmm1BTA==", "session"=>{"email"=>"jlennon@gmail.com"}, "commit"=>"Log in"}
+  [1m[36mTenant Load (4.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 12ms (ActiveRecord: 4.4ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-12 00:17:26 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 61ms (Views: 56.4ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-12 00:19:16 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (1.0ms)
+Completed 200 OK in 40ms (Views: 35.5ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/login" for ::1 at 2019-11-12 00:26:53 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 27ms (Views: 26.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for ::1 at 2019-11-12 00:27:09 -0800
+  [1m[35m (6.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (0.9ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (3.6ms)
+Completed 200 OK in 2103ms (Views: 2083.2ms | ActiveRecord: 4.3ms)
+
+
+Started GET "/login" for ::1 at 2019-11-12 00:27:16 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (33.2ms)
+Completed 200 OK in 71ms (Views: 69.3ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-12 00:27:22 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"CwMO3OoUv8cI5xKZ+M2A56LzVdcbkFyQ9kxQn/u3VWp74vFaY9dBKAoQg8958Nv1jCpywLvw4IRPIyj1Q77Qeg==", "session"=>{"email"=>"jlennon@gmail.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "jlennon@gmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/1
+Completed 302 Found in 13ms (ActiveRecord: 1.2ms)
+
+
+Started GET "/tenants/1" for ::1 at 2019-11-12 00:27:22 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mTenant Load (0.5ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.5ms)
+Completed 200 OK in 51ms (Views: 46.4ms | ActiveRecord: 0.5ms)
+
+
+Started GET "/login" for ::1 at 2019-11-12 00:29:26 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (3.0ms)
+Completed 200 OK in 70ms (Views: 67.9ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-12 00:29:31 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"2U24OtQlTY7hdQbOg/yaQzn331YFCS7XtQHXTLs3uoKprEe8XeazYeOCl5gCwcFRFy74QaVpksMMbq8mAz4/kg==", "session"=>{"email"=>"sjobs@apple.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "sjobs@apple.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/3
+Completed 302 Found in 5ms (ActiveRecord: 0.4ms)
+
+
+Started GET "/tenants/3" for ::1 at 2019-11-12 00:29:31 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"3"}
+  [1m[36mTenant Load (0.3ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 53ms (Views: 48.4ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/" for ::1 at 2019-11-12 00:30:45 -0800
+  [1m[35m (1.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by HomepageController#index as HTML
+  [1m[36mTenant Load (1.5ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants"[0m
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (12.0ms)
+Completed 200 OK in 4197ms (Views: 4112.3ms | ActiveRecord: 11.1ms)
+
+
+Started GET "/login" for ::1 at 2019-11-12 00:30:56 -0800
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (34.7ms)
+Completed 200 OK in 82ms (Views: 80.5ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/login" for ::1 at 2019-11-12 00:31:01 -0800
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"7N44/yhGMRRLjL5QrOIxwLZ33YPNLVAEbMScSNsjq3OcP8d5oYXP+0l7LwYt32rSmK76lG1N7BDVq+QiYyouYw==", "session"=>{"email"=>"sjobs@apple.com"}, "inlineRadioOptions"=>"option1", "commit"=>"Log in"}
+  [1m[36mTenant Load (1.1ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."email" = $1 LIMIT $2[0m  [["email", "sjobs@apple.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/tenants/3
+Completed 302 Found in 37ms (ActiveRecord: 16.2ms)
+
+
+Started GET "/tenants/3" for ::1 at 2019-11-12 00:31:01 -0800
+Processing by TenantsController#show as HTML
+  Parameters: {"id"=>"3"}
+  [1m[36mTenant Load (0.8ms)[0m  [1m[34mSELECT  "tenants".* FROM "tenants" WHERE "tenants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  Rendering tenants/show.html.erb within layouts/application
+  Rendered tenants/show.html.erb within layouts/application (0.8ms)
+Completed 200 OK in 54ms (Views: 46.0ms | ActiveRecord: 0.8ms)
+
+
