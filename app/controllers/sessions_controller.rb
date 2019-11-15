@@ -5,7 +5,8 @@ class SessionsController < ApplicationController
   end
   def destroy
   end
-  def login
+  def login(json_response)
+    
   end
   def landing_page
   end
