@@ -13,3 +13,6 @@ Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com")
 
 # Landowner seeds
 Landowner.create(id: 1, name: "James Gelb", email: "IJustWantYourMoney@gimme.com")
+
+Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com")
+Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com")
