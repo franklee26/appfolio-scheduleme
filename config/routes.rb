@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'sessions/new'
+
   # tenants
   get 'tenants/login'
   get 'tenants/auth', to: 'tenants#auth'
