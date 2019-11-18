@@ -4,7 +4,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'bootstrap', '~> 4.0.0'
+gem 'bootstrap', '~> 4.3.1'
 gem 'webpacker'
 gem 'react-rails'
 gem 'google-api-client', :require => ['google/apis/calendar_v3', 'google/apis/identitytoolkit_v3']
