@@ -27,4 +27,5 @@ Rails.application.routes.draw do
 
   # resources
   resources :tenants
+  resources :jobs
 end
