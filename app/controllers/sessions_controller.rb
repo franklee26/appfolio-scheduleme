@@ -29,8 +29,7 @@ class SessionsController < ApplicationController
   # pass the user_type to landing_page.html.erb
   # based on user_type serve a different view in the landing_page.html.erb
   def landing_page
-    user_type = sessions[:user_type]
-    
+    @user = current_user
   end
   def profile_page
   end
