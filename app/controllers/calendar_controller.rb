@@ -21,8 +21,7 @@ class CalendarController < ApplicationController
     @busy_times = get_list_of_times(freebusy_times)
     # find or build the user
     @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
-    get_free_times(@busy_times)
-    binding.pry
+    @free_times = get_free_times(@busy_times)
   end
 
   def user_selection
@@ -68,8 +67,8 @@ class CalendarController < ApplicationController
     end
     response = RestClient.post 'https://www.googleapis.com/calendar/v3/freeBusy?alt=json&access_token='+access_token,
       {
-        "timeMin": Time.now.to_datetime.rfc3339,
-        "timeMax": 14.days.from_now.to_datetime.rfc3339,
+        "timeMin": (Time.now.localtime.beginning_of_day + 9.hours).rfc3339,
+        "timeMax": (Time.now.localtime.beginning_of_day + 14.days).rfc3339,
         "items": items,
       }.to_json,
       :content_type => :json
@@ -98,22 +97,29 @@ class CalendarController < ApplicationController
 
   def get_free_times(times)
     # try to find a free one hour session today 9am-5pm
-    (0..8).each do |hour|
-      temp_time = hour.hours.from_now.to_time
-      temp_time_one_hour = (hour+1).hours.from_now.to_time
+    goodTimes = []
+    (0..9).each do |hour|
+      temp_time = Time.now.localtime.beginning_of_day + (9 + hour).hours
+      temp_time_one_hour = Time.now.localtime.beginning_of_day + (10 + hour).hours
       # now loop through times
+      viable = true
       times.each do |hash|
         if hash.member?("start")
           # there is a start time
-          start_time = Time.new(hash["start"]).to_time
-          end_time = Time.new(hash["end"]).to_time
-          puts "#{hash["start"]}"
-          if start_time >= temp_time and end_time <= temp_time_one_hour
-            puts "found good time #{hash}"
+          start_time = Time.parse(hash["start"]).localtime
+          end_time = Time.parse(hash["end"]).localtime
+          # conflict if start temp/temp+1 time is in between start and end
+          if (temp_time >= start_time and temp_time <= end_time) or (temp_time_one_hour >= start_time and temp_time_one_hour <= end_time)
+            viable = false
+            break
           end
         end
       end
+      if viable == true
+        goodTimes << {"start": temp_time, "end": temp_time_one_hour}
+      end
     end
+    goodTimes
   end
 
   def find_or_create_user(user_type, name, email)
