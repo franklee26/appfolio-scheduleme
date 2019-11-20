@@ -13,6 +13,19 @@ function formatDate(date) {
 }
 */
 
+// how do you tab lol
+function tabbing() {
+  return (
+    <td>
+      <td>
+        <td>
+          <td></td>
+        </td>
+      </td>
+    </td>
+  );
+}
+
 function shortFormatDate(date) {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
     day: "numeric",
@@ -35,20 +48,25 @@ const CalendarIndex = props => {
           <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
         </li>
       ))}
-      <h2> Freetimes for today </h2>
+      <h2> Freetimes for the next two weeks </h2>
       {props.free_times.map(timeHash => (
-        <li>
-          From {shortFormatDate(timeHash["start"])} to{" "}
-          {shortFormatDate(timeHash["end"])}
-        </li>
+        <table>
+          <td>
+            From {shortFormatDate(timeHash["start"])} to{" "}
+            {shortFormatDate(timeHash["end"])}{" "}
+          </td>
+        </table>
       ))}
       <h2> Freebusy calls </h2>
-      {props.busy_times.map(timeHash => (
-        <li>
-          Start: {shortFormatDate(timeHash["start"])} End:{" "}
-          {shortFormatDate(timeHash["end"])}
-        </li>
-      ))}
+      <table>
+        {props.busy_times.map(timeHash => (
+          <tr>
+            <td>Start: {shortFormatDate(timeHash["start"])}</td>
+            {tabbing()}
+            <td> End: {shortFormatDate(timeHash["end"])}</td>{" "}
+          </tr>
+        ))}
+      </table>
     </div>
   );
 };

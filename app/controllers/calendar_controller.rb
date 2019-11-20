@@ -98,25 +98,28 @@ class CalendarController < ApplicationController
   def get_free_times(times)
     # try to find a free one hour session today 9am-5pm
     goodTimes = []
-    (0..9).each do |hour|
-      temp_time = Time.now.localtime.beginning_of_day + (9 + hour).hours
-      temp_time_one_hour = Time.now.localtime.beginning_of_day + (10 + hour).hours
-      # now loop through times
-      viable = true
-      times.each do |hash|
-        if hash.member?("start")
-          # there is a start time
-          start_time = Time.parse(hash["start"]).localtime
-          end_time = Time.parse(hash["end"]).localtime
-          # conflict if start temp/temp+1 time is in between start and end
-          if (temp_time >= start_time and temp_time <= end_time) or (temp_time_one_hour >= start_time and temp_time_one_hour <= end_time)
-            viable = false
-            break
+    (0..14).each do |day|
+      starting_day = Time.now.localtime.beginning_of_day + day.days
+      (0..8).each do |hour|
+        temp_time = starting_day + (9 + hour).hours
+        temp_time_one_hour = starting_day + (10 + hour).hours
+        # now loop through times
+        viable = true
+        times.each do |hash|
+          if hash.member?("start")
+            # there is a start time
+            start_time = Time.parse(hash["start"]).localtime
+            end_time = Time.parse(hash["end"]).localtime
+            # conflict if start temp/temp+1 time is in between start and end
+            if (temp_time >= start_time and temp_time <= end_time) or (temp_time_one_hour >= start_time and temp_time_one_hour <= end_time)
+              viable = false
+              break
+            end
           end
         end
-      end
-      if viable == true
-        goodTimes << {"start": temp_time, "end": temp_time_one_hour}
+        if viable == true
+          goodTimes << {"start": temp_time, "end": temp_time_one_hour}
+        end
       end
     end
     goodTimes
