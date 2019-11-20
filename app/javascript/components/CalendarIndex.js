@@ -46,7 +46,7 @@ const CalendarIndex = props => {
       {props.busy_times.map(timeHash => (
         <li>
           Start: {shortFormatDate(timeHash["start"])} End:{" "}
-          {shortFormatDate(timeHash["end"])}{" "}
+          {shortFormatDate(timeHash["end"])}
         </li>
       ))}
     </div>
