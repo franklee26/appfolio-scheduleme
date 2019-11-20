@@ -1,5 +1,16 @@
 import React from "react";
 
+function formatDate(date) {
+  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  return theDate;
+}
+
 const CalendarIndex = props => {
   return (
     <div>
@@ -10,6 +21,14 @@ const CalendarIndex = props => {
       {props.calendars.map(calendar => (
         <li key={calendar.id}>
           <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
+        </li>
+      ))}
+      <h2> Freetimes </h2>
+      <h2> Freebusy calls </h2>
+      {props.busy_times.map(timeHash => (
+        <li>
+          Start: {formatDate(timeHash["start"])} End:{" "}
+          {formatDate(timeHash["end"])}{" "}
         </li>
       ))}
     </div>
