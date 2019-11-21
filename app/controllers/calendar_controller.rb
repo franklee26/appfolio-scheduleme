@@ -40,7 +40,8 @@ class CalendarController < ApplicationController
         "dateTime": params[:end],
         "timeZone": "America/Los_Angeles"
       },
-      "summary": "very neat event"
+      "summary": "uber_for_vendors_appt",
+      "colorId": "7"
     }
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true

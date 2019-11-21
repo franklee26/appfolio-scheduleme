@@ -1,18 +1,5 @@
 import React from "react";
 
-/*
-function formatDate(date) {
-  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-  return theDate;
-}
-*/
-
 // how do you tab lol
 function tabbing() {
   return (
@@ -26,6 +13,7 @@ function tabbing() {
   );
 }
 
+// date format helper
 function shortFormatDate(date) {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
     day: "numeric",
@@ -45,7 +33,7 @@ function handleClickPost(event, startTime, endTime) {
     `http://localhost:3000/calendar/hvmm4e43mi5cvhqc6uun07r7mo@group.calendar.google.com/${startTime}/${endTime}`
   );
   xhr.send();
-  alert("Posted!");
+  alert(`Successfully added event starting at ${shortFormatDate(startTime)} to calendar!`);
 }
 
 const CalendarIndex = props => {
