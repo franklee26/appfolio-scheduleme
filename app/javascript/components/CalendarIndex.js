@@ -36,6 +36,18 @@ function shortFormatDate(date) {
   return theDate;
 }
 
+// handle click and post request
+function handleClickPost(event, startTime, endTime) {
+  event.preventDefault();
+  var xhr = new XMLHttpRequest();
+  xhr.open(
+    "POST",
+    `http://localhost:3000/calendar/hvmm4e43mi5cvhqc6uun07r7mo@group.calendar.google.com/${startTime}/${endTime}`
+  );
+  xhr.send();
+  alert("Posted!");
+}
+
 const CalendarIndex = props => {
   return (
     <div>
@@ -52,8 +64,15 @@ const CalendarIndex = props => {
       {props.free_times.map(timeHash => (
         <table>
           <td>
-            From {shortFormatDate(timeHash["start"])} to{" "}
-            {shortFormatDate(timeHash["end"])}{" "}
+            <a
+              href="#"
+              onClick={e => {
+                handleClickPost(e, timeHash["start"], timeHash["end"]);
+              }}
+            >
+              From {shortFormatDate(timeHash["start"])} to{" "}
+              {shortFormatDate(timeHash["end"])}{" "}
+            </a>
           </td>
         </table>
       ))}

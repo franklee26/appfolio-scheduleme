@@ -3,6 +3,7 @@ require 'json'
 require 'rest-client'
 
 class CalendarController < ApplicationController
+  skip_before_action :verify_authenticity_token
   def index
     client = Signet::OAuth2::Client.new(clientOptions)
     client.update!(session[:authorization])
@@ -25,6 +26,27 @@ class CalendarController < ApplicationController
   end
 
   def user_selection
+  end
+
+  def post
+    uri = URI.parse("https://www.googleapis.com/calendar/v3/calendars/"+params[:calendar_id]+"/events?alt=json&access_token="+session[:authorization]["access_token"])
+    header = {'Content-Type': 'application/json'}
+    request_body = {
+      "start": {
+        "dateTime": params[:start],
+        "timeZone": "America/Los_Angeles"
+      },
+      "end": {
+        "dateTime": params[:end],
+        "timeZone": "America/Los_Angeles"
+      },
+      "summary": "very neat event"
+    }
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(uri.request_uri, header)
+    request.body = request_body.to_json
+    response = http.request(request)
   end
 
   def events
