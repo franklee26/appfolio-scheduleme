@@ -1,7 +1,7 @@
 import React from "react";
 
 // how do you tab lol
-function tabbing() {
+const tabbing = () => {
   return (
     <td>
       <td>
@@ -14,7 +14,7 @@ function tabbing() {
 }
 
 // date format helper
-function shortFormatDate(date) {
+const shortFormatDate = (date) => {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -25,7 +25,7 @@ function shortFormatDate(date) {
 }
 
 // handle click and post request
-function handleClickPost(event, startTime, endTime) {
+const handleClickPost = (event, startTime, endTime) => {
   event.preventDefault();
   var xhr = new XMLHttpRequest();
   xhr.open(
@@ -48,7 +48,7 @@ const CalendarIndex = props => {
           <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
         </li>
       ))}
-      <h2> Freetimes for the next two weeks </h2>
+      <h2> Free times for the next two weeks </h2>
       {props.free_times.map(timeHash => (
         <table>
           <td>
