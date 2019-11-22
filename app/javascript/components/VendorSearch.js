@@ -5,8 +5,7 @@ class VendorSearch extends Component {
     super(props);
     this.state = {
       list: [],
-      firstName: "",
-      lastName: "",
+      name: "",
       occupation: "",
       zip: ""
     };
@@ -35,16 +34,8 @@ class VendorSearch extends Component {
           <div>
             <label>Search by First Name</label>
             <input
-              value={this.state.firstName}
-              name="firstName"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            <label>Search by Last Name</label>
-            <input
-              value={this.state.lastName}
-              name="lastName"
+              value={this.state.name}
+              name="name"
               onChange={e => this.handleChange(e)}
             />
           </div>
