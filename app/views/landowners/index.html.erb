@@ -1,1 +1,6 @@
-<%= react_component('LandownerPage') %>
+
+<% @jobs = Job.where('"Tenant_id" = ?', 1) %>
+
+<%=stylesheet_link_tag 'landowners' %>
+
+<%= react_component('Landing_Page_Job_Listing', {jobs: @jobs}) %>
