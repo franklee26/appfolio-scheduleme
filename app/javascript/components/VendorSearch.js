@@ -22,7 +22,8 @@ class VendorSearch extends Component {
     var vendors = this.props.vendors;
     vendors = vendors.filter((vendor) => {
       let occupationCheck = this.state.occupation.length == 0 || this.state.occupation.toUpperCase() == vendor.occupation.toUpperCase();
-      return occupationCheck;
+      let nameCheck = this.state.name.length == 0 || (vendor.name.toUpperCase().indexOf(this.state.name.toUpperCase()) != -1)
+      return occupationCheck && nameCheck;
     })
     this.setState({
       submitted: true,
