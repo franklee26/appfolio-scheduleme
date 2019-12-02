@@ -48,7 +48,8 @@ const CalendarIndex = props => {
           <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
         </li>
       ))}
-      <h2> Free times for the next two weeks </h2>
+      <h4> Your vendor (Bob Electrician) and landowner (James Gelb) have submitted their freetimes </h4>
+      <h4> Submit your free times (pulled from the last two weeks from everyone's calendars): </h4>
       {props.free_times.map(timeHash => (
         <table>
           <td>
@@ -64,16 +65,10 @@ const CalendarIndex = props => {
           </td>
         </table>
       ))}
-      <h2> Freebusy calls </h2>
-      <table>
-        {props.busy_times.map(timeHash => (
-          <tr>
-            <td>Start: {shortFormatDate(timeHash["start"])}</td>
-            {tabbing()}
-            <td> End: {shortFormatDate(timeHash["end"])}</td>{" "}
-          </tr>
-        ))}
-      </table>
+      <h2>Your landowner: James Gelb</h2>
+      <h2>
+        <a href="/landowner">You have submitted several jobs</a>
+      </h2>
     </div>
   );
 };
