@@ -7,7 +7,7 @@ const VendorList = props => {
       {props.vendors.length ? (
         props.vendors.map(vendor => (
           <li>
-            <a href="/vendors/profile">{`Name: ${vendor.name}\tOcupation: ${vendor.occupation}`}</a>
+            <a href="/vendors/show">{`Name: ${vendor.name}\tOcupation: ${vendor.occupation}`}</a>
           </li>
         ))
       ) : (
