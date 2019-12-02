@@ -4,6 +4,7 @@ class Landing_Page_Job_Listing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      show_job: false,
       job_list: props.jobs, 
       default_form: <h1>Hello World</h1>, 
       displayed_job: props.jobs[0]
@@ -13,8 +14,6 @@ class Landing_Page_Job_Listing extends React.Component {
     this.handleDescChange = this.handleDescChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClickJob = this.handleClickJob.bind(this);
-    //this.returnForm = this.returnForm();
-    this.fullJobDescription = this.fullJobDescription.bind(this);
   }
 
   handleNameChange(event) {
@@ -30,25 +29,16 @@ class Landing_Page_Job_Listing extends React.Component {
     event.preventDefault();
   }
 
-  handleClickJob(event) {
-    this.setState({displayed_job: this.job_list[2]});
-    alert('A job was clicked: ' + this.state.displayed_job.id);
-    this.setState({default_form: this.fullJobDescription})
-  }
-
-  fullJobDescription() {
-    const lorem_ipsum_garbage = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel finibus sapien. In nec lacinia erat. In congue leo eget mi vehicula, ac pulvinar sem varius. In tristique sollicitudin elementum. Ut diam nisl, sodales eget quam eget, efficitur aliquam quam. Curabitur ipsum nibh, placerat non vulputate quis, semper nec neque. Proin accumsan sem vitae libero porttitor, sed volutpat nisl tristique. Nullam lobortis felis eget lectus scelerisque interdum. ";
-    
-    let fullJobDescription = (<div>
-            <h1>{this.state.displayed_job.title}</h1>
-            <p>{`Job Type: ${this.state.displayed_job.job_type}`}</p>
-            <p>{`Date Created: ${this.state.displayed_job.created_at.toString()}`}</p>
-            <p>{`Tenant Name: Mr. Need Help`}</p>
-            <p>{`Tenant ID: ${this.state.displayed_job.Tenant_id}`}</p>
-            <p>{`Vendor Name: Mr. I'll Fix Your Face`}</p>
-            <p>{`Vendor ID: ${this.state.displayed_job.Vendor_id}`}</p>
-            <p>{`Description: ${this.state.displayed_job.content} ${lorem_ipsum_garbage}`}</p></div>);
-    return fullJobDescription
+  handleClickJob(id, event) {
+    var i;
+    for (i = 0; i < this.state.job_list.length; i++) {
+      if (this.state.job_list[i].id == id) {
+        this.setState({displayed_job: this.state.job_list[i]});
+        break;
+      }
+    }
+    this.setState({show_job: true});
+    //alert('A job was clicked: ' + id);
   }
 
   render() {
@@ -92,21 +82,27 @@ class Landing_Page_Job_Listing extends React.Component {
       fontWeight: 'bold', 
     }
 
+    const lorem_ipsum_garbage = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel finibus sapien. In nec lacinia erat. In congue leo eget mi vehicula, ac pulvinar sem varius. In tristique sollicitudin elementum. Ut diam nisl, sodales eget quam eget, efficitur aliquam quam. Curabitur ipsum nibh, placerat non vulputate quis, semper nec neque. Proin accumsan sem vitae libero porttitor, sed volutpat nisl tristique. Nullam lobortis felis eget lectus scelerisque interdum. "
+
     class JobDescription extends React.Component {
-       render() {
-       return (
-          <div>
-            <h1>{this.state.displayed_job.title}</h1>
-            <p>{`Job Type: ${this.state.displayed_job.job_type}`}</p>
-            <p>{`Date Created: ${this.state.displayed_job.created_at.toString()}`}</p>
-            <p>{`Tenant Name: Mr. Need Help`}</p>
-            <p>{`Tenant ID: ${this.state.displayed_job.Tenant_id}`}</p>
-            <p>{`Vendor Name: Mr. I'll Fix Your Face`}</p>
-            <p>{`Vendor ID: ${this.state.displayed_job.Vendor_id}`}</p>
-            <p>{`Description: ${this.state.displayed_job.content} ${lorem_ipsum_garbage}`}</p>
-          </div>
-         );
-        }
+
+      render() {
+        if (this.props.show_job) {
+         return (
+            <div>
+              <h1>{this.props.displayed_job.title}</h1>
+              <p>{`Job Type: ${this.props.displayed_job.job_type}`}</p>
+              <p>{`Date Created: ${this.props.displayed_job.created_at.toString()}`}</p>
+              <p>{`Tenant Name: Mr. Need Help`}</p>
+              <p>{`Tenant ID: ${this.props.displayed_job.Tenant_id}`}</p>
+              <p>{`Vendor Name: Mr. I'll Fix Your Face`}</p>
+              <p>{`Vendor ID: ${this.props.displayed_job.Vendor_id}`}</p>
+              <p>{`Description: ${this.props.displayed_job.content} ${this.props.text_filler}`}</p>
+            </div>
+          );
+       }
+       return <h1> HELLO </h1>
+      }
     }
 
     return (
@@ -118,7 +114,7 @@ class Landing_Page_Job_Listing extends React.Component {
               {this.state.job_list ? (
                 this.state.job_list.map(job => {
                   if (job.status == "pending")
-                    return <div style={jobEntry} key={job.id} onClick={this.handleClickJob}>
+                    return <div style={jobEntry} key={job.id} onClick={(e) => this.handleClickJob(job.id, e)}>
                       <li style={jobTitle}>{`${job.title} (${job.job_type})`}</li>
                       <li>{`Date: ${job.created_at.toString().substring(0, 10)} Location: "Santa Barbara"`}</li>
                       <li>{`ID: ${job.id} Tenant ID: ${job.Tenant_id} Vendor ID: ${job.Vendor_id}`}</li>
@@ -130,49 +126,23 @@ class Landing_Page_Job_Listing extends React.Component {
               <h2>Finished Jobs</h2>
               {this.state.job_list ? (
                 this.state.job_list.map(job => {
-                  console.log(job.id)
-                  if (job.id == 1) 
-                    return <li style={jobEntry} key={job.id}>
-                    {`ID: ${job.id} Content: ${job.content} Tenant ID: ${job.Tenant_id} Vendor ID: ${job.Vendor_id}`}
-                    </li>})) : (
+                  if (job.status == "completed")
+                    return <div style={jobEntry} key={job.id} onClick={(e) => this.handleClickJob(job.id, e)}>
+                      <li style={jobTitle}>{`${job.title} (${job.job_type})`}</li>
+                      <li>{`Date: ${job.created_at.toString().substring(0, 10)} Location: "Santa Barbara"`}</li>
+                      <li>{`ID: ${job.id} Tenant ID: ${job.Tenant_id} Vendor ID: ${job.Vendor_id}`}</li>
+                    </div>})) : (
                 <p> No Jobs in the Database </p>)}
             </div>
           </div>
 
           <div className='col-md-9' style={jobDescripContainer}>
-            {this.fullJobDescription()}
+            <JobDescription show_job={this.state.show_job} displayed_job={this.state.displayed_job} text_filler={lorem_ipsum_garbage}/>
           </div>
         </div>
 
       </div>
     )
-
-    //{this.returnForm}
-
-
-
-    // return (
-    //   <div className='container'>
-
-    //     <form onSubmit={this.handleSubmit}>
-    //       <div className="form-group">
-    //         <label htmlFor="landowner_name" >Name</label>
-    //         <input type="name" className="form-control" id="landowner_name" placeholder="Enter Your Name" onChange={this.handleNameChange} />
-    //       </div>
-    //       <div className="form-group">
-    //         <label htmlFor="schedule_json">Description</label>
-    //         <input type="json" className="form-control" id="schedule_json" placeholder="Your schedule" />
-    //         <small id="emailHelp" className="form-text text-muted">Please describe your schedule in json.</small>
-    //       </div>
-    //       <div className="form-check">
-    //         <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-    //         <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-    //       </div>
-    //       <button type="submit" className="btn btn-primary">Submit</button>
-    //     </form>
-    //   </div>
-
-    // );
 
   };
 }

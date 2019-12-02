@@ -1,10 +1,5 @@
 class LandownersController < ApplicationController
   def index
-
-    # @jobs = Job.where('"Tenant_id" = ?', 1)
-
-
-  	#@jobs = Job.all
   end
 
   def auth
