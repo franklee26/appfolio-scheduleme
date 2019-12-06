@@ -1,14 +1,15 @@
 import React, { Component } from "react";
+import VendorList from "./VendorList";
 
 class VendorSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
       list: [],
-      firstName: "",
-      lastName: "",
+      name: "",
       occupation: "",
-      zip: ""
+      zip: "",
+      submitted: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -18,7 +19,16 @@ class VendorSearch extends Component {
     e.preventDefault();
     // Todo: Validate the entered search parameters
     // Todo: if valid, pass the information in the state to the controller and redirect
-    console.log("Submitting search result information");
+    var vendors = this.props.vendors;
+    vendors = vendors.filter((vendor) => {
+      let occupationCheck = this.state.occupation.length == 0 || this.state.occupation.toUpperCase() == vendor.occupation.toUpperCase();
+      let nameCheck = this.state.name.length == 0 || (vendor.name.toUpperCase().indexOf(this.state.name.toUpperCase()) != -1)
+      return occupationCheck && nameCheck;
+    })
+    this.setState({
+      submitted: true,
+      list: vendors
+    });
   }
 
   handleChange(e) {
@@ -33,18 +43,10 @@ class VendorSearch extends Component {
         <h1>Search Vendors</h1>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <label>Search by First Name</label>
+            <label>Search by Name</label>
             <input
-              value={this.state.firstName}
-              name="firstName"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            <label>Search by Last Name</label>
-            <input
-              value={this.state.lastName}
-              name="lastName"
+              value={this.state.name}
+              name="name"
               onChange={e => this.handleChange(e)}
             />
           </div>
@@ -68,6 +70,9 @@ class VendorSearch extends Component {
             <button onSubmit={e => this.handleSubmit(e)}>Submit</button>
           </div>
         </form>
+        <div>
+          {this.state.submitted && <VendorList vendors={this.state.list} />}
+        </div>
       </div>
     );
   }
