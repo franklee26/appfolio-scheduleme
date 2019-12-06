@@ -7,6 +7,7 @@ end
 gem 'bootstrap', '~> 4.3.1'
 gem 'webpacker'
 gem 'react-rails'
+gem 'rest-client'
 gem 'google-api-client', :require => ['google/apis/calendar_v3', 'google/apis/identitytoolkit_v3']
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
