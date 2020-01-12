@@ -1,32 +1,5 @@
 import React from "react";
 
-// date format helper
-const shortFormatDate = date => {
-  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-  return theDate;
-};
-
-// handle click and post request
-const handleClickPost = (event, startTime, endTime) => {
-  event.preventDefault();
-  var xhr = new XMLHttpRequest();
-  xhr.open(
-    "POST",
-    `http://localhost:3000/calendar/hvmm4e43mi5cvhqc6uun07r7mo@group.calendar.google.com/${startTime}/${endTime}`
-  );
-  xhr.send();
-  alert(
-    `Successfully added event starting at ${shortFormatDate(
-      startTime
-    )} to calendar!`
-  );
-};
-
 const CalendarIndex = props => {
   return (
     <div className="container">

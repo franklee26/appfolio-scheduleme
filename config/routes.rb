@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get 'calendar/login', to: 'calendar#user_selection'
   get 'calendar/callback', to: 'calendar#callback'
   get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
+  get 'calendar/:calendar_id/response', to: 'calendar#get', calendar_id: /[^\/]+/
   post 'calendar/:calendar_id/:start/:end', to: 'calendar#post', calendar_id: /[^\/]+/, start: /[^\/]+/, end: /[^\/]+/
 
 

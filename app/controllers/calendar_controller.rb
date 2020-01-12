@@ -25,6 +25,18 @@ class CalendarController < ApplicationController
   def user_selection
   end
 
+  def get
+    uri = URI.parse(
+      "https://www.googleapis.com/calendar/v3/calendars/" + 
+      params[:calendar_id]+"/events?alt=json&access_token=" + 
+      session[:authorization]["access_token"]
+    )
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    response = Net::HTTP.get(uri)
+    render json: response, status: :ok
+  end
+
   def post
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
