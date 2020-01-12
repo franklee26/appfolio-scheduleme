@@ -4,7 +4,6 @@ const Homepage = props => {
   return (
     <div className="container">
       <h1 align="center">Welcome to Uber for Vendors</h1>
-      <h1>  FOR DEMO PURPOSES </h1>
       <h2>Current registered Tenants:</h2>
       {props.tenants.length ? (
         props.tenants.map(tenant => (
