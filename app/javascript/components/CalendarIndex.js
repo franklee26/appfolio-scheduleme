@@ -38,7 +38,7 @@ const handleClickPost = (event, startTime, endTime) => {
 
 const CalendarIndex = props => {
   return (
-    <div>
+    <div className="container">
       <h1 align="center">{props.user_type} Calendar Page</h1>
       <h2>
         {props.user.name}'s list of calendars under email {props.user.email}

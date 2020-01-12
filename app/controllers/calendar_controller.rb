@@ -29,7 +29,11 @@ class CalendarController < ApplicationController
   end
 
   def post
-    uri = URI.parse("https://www.googleapis.com/calendar/v3/calendars/"+params[:calendar_id]+"/events?alt=json&access_token="+session[:authorization]["access_token"])
+    uri = URI.parse(
+      "https://www.googleapis.com/calendar/v3/calendars/" + 
+      params[:calendar_id]+"/events?alt=json&access_token=" + 
+      session[:authorization]["access_token"]
+    )
     header = {'Content-Type': 'application/json'}
     request_body = {
       "start": {
@@ -56,8 +60,15 @@ class CalendarController < ApplicationController
 
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
-
-    @events = service.list_events(params[:calendar_id]).items
+    @calendar_id = params[:calendar_id]
+    events_temp = service.list_events(params[:calendar_id]).items
+    @events = []
+    # I should do some filtering
+    events_temp.each do |event|
+      if not event.end.date_time < (Time.now.localtime.beginning_of_day - 7.days)
+        @events << event
+      end
+    end
   end
   
   def callback
@@ -134,7 +145,7 @@ class CalendarController < ApplicationController
             start_time = Time.parse(hash["start"]).localtime
             end_time = Time.parse(hash["end"]).localtime
             # conflict if start temp/temp+1 time is in between start and end
-            if (temp_time >= start_time and temp_time <= end_time) or (temp_time_one_hour >= start_time and temp_time_one_hour <= end_time)
+            if (temp_time >= start_time and temp_time < end_time) or (temp_time_one_hour > start_time and temp_time_one_hour <= end_time)
               viable = false
               break
             end

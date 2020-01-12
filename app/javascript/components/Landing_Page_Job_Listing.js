@@ -93,7 +93,7 @@ class Landing_Page_Job_Listing extends React.Component {
               <h1>{this.props.displayed_job.title}</h1>
               <p>{`Job Type: ${this.props.displayed_job.job_type}`}</p>
               <p>{`Date Created: ${this.props.displayed_job.created_at.toString()}`}</p>
-              <p>{`Tenant Name: Mr. Need Help`}</p>
+              <p>{`Tenant Name: Frank Lee`}</p>
               <p>{`Tenant ID: ${this.props.displayed_job.Tenant_id}`}</p>
               <p>{`Vendor Name: Bob Electrician`}</p>
               <p>{`Vendor ID: ${this.props.displayed_job.Vendor_id}`}</p>
