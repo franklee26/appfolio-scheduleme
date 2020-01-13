@@ -9,17 +9,24 @@ const handleClickPost = (
   calendarName
 ) => {
   event.preventDefault();
-  var xhr = new XMLHttpRequest();
-  xhr.open(
-    "POST",
-    `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`
-  );
-  xhr.send();
-  alert(
-    `Successfully added event starting at ${shortFormatDate(
-      startTime
-    )} to ${calendarName}!`
-  );
+  fetch(
+    `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
+    { method: "POST" }
+  )
+    .then(res => res.json())
+    .then(
+      res => {
+        alert(
+          `Successfully added event starting at ${shortFormatDate(
+            startTime
+          )} to ${calendarName}! (status: ${res["status"]})`
+        );
+        window.location.reload(false);
+      },
+      error => {
+        alert(`Failed to add event to calendar with error ${error}`);
+      }
+    );
 };
 
 const shortFormatDate = date => {
@@ -57,7 +64,7 @@ class Events extends React.Component {
         error => {
           this.setState({
             isLoaded: true,
-            error
+            error: error
           });
         }
       );
@@ -66,23 +73,26 @@ class Events extends React.Component {
   render() {
     const { error, isLoaded, calendarResponse } = this.state;
     if (error) {
-      return <div>Error: {error.message}</div>;
+      return <div>Error in mount: {error.message}</div>;
     } else if (!isLoaded) {
       return (
         <div>
           <h1>Loading and scheduling times...</h1>
         </div>
       );
+    } else if (calendarResponse["error"]) {
+      return (
+        <div>
+          <h1>
+            Error code {calendarResponse["error"]["code"]} in API call:{" "}
+            {calendarResponse["error"]["message"]}
+          </h1>
+        </div>
+      );
     }
     return (
       <div className="container">
-        {this.props.events.length ? (
-          <h1 align="center">
-            Calendar events for {calendarResponse["summary"]}:
-          </h1>
-        ) : (
-          `No events in ${calendarResponse["summary"]} calendar`
-        )}
+        <h1 align="center">Selected Calendar: {calendarResponse["summary"]}</h1>
         <h4>
           {" "}
           Submit your free times (pulled from the last two weeks from everyone's
@@ -109,6 +119,13 @@ class Events extends React.Component {
             </td>
           </table>
         ))}
+        {this.props.events.length ? (
+          <h1 align="center">
+            Calendar events for {calendarResponse["summary"]}:
+          </h1>
+        ) : (
+          `No events in ${calendarResponse["summary"]} calendar`
+        )}
         <ul>
           {this.props.events.map(event => (
             <li key={event.id}>

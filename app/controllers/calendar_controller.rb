@@ -25,6 +25,7 @@ class CalendarController < ApplicationController
   def user_selection
   end
 
+  # returns this response: https://developers.google.com/calendar/v3/reference/calendars#resource
   def get
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
@@ -60,7 +61,8 @@ class CalendarController < ApplicationController
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, header)
     request.body = request_body.to_json
-    response = http.request(request)
+    response = http.request(request).body
+    render json: response, status: :ok
   end
 
   def events
@@ -70,7 +72,10 @@ class CalendarController < ApplicationController
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
     @calendar_id = params[:calendar_id]
-    events_temp = service.list_events(params[:calendar_id]).items
+    events_temp = []
+    if params[:calendar_id] != "en.usa" && params[:calendar_id] != "addressbook"
+      events_temp = service.list_events(params[:calendar_id]).items
+    end
     @events = []
     # I should do some filtering
     events_temp.each do |event|
