@@ -32,34 +32,26 @@ const shortFormatDate = date => {
   return theDate;
 };
 
-const getRequest = calendarId => {
-  var xhr = new XMLHttpRequest();
-  xhr.addEventListener("load", () => {
-    // update the state of the component with the result here
-    return xhr.responseText;
-  });
-  xhr.open("GET", `http://localhost:3000/calendar/${calendarId}/response`);
-  xhr.send();
-};
-
 class Events extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
       isLoaded: false,
-      calendar_data: null
+      calendarResponse: null
     };
   }
 
   componentDidMount() {
-    fetch(`http://localhost:3000/calendar/${this.props.calendar_id}/response`)
+    fetch(`http://localhost:3000/calendar/${this.props.calendar_id}/response`, {
+      method: "GET"
+    })
       .then(res => res.json())
       .then(
         result => {
           this.setState({
             isLoaded: true,
-            calendar_data: result
+            calendarResponse: result
           });
         },
         error => {
@@ -72,24 +64,24 @@ class Events extends React.Component {
   }
 
   render() {
-    const { error, isLoaded, calendar_data } = this.state;
+    const { error, isLoaded, calendarResponse } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
       return (
         <div>
-          <h1>Scheduling data...</h1>
+          <h1>Loading and scheduling times...</h1>
         </div>
       );
     }
     return (
-      <div>
+      <div className="container">
         {this.props.events.length ? (
           <h1 align="center">
-            Calendar events for {calendar_data["summary"]}:
+            Calendar events for {calendarResponse["summary"]}:
           </h1>
         ) : (
-          `No events in ${calendar_data["summary"]} calendar`
+          `No events in ${calendarResponse["summary"]} calendar`
         )}
         <h4>
           {" "}
@@ -107,7 +99,7 @@ class Events extends React.Component {
                     timeHash["start"],
                     timeHash["end"],
                     this.props.calendar_id,
-                    calendar_data["summary"]
+                    calendarResponse["summary"]
                   );
                 }}
               >
