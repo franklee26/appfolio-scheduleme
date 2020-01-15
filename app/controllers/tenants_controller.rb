@@ -1,12 +1,27 @@
 class TenantsController < ApplicationController
+
+  # GET /tenants
+  # GET /tenants.json
+  def index
+  end
+
+  # GET /tenants/1
+  # GET /tenants/1.json
+  def show
+    @tenant = Tenant.find(params[:id])
+    render json: @tenant
+  end
+
+  # GET /tenants/new
   def new
+    @job = Job.new
+  end
+
+  # GET /tenants/1/edit
+  def edit
   end
 
   def login
-  end
-
-  def show
-    @tenant = Tenant.find(params[:id])
   end
 
   def auth
@@ -14,4 +29,8 @@ class TenantsController < ApplicationController
     session[:user_type] = "tenant"
     redirect_to client.authorization_uri.to_s
   end
+
+  def profile
+  end
+
 end

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # tenants
   get 'tenants/login'
   get 'tenants/auth', to: 'tenants#auth'
+  get 'tenants/profile' => 'tenants#profile'
 
   # home page
   root 'homepage#index'
