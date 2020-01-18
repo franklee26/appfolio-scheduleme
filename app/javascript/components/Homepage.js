@@ -16,16 +16,17 @@ const Homepage = props => {
       )}
 
       <h2>Current registered Landowners:</h2>
-      {props.landowners.length ? (
-        props.landowners.map(landowner => (
-          <li
-            key={landowner.id}
-          >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
-        ))
+      {props.landowners.filter(landowner => landowner.id != 0).length ? (
+        props.landowners
+          .filter(landowner => landowner.id != 0)
+          .map(landowner => (
+            <li
+              key={landowner.id}
+            >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
+          ))
       ) : (
         <p1> No landowners in database </p1>
       )}
-
       <h2>Current registered Vendors:</h2>
       {props.vendors.length ? (
         props.vendors.map(vendor => (

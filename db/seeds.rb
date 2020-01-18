@@ -7,12 +7,14 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 # Tenant seeds
-t_one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com")
-t_two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com")
-t_three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com")
+t_one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com", landowner_id: 0)
+t_two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com", landowner_id: 0)
+t_three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com", landowner_id: 0)
 
 # Landowner seeds
-Landowner.create(id: 1, name: "James Gelb", email: "IJustWantYourMoney@gimme.com")
+# THIS LANDOWNER IS SUPER IMPORTANT! THIS IS THE DEFAULT LANDOWNER SO DO NOT DELETE THIS. MAKE SURE YOU SEED THIS DATA FIRST.
+Landowner.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT")
+Landowner.create(id: 1, name: "Tech Lead", email: "thetechlead@techlead.the")
 
 v_one = Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com")
 v_two = Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com")

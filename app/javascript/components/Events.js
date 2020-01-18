@@ -49,7 +49,7 @@ class Events extends React.Component {
     };
   }
 
-  componentDidMount() {
+componentDidMount() {
     fetch(`http://localhost:3000/calendar/${this.props.calendar_id}/response`, {
       method: "GET"
     })

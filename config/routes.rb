@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get 'sessions/new'
 
   # tenants
+  get 'tenants', to: 'tenants#index'
   get 'tenants/login'
   get 'tenants/auth', to: 'tenants#auth'
 
@@ -22,7 +23,10 @@ Rails.application.routes.draw do
 
   # landowner page
   get 'landowner' => 'landowners#index'
+  get 'landowner/:landowner_id', to: 'landowners#get', landowner_id: /[^\/]+/
   get 'landowner/auth', to: 'landowners#auth'
+  post 'landowner/add_tenant', to: 'landowners#add_tenant'
+  get 'landowner/tenants/:landowner_id', to: 'landowners#tenants', landowner_id: /[^\/]+/
 
   # vendor pages
   get 'vendors/search' => 'vendor#search'

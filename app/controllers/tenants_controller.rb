@@ -1,4 +1,8 @@
 class TenantsController < ApplicationController
+  def index
+    render json: Tenant.all, status: :ok
+  end
+
   def new
   end
 

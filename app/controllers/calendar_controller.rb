@@ -192,14 +192,25 @@ class CalendarController < ApplicationController
       if Tenant.find_by(email: email)
         potential_tenant
       else
-        Tenant.create(id: Tenant.last ? Tenant.last.id + 1 : 0, name: name, email: email)
+        Tenant.create(
+          id: Tenant.last ? Tenant.last.id + 1 : 0, 
+          name: name, 
+          email: email, 
+          created_at: Time.now, 
+          updated_at: Time.now, 
+          landowner_id: 0
+          )
       end
     elsif user_type == "landowner"
       potential_landowner = Landowner.find_by(email: email)
       if Landowner.find_by(email: email)
         potential_landowner
       else
-        Landowner.create(id: Landowner.last ? Landowner.last.id + 1 : 0, name: name, email: email)
+        Landowner.create(
+          id: Landowner.last ? Landowner.last.id + 1 : 0, 
+          name: name, 
+          email: email
+          )
       end
     end
   end
