@@ -3,6 +3,10 @@ class TenantsController < ApplicationController
     render json: Tenant.all, status: :ok
   end
 
+  def no_landowner
+    render json: Tenant.where(landowner_id: 0), status: :ok
+  end
+
   # GET /tenants/1
   # GET /tenants/1.json
   def show

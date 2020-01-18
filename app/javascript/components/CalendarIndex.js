@@ -51,7 +51,7 @@ class CalendarIndex extends React.Component {
           }
         );
     } else if (this.props.user_type == "Landowner") {
-      fetch("http://localhost:3000/tenants", { method: "GET" })
+      fetch("http://localhost:3000/tenants/no_landowner", { method: "GET" })
         .then(res => res.json())
         .then(
           res => {
@@ -152,10 +152,16 @@ class CalendarIndex extends React.Component {
               <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
             </li>
           ))}
-          <h2>Your tenants:</h2>
-          {landownerTenantsResponse.map(tenant => (
-            <li key={tenant.id}>{tenant.name}</li>
-          ))}
+          {landownerTenantsResponse.length ? (
+            <div>
+              <h2>Your Tenants: </h2>
+              {landownerTenantsResponse.map(tenant => (
+                <li key={tenant.id}>{tenant.name}</li>
+              ))}
+            </div>
+          ) : (
+            <h2>You have no tenants.</h2>
+          )}
           <h2>Select user below as your listed tenant.</h2>
           {tenantResponse.map(tenant => (
             <li key={tenant.id}>
