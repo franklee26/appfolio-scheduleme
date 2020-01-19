@@ -1,4 +1,6 @@
 class TenantsController < ApplicationController
+
+  # Returns json of all the fields or every tenant
   def index
     render json: Tenant.all, status: :ok
   end
@@ -8,7 +10,7 @@ class TenantsController < ApplicationController
   end
 
   # GET /tenants/1
-  # GET /tenants/1.json
+  # Returns a json containing all the fields for the tenant
   def show
     @tenant = Tenant.find(params[:id])
     render json: @tenant
@@ -32,6 +34,7 @@ class TenantsController < ApplicationController
     redirect_to client.authorization_uri.to_s
   end
 
+  # Goes to tenant profile.html.erb page
   def profile
   end
 
