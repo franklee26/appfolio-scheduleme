@@ -58,7 +58,7 @@ const Events = props => {
           setState({ ...state, isLoaded: true, calendarResponse: result });
         },
         error => {
-          setState({ ...state, isLaoded: true, error: error });
+          setState({ ...state, isLoaded: true, error: error });
         }
       );
   }, []);
