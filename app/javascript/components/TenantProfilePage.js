@@ -5,7 +5,7 @@ class TenantProfilePage extends Component {
     super(props);
     this.state = {
       tenant_id: this.props.id,
-      tenant_info: {"name": "", "email": ""}
+      tenant_info: {"name": "", "email": "", "landowner_id": ""}
     }
   }
 
@@ -20,6 +20,7 @@ class TenantProfilePage extends Component {
       <div>
         <div>{this.state.tenant_info.name}</div>
         <div>{this.state.tenant_info.email}</div>
+        <div>{this.state.tenant_info.landowner_id}</div>
       </div>
     );
   }
