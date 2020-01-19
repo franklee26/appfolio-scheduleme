@@ -29,6 +29,7 @@ const handleClickPost = (
     );
 };
 
+// date formatter helper
 const shortFormatDate = date => {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
     day: "numeric",
@@ -46,6 +47,7 @@ const Events = props => {
     calendarResponse: null
   });
 
+  // fetches calendar information, but this maybe overkill since all we want is the name...
   useEffect(() => {
     fetch(`http://localhost:3000/calendar/${props.calendar_id}/response`, {
       method: "GET"

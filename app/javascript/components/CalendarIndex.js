@@ -1,5 +1,6 @@
 import React from "react";
 
+// POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
   event.preventDefault();
   fetch("http://localhost:3000/landowner/add_tenant", {
@@ -17,6 +18,13 @@ const handleClickTenant = (event, landowner_id, tenant_id) => {
     });
 };
 
+/*
+isLoaded: mounting landowner response
+isLoaded2: mounting landowner's tenants response
+landownerResponse: returns tenant's landowner
+tenantResponse: returns all tenants without a landowner
+landownerTenantsReponse: return landowner's tenants 
+*/
 class CalendarIndex extends React.Component {
   constructor(props) {
     super(props);
