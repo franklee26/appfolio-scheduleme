@@ -17,19 +17,33 @@ class CalendarController < ApplicationController
 
     access_token = client.access_token
     json_response = get_json_from_token(access_token)
-    freebusy_times = get_freebusy_response(access_token, calendar_ids)["calendars"]
 
-    @busy_times = get_list_of_times(freebusy_times)
     # find or build the user
     @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
-    @free_times = get_free_times(@busy_times)
   end
 
   def user_selection
   end
 
+  # returns this response: https://developers.google.com/calendar/v3/reference/calendars#resource
+  def get
+    uri = URI.parse(
+      "https://www.googleapis.com/calendar/v3/calendars/" + 
+      params[:calendar_id]+"/events?alt=json&access_token=" + 
+      session[:authorization]["access_token"]
+    )
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    response = Net::HTTP.get(uri)
+    render json: response, status: :ok
+  end
+
   def post
-    uri = URI.parse("https://www.googleapis.com/calendar/v3/calendars/"+params[:calendar_id]+"/events?alt=json&access_token="+session[:authorization]["access_token"])
+    uri = URI.parse(
+      "https://www.googleapis.com/calendar/v3/calendars/" + 
+      params[:calendar_id]+"/events?alt=json&access_token=" + 
+      session[:authorization]["access_token"]
+    )
     header = {'Content-Type': 'application/json'}
     request_body = {
       "start": {
@@ -47,7 +61,8 @@ class CalendarController < ApplicationController
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, header)
     request.body = request_body.to_json
-    response = http.request(request)
+    response = http.request(request).body
+    render json: response, status: :ok
   end
 
   def events
@@ -56,8 +71,31 @@ class CalendarController < ApplicationController
 
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
+    @calendar_id = params[:calendar_id]
+    events_temp = []
+    if params[:calendar_id] != "en.usa" && params[:calendar_id] != "addressbook"
+      events_temp = service.list_events(params[:calendar_id]).items
+    end
+    @events = []
+    # I should do some filtering
+    events_temp.each do |event|
+      if not event.end.date_time < (Time.now.localtime.beginning_of_day - 7.days)
+        @events << event
+      end
+    end
 
-    @events = service.list_events(params[:calendar_id]).items
+    # this is kinda stupid, I don't really know another way lmao
+    calendars = service.list_calendar_lists.items
+    calendar_ids = get_list_of_cal_ids(calendars)
+
+    access_token = client.access_token
+    json_response = get_json_from_token(access_token)
+    freebusy_times = get_freebusy_response(access_token, calendar_ids)["calendars"]
+
+    busy_times = get_list_of_times(freebusy_times)
+    # find or build the user
+    user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
+    @free_times = get_free_times(busy_times)
   end
   
   def callback
@@ -134,7 +172,7 @@ class CalendarController < ApplicationController
             start_time = Time.parse(hash["start"]).localtime
             end_time = Time.parse(hash["end"]).localtime
             # conflict if start temp/temp+1 time is in between start and end
-            if (temp_time >= start_time and temp_time <= end_time) or (temp_time_one_hour >= start_time and temp_time_one_hour <= end_time)
+            if (temp_time >= start_time and temp_time < end_time) or (temp_time_one_hour > start_time and temp_time_one_hour <= end_time)
               viable = false
               break
             end
@@ -154,14 +192,25 @@ class CalendarController < ApplicationController
       if Tenant.find_by(email: email)
         potential_tenant
       else
-        Tenant.create(id: Tenant.last ? Tenant.last.id + 1 : 0, name: name, email: email)
+        Tenant.create(
+          id: Tenant.last ? Tenant.last.id + 1 : 0, 
+          name: name, 
+          email: email, 
+          created_at: Time.now, 
+          updated_at: Time.now, 
+          landowner_id: 0
+          )
       end
     elsif user_type == "landowner"
       potential_landowner = Landowner.find_by(email: email)
       if Landowner.find_by(email: email)
         potential_landowner
       else
-        Landowner.create(id: Landowner.last ? Landowner.last.id + 1 : 0, name: name, email: email)
+        Landowner.create(
+          id: Landowner.last ? Landowner.last.id + 1 : 0, 
+          name: name, 
+          email: email
+          )
       end
     end
   end

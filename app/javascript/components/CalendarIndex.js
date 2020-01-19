@@ -1,81 +1,192 @@
 import React from "react";
 
-// how do you tab lol
-const tabbing = () => {
-  return (
-    <td>
-      <td>
-        <td>
-          <td></td>
-        </td>
-      </td>
-    </td>
-  );
-}
-
-// date format helper
-const shortFormatDate = (date) => {
-  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-  return theDate;
-}
-
-// handle click and post request
-const handleClickPost = (event, startTime, endTime) => {
+// POST request adds tenant to the landowner
+const handleClickTenant = (event, landowner_id, tenant_id) => {
   event.preventDefault();
-  var xhr = new XMLHttpRequest();
-  xhr.open(
-    "POST",
-    `http://localhost:3000/calendar/hvmm4e43mi5cvhqc6uun07r7mo@group.calendar.google.com/${startTime}/${endTime}`
-  );
-  xhr.send();
-  alert(`Successfully added event starting at ${shortFormatDate(startTime)} to calendar!`);
-}
-
-const CalendarIndex = props => {
-  return (
-    <div>
-      <h1 align="center">{props.user_type} Calendar Page</h1>
-      <h2>
-        {props.user.name}'s list of calendars under email {props.user.email}
-      </h2>
-      {props.calendars.map(calendar => (
-        <li key={calendar.id}>
-          <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-        </li>
-      ))}
-      <h2> Free times for the next two weeks </h2>
-      {props.free_times.map(timeHash => (
-        <table>
-          <td>
-            <a
-              href="#"
-              onClick={e => {
-                handleClickPost(e, timeHash["start"], timeHash["end"]);
-              }}
-            >
-              From {shortFormatDate(timeHash["start"])} to{" "}
-              {shortFormatDate(timeHash["end"])}{" "}
-            </a>
-          </td>
-        </table>
-      ))}
-      <h2> Freebusy calls </h2>
-      <table>
-        {props.busy_times.map(timeHash => (
-          <tr>
-            <td>Start: {shortFormatDate(timeHash["start"])}</td>
-            {tabbing()}
-            <td> End: {shortFormatDate(timeHash["end"])}</td>{" "}
-          </tr>
-        ))}
-      </table>
-    </div>
-  );
+  fetch("http://localhost:3000/landowner/add_tenant", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      landowner_id: landowner_id,
+      tenant_id: tenant_id
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      alert("Successfully added tenant!");
+      window.location.reload(false);
+    });
 };
+
+/*
+isLoaded: mounting landowner response
+isLoaded2: mounting landowner's tenants response
+landownerResponse: returns tenant's landowner
+tenantResponse: returns all tenants without a landowner
+landownerTenantsReponse: return landowner's tenants 
+*/
+class CalendarIndex extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      landownerResponse: null,
+      tenantResponse: null,
+      isLoaded2: false,
+      landownerTenantsResponse: null
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.user_type == "Tenant") {
+      fetch(`http://localhost:3000/landowner/${this.props.user.landowner_id}`, {
+        method: "GET"
+      })
+        .then(res => res.json())
+        .then(
+          res => {
+            this.setState({
+              isLoaded: true,
+              landownerResponse: res
+            });
+          },
+          error => {
+            this.setState({
+              isLoaded: false,
+              error: error
+            });
+          }
+        );
+    } else if (this.props.user_type == "Landowner") {
+      fetch("http://localhost:3000/tenants/no_landowner", { method: "GET" })
+        .then(res => res.json())
+        .then(
+          res => {
+            this.setState({
+              isLoaded: true,
+              tenantResponse: res
+            });
+          },
+          error => {
+            this.setState({
+              isLoaded: false,
+              error: error
+            });
+          }
+        );
+      // fetch my tenants
+      fetch(`http://localhost:3000/landowner/tenants/${this.props.user.id}`, {
+        method: "GET"
+      })
+        .then(res => res.json())
+        .then(
+          res => {
+            this.setState({
+              landownerTenantsResponse: res,
+              isLoaded2: true
+            });
+          },
+          error => {
+            this.setState({
+              error: error
+            });
+          }
+        );
+    }
+  }
+
+  render() {
+    const {
+      error,
+      isLoaded,
+      landownerResponse,
+      tenantResponse,
+      landownerTenantsResponse,
+      isLoaded2
+    } = this.state;
+    if (error) {
+      return <div>Error in loading... please refresh.</div>;
+    } else if (!isLoaded) {
+      return (
+        <div>
+          <h1>Loading data...</h1>
+        </div>
+      );
+    } else if (!isLoaded2 && this.props.user_type == "Landowner") {
+      return (
+        <div>
+          <h1>Finishing last retrieves...</h1>
+        </div>
+      );
+    } else if (this.props.user_type == "Tenant") {
+      return (
+        <div className="container">
+          <h1 align="center">{this.props.user_type} Calendar Page</h1>
+          <h2>
+            {this.props.user.name}'s list of calendars under email{" "}
+            {this.props.user.email}
+          </h2>
+          <h2>Please select a calendar below to add an event.</h2>
+          {this.props.calendars.map(calendar => (
+            <li key={calendar.id}>
+              <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
+            </li>
+          ))}
+          {this.props.user.landowner_id == 0 ? (
+            <h2>
+              You do not have a landowner yet! Your landowner will assign you.
+            </h2>
+          ) : (
+            <h2>
+              {" "}
+              Your assigned landowner is {landownerResponse.name} with email{" "}
+              {landownerResponse.email}{" "}
+            </h2>
+          )}
+        </div>
+      );
+    } else if (this.props.user_type == "Landowner") {
+      return (
+        <div className="container">
+          <h1 align="center">{this.props.user_type} Calendar Page</h1>
+          <h2>
+            {this.props.user.name}'s list of calendars under email{" "}
+            {this.props.user.email}
+          </h2>
+          <h2>Please select a calendar below to add an event.</h2>
+          {this.props.calendars.map(calendar => (
+            <li key={calendar.id}>
+              <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
+            </li>
+          ))}
+          {landownerTenantsResponse.length ? (
+            <div>
+              <h2>Your Tenants: </h2>
+              {landownerTenantsResponse.map(tenant => (
+                <li key={tenant.id}>{tenant.name}</li>
+              ))}
+            </div>
+          ) : (
+            <h2>You have no tenants.</h2>
+          )}
+          <h2>Select user below as your listed tenant.</h2>
+          {tenantResponse.map(tenant => (
+            <li key={tenant.id}>
+              <a
+                href="#"
+                onClick={e =>
+                  handleClickTenant(e, this.props.user.id, tenant.id)
+                }
+              >
+                {tenant.name}
+              </a>
+            </li>
+          ))}
+        </div>
+      );
+    }
+  }
+}
 
 export default CalendarIndex;

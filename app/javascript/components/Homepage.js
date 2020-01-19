@@ -2,9 +2,8 @@ import React from "react";
 
 const Homepage = props => {
   return (
-    <div>
+    <div className="container">
       <h1 align="center">Welcome to Uber for Vendors</h1>
-
       <h2>Current registered Tenants:</h2>
       {props.tenants.length ? (
         props.tenants.map(tenant => (
@@ -17,16 +16,17 @@ const Homepage = props => {
       )}
 
       <h2>Current registered Landowners:</h2>
-      {props.landowners.length ? (
-        props.landowners.map(landowner => (
-          <li
-            key={landowner.id}
-          >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
-        ))
+      {props.landowners.filter(landowner => landowner.id != 0).length ? (
+        props.landowners
+          .filter(landowner => landowner.id != 0)
+          .map(landowner => (
+            <li
+              key={landowner.id}
+            >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
+          ))
       ) : (
         <p1> No landowners in database </p1>
       )}
-
       <h2>Current registered Vendors:</h2>
       {props.vendors.length ? (
         props.vendors.map(vendor => (
