@@ -23,7 +23,9 @@ class LandownersController < ApplicationController
       }
     else
       response = {
-        code: 400
+        code: 400,
+        tenant_id: -1,
+        landowner_id: -1
       }
     end
     render json: response, status: :ok
