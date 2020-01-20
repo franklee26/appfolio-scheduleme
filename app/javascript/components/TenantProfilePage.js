@@ -8,6 +8,10 @@ class TenantProfilePage extends Component {
       name: "", 
       email: "", 
       landowner_id: "",
+      street_address: "",
+      city: "",
+      zip: "",
+      state: "",
       changed: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,7 +21,15 @@ class TenantProfilePage extends Component {
   componentDidMount() {
     fetch("/tenants/" + this.state.tenant_id)
       .then((response) => {return response.json()})
-      .then((data) => {this.setState({ name: data.name, email: data.email, landowner_id: data.landowner_id})});
+      .then((data) => {this.setState({
+        name: data.name, 
+        email: data.email, 
+        landowner_id: data.landowner_id,
+        street_address: data.street_address,
+        city: data.city,
+        zip: data.zip,
+        state: data.state
+      })});
   }
 
   handleSubmit(e) {
@@ -35,7 +47,7 @@ class TenantProfilePage extends Component {
   render() {
     return (
       <div>
-        <h1>Tenant Profile</h1>
+        <h1>Your Profile</h1>
         <form onSubmit={this.handleSubmit}>
           <div>
             <label>Name</label>
@@ -58,6 +70,38 @@ class TenantProfilePage extends Component {
             <input
               value={this.state.landowner_id}
               name="landownder_id"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>Street Address</label>
+            <input
+              value={this.state.street_address}
+              name="street_address"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>City</label>
+            <input
+              value={this.state.city}
+              name="city"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>State</label>
+            <input
+              value={this.state.state}
+              name="state"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>Zip Code</label>
+            <input
+              value={this.state.zip}
+              name="zip"
               onChange={e => this.handleChange(e)}
             />
           </div>
