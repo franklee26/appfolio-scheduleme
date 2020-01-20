@@ -1,5 +1,5 @@
 class LandownersController < ApplicationController
-  protect_from_forgery :except => [:add_tenant]
+  protect_from_forgery :except => [:add_tenant, :destroy_tenant]
 
   def index
     render json: Landowner.all, status: :ok
@@ -37,6 +37,24 @@ class LandownersController < ApplicationController
       }
     end
     render json: response, status: :ok
+  end
+
+  # removes the tenant association (first assigns tenant back to default, then removes)
+  def destroy_tenant
+    body = JSON(request.body.read)
+    tenant_id = body["tenant_id"]
+    temp = Tenant.find(tenant_id)
+    temp.landowner = Landowner.first
+    response = {
+      "status": 400,
+      "tenant_id": tenant_id
+    }
+    if temp.save!
+      response["status"] = 200
+      render json: response, status: :ok
+    else
+      render json: response, status: ok
+    end
   end
 
   # Returns a list of all the tenants associated with this landowner

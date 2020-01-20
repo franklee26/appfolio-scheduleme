@@ -22,6 +22,26 @@ const handleClickTenant = (event, landowner_id, tenant_id) => {
     });
 };
 
+const handleDeleteTenant = (event, tenant_id) => {
+  event.preventDefault();
+  fetch("http://localhost:3000/landowner/tenants", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tenant_id: tenant_id
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == "200") {
+        alert("Successfully removed tenant.");
+        window.location.reload(false);
+      } else {
+        alert("Failed to remove tenant.");
+      }
+    });
+};
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -166,15 +186,19 @@ const CalendarIndex = props => {
         ))}
         {landownerTenantsResponse.length ? (
           <div>
-            <h2>Your Tenants: </h2>
+            <h2>Your Tenants (click to delete tenant): </h2>
             {landownerTenantsResponse.map(tenant => (
-              <li key={tenant.id}>{tenant.name}</li>
+              <li key={tenant.id}>
+                <a href="#" onClick={e => handleDeleteTenant(e, tenant.id)}>
+                  {tenant.name}
+                </a>
+              </li>
             ))}
           </div>
         ) : (
           <h2>You have no tenants.</h2>
         )}
-        <h2>Select user below as your listed tenant.</h2>
+        <h2>Select user below to add as your listed tenant.</h2>
         {tenantResponse.map(tenant => (
           <li key={tenant.id}>
             <a
