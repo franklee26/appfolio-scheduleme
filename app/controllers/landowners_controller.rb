@@ -50,8 +50,7 @@ class LandownersController < ApplicationController
 
   # removes the tenant association (first assigns tenant back to default, then removes)
   def destroy_tenant
-    body = JSON(request.body.read)
-    tenant_id = body["tenant_id"]
+    tenant_id = params[:tenant_id]
     temp = Tenant.find(tenant_id)
     temp.landowner = Landowner.first
     response = {

@@ -24,12 +24,8 @@ const handleClickTenant = (event, landowner_id, tenant_id) => {
 
 const handleDeleteTenant = (event, tenant_id) => {
   event.preventDefault();
-  fetch("http://localhost:3000/landowner/tenants", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      tenant_id: tenant_id
-    })
+  fetch(`http://localhost:3000/landowner/tenants/${tenant_id}`, {
+    method: "DELETE"
   })
     .then(response => response.json())
     .then(response => {
