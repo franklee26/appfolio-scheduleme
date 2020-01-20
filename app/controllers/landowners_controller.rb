@@ -6,7 +6,16 @@ class LandownersController < ApplicationController
   end
 
   def get
-    render json: Landowner.find_by(id: params[:landowner_id]), status: :ok
+    landowner = Landowner.find_by(id: params[:landowner_id])
+    response = {
+      "id": landowner.id,
+      "name": landowner.name,
+      "email": landowner.email,
+      "created_at": landowner.created_at,
+      "updated_at": landowner.updated_at,
+      "tenants": landowner.tenants
+    }
+    render json: response, status: :ok
   end
 
   # GET /landowners/1
@@ -55,12 +64,6 @@ class LandownersController < ApplicationController
     else
       render json: response, status: ok
     end
-  end
-
-  # Returns a list of all the tenants associated with this landowner
-  def tenants
-    landowner_id = params[:landowner_id]
-    render json: Landowner.find_by(id: landowner_id).tenants, status: :ok
   end
 
   def auth

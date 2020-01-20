@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get 'landowner/profile', to: 'landowners#profile'
   get 'landowner/:landowner_id', to: 'landowners#get', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
-  get 'landowner/tenants/:landowner_id', to: 'landowners#tenants', landowner_id: /[^\/]+/
+  delete 'landowner/tenants/', to: 'landowners#destroy_tenant'
 
   # vendor pages
   get 'vendors/search' => 'vendor#search'

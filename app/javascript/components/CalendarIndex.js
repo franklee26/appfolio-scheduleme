@@ -45,9 +45,8 @@ const handleDeleteTenant = (event, tenant_id) => {
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
-landownerResponse: returns tenant's landowner
+landownerResponse: returns landowner with landowner id === landowner_id
 tenantResponse: returns all tenants without a landowner
-landownerTenantsReponse: return landowner's tenants 
 */
 const CalendarIndex = props => {
   const [state, setState] = useState({
@@ -55,8 +54,7 @@ const CalendarIndex = props => {
     isLoaded: false,
     landownerResponse: null,
     tenantResponse: null,
-    isLoaded2: false,
-    landownerTenantsResponse: null
+    isLoaded2: false
   });
 
   useEffect(() => {
@@ -100,8 +98,7 @@ const CalendarIndex = props => {
             }));
           }
         );
-      // fetch my tenants
-      fetch(`http://localhost:3000/landowner/tenants/${props.user.id}`, {
+      fetch(`http://localhost:3000/landowner/${props.user.id}`, {
         method: "GET"
       })
         .then(res => res.json())
@@ -109,7 +106,7 @@ const CalendarIndex = props => {
           res => {
             setState(prevState => ({
               ...prevState,
-              landownerTenantsResponse: res,
+              landownerResponse: res,
               isLoaded2: true
             }));
           },
@@ -128,7 +125,6 @@ const CalendarIndex = props => {
     isLoaded,
     landownerResponse,
     tenantResponse,
-    landownerTenantsResponse,
     isLoaded2
   } = state;
   if (error) {
@@ -184,10 +180,10 @@ const CalendarIndex = props => {
             <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
           </li>
         ))}
-        {landownerTenantsResponse.length ? (
+        {landownerResponse.tenants.length ? (
           <div>
             <h2>Your Tenants (click to delete tenant): </h2>
-            {landownerTenantsResponse.map(tenant => (
+            {landownerResponse.tenants.map(tenant => (
               <li key={tenant.id}>
                 <a href="#" onClick={e => handleDeleteTenant(e, tenant.id)}>
                   {tenant.name}
