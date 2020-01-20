@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200115041822) do
+ActiveRecord::Schema.define(version: 20200120060020) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,10 @@ ActiveRecord::Schema.define(version: 20200115041822) do
     t.datetime "updated_at", null: false
     t.string "email"
     t.bigint "landowner_id"
+    t.string "street_address"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
     t.index ["landowner_id"], name: "index_tenants_on_landowner_id"
   end
 

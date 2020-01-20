@@ -12,9 +12,9 @@ Landowner.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT")
 Landowner.create(id: 1, name: "Tech Lead", email: "thetechlead@techlead.the")
 
 # Tenant seeds
-t_one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com", landowner_id: 0)
-t_two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com", landowner_id: 0)
-t_three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com", landowner_id: 0)
+t_one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com", landowner_id: 0, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
+t_two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com", landowner_id: 0, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
+t_three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com", landowner_id: 0, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
 
 v_one = Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com")
 v_two = Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com")
