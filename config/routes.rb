@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   # landowner page
   get 'landowner' => 'landowners#index'
   get 'landowner/auth', to: 'landowners#auth'
+  get 'landowner/profile', to: 'landowners#profile'
   get 'landowner/:landowner_id', to: 'landowners#get', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
   get 'landowner/tenants/:landowner_id', to: 'landowners#tenants', landowner_id: /[^\/]+/
@@ -33,9 +34,12 @@ Rails.application.routes.draw do
   # vendor pages
   get 'vendors/search' => 'vendor#search'
   get 'vendors' => 'vendor#index'
+  get 'vendors/profile' => 'vendor#profile'
   get 'vendors/show' => 'vendor#show'
 
   # resources
   resources :tenants
+  resources :vendor
+  resources :landowners
   resources :jobs
 end

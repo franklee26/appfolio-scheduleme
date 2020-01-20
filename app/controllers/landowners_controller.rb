@@ -9,6 +9,14 @@ class LandownersController < ApplicationController
     render json: Landowner.find_by(id: params[:landowner_id]), status: :ok
   end
 
+  # GET /landowners/1
+  # Returns a json containing all the fields for the landowner
+  def show
+    @landowner = Landowner.find(params[:id])
+    render json: @landowner
+  end
+
+  # Adds a tenant association to this landowner
   def add_tenant
     body = JSON(request.body.read)
     tenant_id = body["tenant_id"]
@@ -31,6 +39,7 @@ class LandownersController < ApplicationController
     render json: response, status: :ok
   end
 
+  # Returns a list of all the tenants associated with this landowner
   def tenants
     landowner_id = params[:landowner_id]
     render json: Landowner.find_by(id: landowner_id).tenants, status: :ok
@@ -41,4 +50,10 @@ class LandownersController < ApplicationController
     session[:user_type] = "landowner"
     redirect_to client.authorization_uri.to_s
   end
+
+
+  # Goes to landowner's profile.html.erb page
+  def profile
+  end
+
 end
