@@ -18,9 +18,9 @@ class VendorsController < ApplicationController
     render json: response, status: :ok
   end
 
-	# GET /vendor/1
-	# Returns a json containing all the fields for the vendor
-	def show
+  # GET /vendor/1
+  # Returns a json containing all the fields for the vendor
+  def show
     vendor = Vendor.find(params[:id])
     response = {
       "id": vendor.id,
@@ -31,21 +31,21 @@ class VendorsController < ApplicationController
       "updated_at": vendor.updated_at,
       "landowners": vendor.landowners
     }
-		render json: response, status: :ok
-	end
+    render json: response, status: :ok
+  end
 
   def search
     @vendor = Vendor.all.sort { |t1, t2| t1.id <=> t2.id }
   end
 
-  	# Goes to vendor profile.html.erb page
-	def profile
-	end
+  # Goes to vendor profile.html.erb page
+  def profile
+  end
 
-	def auth
-		client = Signet::OAuth2::Client.new(clientOptions)
-		session[:user_type] = "vendor"
-		redirect_to client.authorization_uri.to_s
+  def auth
+    client = Signet::OAuth2::Client.new(clientOptions)
+    session[:user_type] = "vendor"
+    redirect_to client.authorization_uri.to_s
   end
 	
 end

@@ -32,16 +32,16 @@ const handleClickVendor = (event, landowner_id, vendor_id) => {
       vendor_id: vendor_id
     })
   })
-  .then(response => response.json())
-  .then(response => {
-    if (response.code == "200") {
-      alert("Successfully added vendor!");
-      window.location.reload(false);
-    } else {
-      alert("Failed to add vendor (returned code 400)");
-    }
-  });
-}
+    .then(response => response.json())
+    .then(response => {
+      if (response.code == "200") {
+        alert("Successfully added vendor!");
+        window.location.reload(false);
+      } else {
+        alert("Failed to add vendor (returned code 400)");
+      }
+    });
+};
 
 const handleDeleteTenant = (event, tenant_id) => {
   event.preventDefault();
@@ -61,9 +61,12 @@ const handleDeleteTenant = (event, tenant_id) => {
 
 const handleDeleteVendor = (event, landowner_id, vendor_id) => {
   event.preventDefault();
-  fetch(`http://localhost:3000/landowner/${landowner_id}/vendors/${vendor_id}`, {
-    method: "DELETE"
-  })
+  fetch(
+    `http://localhost:3000/landowner/${landowner_id}/vendors/${vendor_id}`,
+    {
+      method: "DELETE"
+    }
+  )
     .then(response => response.json())
     .then(response => {
       if (response.status == "200") {
@@ -73,7 +76,7 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
         alert("Failed to remove vendor.");
       }
     });
-}
+};
 
 /*
 isLoaded: mounting landowner response
@@ -152,23 +155,25 @@ const CalendarIndex = props => {
             }));
           }
         );
-        fetch(`http://localhost:3000/vendors/`, {
-          method: "GET"
-        })
+      fetch(`http://localhost:3000/vendors/`, {
+        method: "GET"
+      })
         .then(res => res.json())
-        .then(res => {
-          setState(prevState => ({
-            ...prevState,
-            vendorResponse: res,
-            isLoaded3: true
-          }))
-        },
-        error => {
-          setState(prevState => ({
-            ...prevState,
-            error: error
-          }))
-        })
+        .then(
+          res => {
+            setState(prevState => ({
+              ...prevState,
+              vendorResponse: res,
+              isLoaded3: true
+            }));
+          },
+          error => {
+            setState(prevState => ({
+              ...prevState,
+              error: error
+            }));
+          }
+        );
     } else if (props.user_type == "Vendor") {
       fetch(`http://localhost:3000/vendors/${props.user.id}`, {
         method: "GET"
@@ -271,7 +276,10 @@ const CalendarIndex = props => {
             <h2>Your vendors (click to delete vendor): </h2>
             {landownerResponse.vendors.map(vendor => (
               <li key={vendor.id}>
-                <a href="#" onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}>
+                <a
+                  href="#"
+                  onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}
+                >
                   {vendor.name} ({vendor.occupation})
                 </a>
               </li>
@@ -292,20 +300,23 @@ const CalendarIndex = props => {
           </li>
         ))}
         <h2>Select user below to add as your listed vendor.</h2>
-        {vendorResponse.filter(vendor => (
-          vendor.landowners.filter(landowner => landowner.id == props.user.id).length == 0
-        )).map(
-          vendor => (
-            <li key={vendor.id}>
-            <a
-              href="#"
-              onClick={e => handleClickVendor(e, props.user.id, vendor.id)}
-            >
-              {vendor.name} ({vendor.occupation})
-            </a>
-          </li>
+        {vendorResponse
+          .filter(
+            vendor =>
+              vendor.landowners.filter(
+                landowner => landowner.id == props.user.id
+              ).length == 0
           )
-        )}
+          .map(vendor => (
+            <li key={vendor.id}>
+              <a
+                href="#"
+                onClick={e => handleClickVendor(e, props.user.id, vendor.id)}
+              >
+                {vendor.name} ({vendor.occupation})
+              </a>
+            </li>
+          ))}
       </div>
     );
   } else if (props.user_type == "Vendor") {
