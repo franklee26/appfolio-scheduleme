@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   # vendor pages
   get 'vendors/search' => 'vendor#search'
+  get 'vendors/auth' => 'vendor#auth'
   get 'vendors' => 'vendor#index'
   get 'vendors/profile' => 'vendor#profile'
   get 'vendors/show' => 'vendor#show'

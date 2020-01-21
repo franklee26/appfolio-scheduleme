@@ -212,6 +212,17 @@ class CalendarController < ApplicationController
           email: email
           )
       end
+    elsif user_type == "vendor"
+      potential_vendor = Vendor.find_by(email: email)
+      if Vendor.find_by(email: email)
+       potential_vendor
+      else
+        Vendor.create(
+          id: Vendor.last ? Vendor.last.id + 1 : 0, 
+          name: name, 
+          email: email
+          )
+      end
     end
   end
 end

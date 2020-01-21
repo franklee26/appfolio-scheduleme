@@ -113,6 +113,11 @@ const CalendarIndex = props => {
             }));
           }
         );
+    } else if (props.user_type == "Vendor") {
+      setState(prevState => ({
+        ...prevState,
+        isLoaded: true
+      }))
     }
   }, []);
 
@@ -199,6 +204,21 @@ const CalendarIndex = props => {
             >
               {tenant.name}
             </a>
+          </li>
+        ))}
+      </div>
+    );
+  } else if (props.user_type == "Vendor") {
+    return (
+      <div className="container">
+        <h1 align="center">{props.user_type} Calendar Page</h1>
+        <h2>
+          {props.user.name}'s list of calendars under email {props.user.email}
+        </h2>
+        <h2>Please select a calendar below to add an event.</h2>
+        {props.calendars.map(calendar => (
+          <li key={calendar.id}>
+            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
           </li>
         ))}
       </div>

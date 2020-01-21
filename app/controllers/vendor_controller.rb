@@ -18,5 +18,11 @@ class VendorController < ApplicationController
   	# Goes to vendor profile.html.erb page
 	def profile
 	end
+
+	def auth
+		client = Signet::OAuth2::Client.new(clientOptions)
+		session[:user_type] = "vendor"
+		redirect_to client.authorization_uri.to_s
+	end
 	
 end
