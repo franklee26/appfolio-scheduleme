@@ -29,18 +29,20 @@ Rails.application.routes.draw do
   get 'landowner/profile', to: 'landowners#profile'
   get 'landowner/:landowner_id', to: 'landowners#show', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
-  delete 'landowner/tenants/:tenant_id', to: 'landowners#destroy_tenant', tenant_id: /[^\/]+/
+  post 'landowner/add_vendor', to: 'landowners#add_vendor'
+  delete 'landowner/tenants/:tenant_id', to: 'landowners#destroy_tenant', tenant_id: /[0-9]+/
+  delete 'landowner/:landowner_id/vendors/:vendor_id', to: 'landowners#destroy_vendor', landowner_id: /[0-9]+/, vendor_id: /[0-9]+/
 
   # vendor pages
-  get 'vendors/search' => 'vendor#search'
-  get 'vendors/auth' => 'vendor#auth'
-  get 'vendors' => 'vendor#index'
-  get 'vendors/profile' => 'vendor#profile'
-  get 'vendors/show' => 'vendor#show'
+  get 'vendors' => 'vendors#index'
+  get 'vendors/auth' => 'vendors#auth'
+  get 'vendors/search' => 'vendors#search'
+  get 'vendors/profile' => 'vendors#profile'
+  get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
 
   # resources
   resources :tenants
-  resources :vendor
+  resources :vendors
   resources :landowners
   resources :jobs
 end

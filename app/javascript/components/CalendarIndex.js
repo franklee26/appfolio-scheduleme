@@ -22,6 +22,27 @@ const handleClickTenant = (event, landowner_id, tenant_id) => {
     });
 };
 
+const handleClickVendor = (event, landowner_id, vendor_id) => {
+  event.preventDefault();
+  fetch("http://localhost:3000/landowner/add_vendor", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      landowner_id: landowner_id,
+      vendor_id: vendor_id
+    })
+  })
+  .then(response => response.json())
+  .then(response => {
+    if (response.code == "200") {
+      alert("Successfully added vendor!");
+      window.location.reload(false);
+    } else {
+      alert("Failed to add vendor (returned code 400)");
+    }
+  });
+}
+
 const handleDeleteTenant = (event, tenant_id) => {
   event.preventDefault();
   fetch(`http://localhost:3000/landowner/tenants/${tenant_id}`, {
@@ -38,6 +59,22 @@ const handleDeleteTenant = (event, tenant_id) => {
     });
 };
 
+const handleDeleteVendor = (event, landowner_id, vendor_id) => {
+  event.preventDefault();
+  fetch(`http://localhost:3000/landowner/${landowner_id}/vendors/${vendor_id}`, {
+    method: "DELETE"
+  })
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == "200") {
+        alert("Successfully removed vendor.");
+        window.location.reload(false);
+      } else {
+        alert("Failed to remove vendor.");
+      }
+    });
+}
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -50,7 +87,9 @@ const CalendarIndex = props => {
     isLoaded: false,
     landownerResponse: null,
     tenantResponse: null,
-    isLoaded2: false
+    isLoaded2: false,
+    isLoaded3: false,
+    vendorResponse: null
   });
 
   useEffect(() => {
@@ -113,11 +152,41 @@ const CalendarIndex = props => {
             }));
           }
         );
+        fetch(`http://localhost:3000/vendors/`, {
+          method: "GET"
+        })
+        .then(res => res.json())
+        .then(res => {
+          setState(prevState => ({
+            ...prevState,
+            vendorResponse: res,
+            isLoaded3: true
+          }))
+        },
+        error => {
+          setState(prevState => ({
+            ...prevState,
+            error: error
+          }))
+        })
     } else if (props.user_type == "Vendor") {
-      setState(prevState => ({
-        ...prevState,
-        isLoaded: true
-      }))
+      fetch(`http://localhost:3000/vendors/${props.user.id}`, {
+        method: "GET"
+      })
+        .then(res => res.json())
+        .then(res => {
+          setState(prevState => ({
+            ...prevState,
+            vendorResponse: res,
+            isLoaded: true
+          })),
+            error => {
+              setState(prevState => ({
+                ...prevState,
+                error: error
+              }));
+            };
+        });
     }
   }, []);
 
@@ -126,7 +195,9 @@ const CalendarIndex = props => {
     isLoaded,
     landownerResponse,
     tenantResponse,
-    isLoaded2
+    vendorResponse,
+    isLoaded2,
+    isLoaded3
   } = state;
   if (error) {
     return <div>Error in loading... please refresh.</div>;
@@ -136,7 +207,7 @@ const CalendarIndex = props => {
         <h1>Loading data...</h1>
       </div>
     );
-  } else if (!isLoaded2 && props.user_type == "Landowner") {
+  } else if ((!isLoaded2 || !isLoaded3) && props.user_type == "Landowner") {
     return (
       <div>
         <h1>Finishing last retrieves...</h1>
@@ -195,6 +266,20 @@ const CalendarIndex = props => {
         ) : (
           <h2>You have no tenants.</h2>
         )}
+        {landownerResponse.vendors.length ? (
+          <div>
+            <h2>Your vendors (click to delete vendor): </h2>
+            {landownerResponse.vendors.map(vendor => (
+              <li key={vendor.id}>
+                <a href="#" onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}>
+                  {vendor.name} ({vendor.occupation})
+                </a>
+              </li>
+            ))}
+          </div>
+        ) : (
+          <h2>You have no vendors.</h2>
+        )}
         <h2>Select user below to add as your listed tenant.</h2>
         {tenantResponse.map(tenant => (
           <li key={tenant.id}>
@@ -206,6 +291,21 @@ const CalendarIndex = props => {
             </a>
           </li>
         ))}
+        <h2>Select user below to add as your listed vendor.</h2>
+        {vendorResponse.filter(vendor => (
+          vendor.landowners.filter(landowner => landowner.id == props.user.id).length == 0
+        )).map(
+          vendor => (
+            <li key={vendor.id}>
+            <a
+              href="#"
+              onClick={e => handleClickVendor(e, props.user.id, vendor.id)}
+            >
+              {vendor.name} ({vendor.occupation})
+            </a>
+          </li>
+          )
+        )}
       </div>
     );
   } else if (props.user_type == "Vendor") {
@@ -221,6 +321,18 @@ const CalendarIndex = props => {
             <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
           </li>
         ))}
+        {vendorResponse.landowners.length ? (
+          <h2>Your assigned landowners: </h2>
+        ) : (
+          <h2>You do not have any assigned landowners. </h2>
+        )}
+        <ul>
+          {vendorResponse.landowners.map(landowner => (
+            <li key={landowner.id}>
+              {landowner.name} available at {landowner.email}
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
