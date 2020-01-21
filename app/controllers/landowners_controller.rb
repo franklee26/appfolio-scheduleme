@@ -5,7 +5,7 @@ class LandownersController < ApplicationController
     render json: Landowner.all, status: :ok
   end
 
-  def get
+  def show
     landowner = Landowner.find_by(id: params[:landowner_id])
     response = {
       "id": landowner.id,
@@ -16,13 +16,6 @@ class LandownersController < ApplicationController
       "tenants": landowner.tenants
     }
     render json: response, status: :ok
-  end
-
-  # GET /landowners/1
-  # Returns a json containing all the fields for the landowner
-  def show
-    @landowner = Landowner.find(params[:id])
-    render json: @landowner
   end
 
   # Adds a tenant association to this landowner

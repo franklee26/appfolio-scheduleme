@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   get 'landowner' => 'landowners#index'
   get 'landowner/auth', to: 'landowners#auth'
   get 'landowner/profile', to: 'landowners#profile'
-  get 'landowner/:landowner_id', to: 'landowners#get', landowner_id: /[^\/]+/
+  get 'landowner/:landowner_id', to: 'landowners#show', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
   delete 'landowner/tenants/:tenant_id', to: 'landowners#destroy_tenant', tenant_id: /[^\/]+/
 
