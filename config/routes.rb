@@ -37,6 +37,9 @@ Rails.application.routes.draw do
   get 'vendors/profile' => 'vendor#profile'
   get 'vendors/show' => 'vendor#show'
 
+  get 'sessions/logout', to: 'sessions#destroy'
+
+
   # resources
   resources :tenants
   resources :vendor

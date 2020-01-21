@@ -29,7 +29,8 @@ class CustomNavbar extends React.Component {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-            <Button variant="outline-success" href="/tenants/login">Login</Button>
+            <Button variant="outline-primary" href="/calendar/login">Login</Button>
+            <Button variant="outline-danger ml-2" href="/sessions/logout">Logout</Button>
         </Navbar.Collapse>
       </Navbar>
     );
