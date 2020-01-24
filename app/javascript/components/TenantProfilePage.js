@@ -34,7 +34,31 @@ class TenantProfilePage extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // Todo: change the values in the database
+    fetch("/tenants/update_tenant", {
+      method: 'PATCH',
+      body: JSON.stringify({
+        tenant_id: this.state.tenant_id,
+        name: this.state.name, 
+        email: this.state.email, 
+        landowner_id: this.state.landowner_id, 
+        street_address: this.state.street_address, 
+        city: this.state.city, 
+        zip: this.state.zip, 
+        state: this.state.state
+      })
+    }).then((response) => {return response.json()}).then((data) => {
+      if (data.code == 200){
+        // TODO: add an alert that it worked
+        console.log("successfully saved changes to db")
+      }
+      else {
+        // TODO: add an alert that it failed
+
+        // reset the state since save failed
+        console.log("failed to save changes to db")
+        this.componentDidMount()
+      }
+    });
   }
 
   handleChange(e) {
@@ -69,7 +93,7 @@ class TenantProfilePage extends Component {
             <label>Landlord ID</label>
             <input
               value={this.state.landowner_id}
-              name="landownder_id"
+              name="landowner_id"
               onChange={e => this.handleChange(e)}
             />
           </div>
