@@ -1,5 +1,5 @@
 class LandownersController < ApplicationController
-  protect_from_forgery :except => [:add_tenant, :destroy_tenant]
+  protect_from_forgery :except => [:add_tenant, :destroy_tenant, :add_vendor]
 
   def index
     render json: Landowner.all, status: :ok
@@ -13,7 +13,8 @@ class LandownersController < ApplicationController
       "email": landowner.email,
       "created_at": landowner.created_at,
       "updated_at": landowner.updated_at,
-      "tenants": landowner.tenants
+      "tenants": landowner.tenants,
+      "vendors": landowner.vendors
     }
     render json: response, status: :ok
   end
@@ -41,6 +42,28 @@ class LandownersController < ApplicationController
     render json: response, status: :ok
   end
 
+  def add_vendor
+    body = JSON(request.body.read)
+    vendor_id = body["vendor_id"]
+    landowner_id = body["landowner_id"]
+    response = {}
+    if Vendor.find_by(id: vendor_id) && Landowner.find_by(id: landowner_id)
+      Landowner.find(landowner_id).vendors << Vendor.find(vendor_id)
+      response = {
+        code: 200,
+        vendor_id: vendor_id,
+        landowner_id: landowner_id
+      }
+    else
+      response = {
+        code: 400,
+        vendor_id: -1,
+        landowner_id: -1
+      }
+    end
+    render json: response, status: :ok
+  end
+
   # removes the tenant association (first assigns tenant back to default, then removes)
   def destroy_tenant
     tenant_id = params[:tenant_id]
@@ -51,6 +74,25 @@ class LandownersController < ApplicationController
       "tenant_id": tenant_id
     }
     if temp.save!
+      response["status"] = 200
+      render json: response, status: :ok
+    else
+      render json: response, status: ok
+    end
+  end
+
+  def destroy_vendor
+    vendor_id = params[:vendor_id]
+    landowner_id = params[:landowner_id]
+    landowner = Landowner.find(landowner_id)
+    vendor = Vendor.find(vendor_id)
+    landowner.vendors.delete(vendor)
+    response = {
+      "status": 400,
+      "landowner_id": landowner_id,
+      "vendor_id": vendor_id
+    }
+    if landowner.save!
       response["status"] = 200
       render json: response, status: :ok
     else
