@@ -40,6 +40,9 @@ Rails.application.routes.draw do
   get 'vendors/profile' => 'vendors#profile'
   get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
 
+  get 'sessions/logout', to: 'sessions#destroy'
+
+
   # resources
   resources :tenants
   resources :vendors
