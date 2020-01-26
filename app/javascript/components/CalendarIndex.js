@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
 
+// date formatter helper
+const shortFormatDate = date => {
+  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  return theDate;
+};
+
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
   event.preventDefault();
@@ -87,7 +98,26 @@ const handleClickJob = (job, landowner_id, tenant_id) => {
     }
   )
     .then(response => response.json())
-    .then(response => response.vendors.map(v => alert()));
+    .then(response =>
+      response.vendors.map(v =>
+        fetch("http://localhost:3000/jobs/new_temp_job", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: job.content,
+            created_at: job.created_at,
+            updated_at: job.updated_at,
+            title: job.title,
+            job_type: job.job_type,
+            status: "LANDOWNER APPROVED",
+            tenant_id: job.tenant_id,
+            start: v.start,
+            end: v.end,
+            vendor_id: v.vendor.id
+          })
+        })
+      )
+    );
 
   alert("dope");
 };
@@ -123,6 +153,25 @@ const CalendarIndex = props => {
               landownerResponse: res
             }));
           },
+          error => {
+            setState(prevState => ({
+              ...prevState,
+              isLoaded: false,
+              error: error
+            }));
+          }
+        )
+        .then(
+          fetch(`http://localhost:3000/tenants/${props.user.id}`, {
+            method: "GET"
+          })
+            .then(res => res.json())
+            .then(res => {
+              setState(prevState => ({
+                ...prevState,
+                tenantResponse: res
+              }));
+            }),
           error => {
             setState(prevState => ({
               ...prevState,
@@ -261,6 +310,13 @@ const CalendarIndex = props => {
             Click here to submit a new job.
           </a>
         </h2>
+        {tenantResponse.jobs
+            .filter(job => job.status === "LANDOWNER APPROVED")
+            .map(job => (
+              <li key={job.id}>
+                Approved job: {job.content} from {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
+              </li>
+        ))}
       </div>
     );
   } else if (props.user_type == "Landowner") {

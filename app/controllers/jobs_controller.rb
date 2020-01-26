@@ -1,11 +1,31 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
+  protect_from_forgery :except => [:new_temp_job]
 
   # GET /jobs
   # GET /jobs.json
   def index
     @jobs = Job.all
     render json: @jobs
+  end
+
+  def new_temp_job
+    body = JSON(request.body.read)
+
+    job = Job.new
+    job.content = body["content"]
+    job.created_at = body["created_at"]
+    job.updated_at = body["updated_at"]
+    job.title = body["title"]
+    job.job_type = body["job_type"]
+    job.status = body["status"]
+    job.tenant_id = body["tenant_id"]
+    job.vendor_id = body["vendor_id"]
+    job.start = body["start"]
+    job.end = body["end"]
+
+    job.save!
+    render json: body
   end
 
   # GET /jobs/1

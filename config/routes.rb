@@ -48,6 +48,9 @@ Rails.application.routes.draw do
   # sessions
   get 'sessions/logout', to: 'sessions#destroy'
 
+  # jobs
+  post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
+
 
   # resources
   resources :tenants
