@@ -317,6 +317,28 @@ const CalendarIndex = props => {
               </a>
             </li>
           ))}
+        {landownerResponse.tenants.length ? (
+          <div>
+            <h2>Your Tenant's Jobs: </h2>
+            {landownerResponse.tenants.map(tenants =>
+              tenants.jobs.map(job =>
+                job.vendor_id != 0 ? (
+                  <li>
+                    CONFIRMED submitted by {tenants.name} id: {job.id} content:{" "}
+                    {job.content}
+                  </li>
+                ) : (
+                  <li>
+                    UNCONFIRMED submitted by {tenants.name} id: {job.id}{" "}
+                    content: {job.content}{" "}
+                  </li>
+                )
+              )
+            )}
+          </div>
+        ) : (
+          <h2>You have no pending tenant jobs.</h2>
+        )}
       </div>
     );
   } else if (props.user_type == "Vendor") {

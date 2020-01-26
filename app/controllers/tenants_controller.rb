@@ -13,7 +13,20 @@ class TenantsController < ApplicationController
   # Returns a json containing all the fields for the tenant
   def show
     @tenant = Tenant.find(params[:id])
-    render json: @tenant
+    response = {
+      "id": @tenant.id,
+      "name": @tenant.name,
+      "created_at": @tenant.created_at,
+      "updated_at": @tenant.updated_at,
+      "email": @tenant.email,
+      "landowner_id": @tenant.landowner_id,
+      "street_address": @tenant.street_address,
+      "city": @tenant.city,
+      "state": @tenant.state,
+      "zip": @tenant.zip,
+      "jobs": @tenant.jobs,
+    }
+    render json: response
   end
 
   # GET /tenants/new

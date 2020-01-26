@@ -30,8 +30,8 @@ class JobNew extends React.Component {
             <input type="text" id="title" name="job[content]" defaultValue={this.props.content} />
           </div>
           <div className="field">
-            <label htmlFor="Tenant_id">Tenant_id:</label>
-            <input type="number" id="price" name="job[Tenant_id]" defaultValue={this.props.Tenant_id} />
+            <label htmlFor="tenant_id">Tenant_id:</label>
+            <input type="text" id="title" name="job[tenant_id]" defaultValue={this.props.tenant_id} />
           </div>
           <div className="actions">
             <button type="submit">Submit</button>

@@ -9,9 +9,8 @@ class ShowJob extends React.Component {
         </p>
         <p>
            <strong>Tenant_id:</strong>
-           {this.props.Tenant_id}
+           {this.props.tenant_id}
         </p>
-
         <a href={this.props.edit_path}>Edit</a> |
         <a href={this.props.back_path}>Back</a>
       </div>

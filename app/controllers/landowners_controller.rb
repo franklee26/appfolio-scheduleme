@@ -7,13 +7,30 @@ class LandownersController < ApplicationController
 
   def show
     landowner = Landowner.find_by(id: params[:landowner_id])
+    tenants = []
+    landowner.tenants.each do |t|
+      tenant_response = {
+        "id": t.id,
+        "name": t.name,
+        "created_at": t.created_at,
+        "updated_at": t.updated_at,
+        "email": t.email,
+        "landowner_id": t.landowner_id,
+        "street_address": t.street_address,
+        "city": t.city,
+        "state": t.state,
+        "zip": t.zip,
+        "jobs": t.jobs,
+      }
+      tenants << tenant_response
+    end
     response = {
       "id": landowner.id,
       "name": landowner.name,
       "email": landowner.email,
       "created_at": landowner.created_at,
       "updated_at": landowner.updated_at,
-      "tenants": landowner.tenants,
+      "tenants": tenants,
       "vendors": landowner.vendors
     }
     render json: response, status: :ok
