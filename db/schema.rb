@@ -10,20 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200121042817) do
+ActiveRecord::Schema.define(version: 20200126001712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "jobs", force: :cascade do |t|
     t.text "content"
-    t.integer "Tenant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "Vendor_id"
     t.string "title"
     t.string "job_type"
     t.string "status"
+    t.bigint "tenant_id"
+    t.bigint "vendor_id"
+    t.index ["tenant_id"], name: "index_jobs_on_tenant_id"
+    t.index ["vendor_id"], name: "index_jobs_on_vendor_id"
   end
 
   create_table "landowners", force: :cascade do |t|
@@ -61,5 +63,7 @@ ActiveRecord::Schema.define(version: 20200121042817) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "jobs", "tenants"
+  add_foreign_key "jobs", "vendors"
   add_foreign_key "tenants", "landowners"
 end
