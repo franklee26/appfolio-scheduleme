@@ -5,22 +5,100 @@ class VendorProfilePage extends Component {
     super(props);
     this.state = {
       vendor_id: this.props.id,
-      vendor_info: {"name": "", "email": "", "occupation": ""}
+      name: "",
+      email: "",
+      occupation: "",
+      zip: ""
     }
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    fetch("/vendor/" + this.state.vendor_id)
+    fetch("/vendors/" + this.state.vendor_id)
       .then((response) => {return response.json()})
-      .then((data) => {this.setState({ vendor_info: data})});
+      .then((data) => {this.setState({ 
+        name: data.name,
+        email: data.email,
+        occupation: data.occupation,
+        zip: data.zip
+      })});
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    fetch("/vendors/update_vendor", {
+      method: 'PATCH',
+      body: JSON.stringify({
+        vendor_id: this.state.vendor_id,
+        name: this.state.name, 
+        email: this.state.email,
+        zip: this.state.zip,
+        occupation: this.state.occupation
+      })
+    }).then((response) => {return response.json()}).then((data) => {
+      if (data.code == 200){
+        // TODO: add an alert that it worked.
+        console.log("successfully saved changes to db")
+      }
+      else {
+        // TODO: add an alert that it failed
+        console.log("failed to save changes to db")
+      }
+      // reset the state to reflect current db values
+      this.componentDidMount()
+    });
+  }
+
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+      changed: true
+    });
   }
 
   render() {
     return (
       <div>
-        <div>{this.state.vendor_info.name}</div>
-        <div>{this.state.vendor_info.email}</div>
-        <div>{this.state.vendor_info.occupation}</div>
+        <h1>Your Profile</h1>
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            <label>Name</label>
+            <input
+              value={this.state.name}
+              name="name"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              value={this.state.email}
+              name="email"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>Occupation</label>
+            <input
+              value={this.state.occupation}
+              name="occupation"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>
+            <label>Zip</label>
+            <input
+              value={this.state.zip}
+              name="zip"
+              onChange={e => this.handleChange(e)}
+            />
+          </div>
+          <div>{JSON.stringify(this.state.tenants)}</div>
+          <div>
+            {this.state.changed && <button onSubmit={e => this.handleSubmit(e)}>Save</button>}
+          </div>
+        </form>
       </div>
     );
   }

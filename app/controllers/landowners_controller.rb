@@ -19,7 +19,7 @@ class LandownersController < ApplicationController
     render json: response, status: :ok
   end
 
-  # PATCH /tenants/update_tenants  
+  # PATCH /landowner/update_landowner  
   # expects json in the form:
 =begin
   {

@@ -22,7 +22,7 @@ class TenantsController < ApplicationController
     @job = Job.new
   end
 
-  # PATCH /tenants/update_tenants
+  # PATCH /tenants/update_tenant
   # expects json in the form:
 =begin
   {
