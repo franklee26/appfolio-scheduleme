@@ -12,6 +12,7 @@ Landowner.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT")
 Landowner.create(id: 1, name: "Tech Lead", email: "thetechlead@techlead.the")
 
 # Tenant seeds
+Tenant.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.com", landowner_id: 0, street_address: "DEFAULT", city: "DEFAULT", state: "DEFAULT", zip: "DEFAULT")
 t_one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com", landowner_id: 0, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
 t_two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com", landowner_id: 0, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
 t_three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com", landowner_id: 0, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")

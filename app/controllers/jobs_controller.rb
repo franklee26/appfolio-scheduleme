@@ -27,6 +27,7 @@ class JobsController < ApplicationController
   def create
     @job = Job.new(job_params)
     @job.vendor_id = 0
+    @job.tenant_id = session[:tenant_id]
     respond_to do |format|
       if @job.save
         format.html { redirect_to @job, notice: 'Job was successfully created.' }

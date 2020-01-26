@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'tenants/auth', to: 'tenants#auth'
   get 'tenants/profile' => 'tenants#profile'
   get 'tenants/no_landowner', to: 'tenants#no_landowner'
+  get 'tenants/get_freebusy/:id', to: 'tenants#get_freebusy'
 
   # home page
   root 'homepage#index'
@@ -41,6 +42,10 @@ Rails.application.routes.draw do
   get 'vendors/profile' => 'vendors#profile'
   get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
 
+  # freebusy
+  get 'freebusy/schedule/:landowner_id/:tenant_id', to: 'freebusies#schedule'
+
+  # sessions
   get 'sessions/logout', to: 'sessions#destroy'
 
 

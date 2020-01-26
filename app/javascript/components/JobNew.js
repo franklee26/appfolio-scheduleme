@@ -18,6 +18,7 @@ class JobNew extends React.Component {
           </div>
         );
       }
+      console.log(this.props);
       return (
         <form action={this.props.form_path} method="post">
           {errors}
@@ -29,13 +30,9 @@ class JobNew extends React.Component {
             <label htmlFor="content">Content:</label>
             <input type="text" id="title" name="job[content]" defaultValue={this.props.content} />
           </div>
-          <div className="field">
-            <label htmlFor="tenant_id">Tenant_id:</label>
-            <input type="text" id="title" name="job[tenant_id]" defaultValue={this.props.tenant_id} />
-          </div>
           <div className="actions">
             <button type="submit">Submit</button>
-            <a href={this.props.back_path}>Back</a>
+            <a href={"http://localhost:3000/calendar"}>Back</a>
           </div>
         </form>
       );

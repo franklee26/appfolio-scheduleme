@@ -78,9 +78,17 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
     });
 };
 
-const handleClickJob = vendors => {
+const handleClickJob = (job, landowner_id, tenant_id) => {
   event.preventDefault();
-  console.log(vendors);
+  fetch(
+    `http://localhost:3000/freebusy/schedule/${landowner_id}/${tenant_id}`,
+    {
+      method: "GET"
+    }
+  )
+    .then(response => response.json())
+    .then(response => response.vendors.map(v => alert()));
+
   alert("dope");
 };
 
@@ -248,6 +256,11 @@ const CalendarIndex = props => {
             {landownerResponse.email}{" "}
           </h2>
         )}
+        <h2>
+          <a href="http://localhost:3000/jobs/new">
+            Click here to submit a new job.
+          </a>
+        </h2>
       </div>
     );
   } else if (props.user_type == "Landowner") {
@@ -295,16 +308,18 @@ const CalendarIndex = props => {
           <h2>You have no vendors.</h2>
         )}
         <h2>Select user below to add as your listed tenant.</h2>
-        {tenantResponse.map(tenant => (
-          <li key={tenant.id}>
-            <a
-              href="#"
-              onClick={e => handleClickTenant(e, props.user.id, tenant.id)}
-            >
-              {tenant.name}
-            </a>
-          </li>
-        ))}
+        {tenantResponse
+          .filter(tenant => tenant.id != 0)
+          .map(tenant => (
+            <li key={tenant.id}>
+              <a
+                href="#"
+                onClick={e => handleClickTenant(e, props.user.id, tenant.id)}
+              >
+                {tenant.name}
+              </a>
+            </li>
+          ))}
         <h2>Select user below to add as your listed vendor.</h2>
         {vendorResponse
           .filter(
@@ -337,7 +352,9 @@ const CalendarIndex = props => {
                   <li key={job.id}>
                     <a
                       href="#"
-                      onClick={e => handleClickJob(landownerResponse.vendors)}
+                      onClick={e =>
+                        handleClickJob(job, landownerResponse.id, job.tenant_id)
+                      }
                     >
                       UNCONFIRMED submitted by {tenants.name} id: {job.id}{" "}
                       content: {job.content}{" "}

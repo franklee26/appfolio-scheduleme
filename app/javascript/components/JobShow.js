@@ -12,7 +12,7 @@ class ShowJob extends React.Component {
            {this.props.tenant_id}
         </p>
         <a href={this.props.edit_path}>Edit</a> |
-        <a href={this.props.back_path}>Back</a>
+        <a href={"http://localhost:3000/calendar"}>Back</a>
       </div>
     );
   };

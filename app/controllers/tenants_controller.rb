@@ -9,6 +9,11 @@ class TenantsController < ApplicationController
     render json: Tenant.where(landowner_id: 0), status: :ok
   end
 
+  def get_freebusy
+    tenant = Tenant.find(params[:id])
+    render json: tenant.freebusies, status: :ok
+  end
+
   # GET /tenants/1
   # Returns a json containing all the fields for the tenant
   def show
