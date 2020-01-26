@@ -21,7 +21,7 @@ class UserSelection extends React.Component {
     } else if (this.state.user_type == "Landowner") {
       window.location.href = "/landowner/auth";
     } else {
-      // for vendor
+      window.location.href = "/vendors/auth";
     }
   }
 

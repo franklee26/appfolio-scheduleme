@@ -28,21 +28,26 @@ Rails.application.routes.draw do
   get 'landowner' => 'landowners#index'
   get 'landowner/auth', to: 'landowners#auth'
   get 'landowner/profile', to: 'landowners#profile'
-  get 'landowner/:landowner_id', to: 'landowners#get', landowner_id: /[^\/]+/
+  get 'landowner/:landowner_id', to: 'landowners#show', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
-  get 'landowner/tenants/:landowner_id', to: 'landowners#tenants', landowner_id: /[^\/]+/
-  patch 'landowner/update_landowner', to: 'landowners#update_landowner'
+  post 'landowner/add_vendor', to: 'landowners#add_vendor'
+  delete 'landowner/tenants/:tenant_id', to: 'landowners#destroy_tenant', tenant_id: /[0-9]+/
+  delete 'landowner/:landowner_id/vendors/:vendor_id', to: 'landowners#destroy_vendor', landowner_id: /[0-9]+/, vendor_id: /[0-9]+/
 
   # vendor pages
-  get 'vendors/search' => 'vendor#search'
-  get 'vendors' => 'vendor#index'
-  get 'vendors/profile' => 'vendor#profile'
-  get 'vendors/show' => 'vendor#show'
+  get 'vendors' => 'vendors#index'
+  get 'vendors/auth' => 'vendors#auth'
+  get 'vendors/search' => 'vendors#search'
+  get 'vendors/profile' => 'vendors#profile'
+  get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
   patch 'vendors/update_vendor', to: 'vendorss#update_vendor'
+
+  get 'sessions/logout', to: 'sessions#destroy'
+
 
   # resources
   resources :tenants
-  resources :vendor
+  resources :vendors
   resources :landowners
   resources :jobs
 end

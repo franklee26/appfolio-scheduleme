@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   #a log out button should be tied to this action
   def destroy
     log_out
-    redirect to root_url
+    redirect_to root_url
   end
 
   # given the json_response of google api
@@ -54,6 +54,7 @@ class SessionsController < ApplicationController
     end
   end
 
+
   def find_or_create_user(name, email, user_type)
     if user_type == "tenant"
       potential_tenant = Tenant.find_by(email: email)
@@ -75,6 +76,7 @@ class SessionsController < ApplicationController
         potential_vendor
       else
         Vendor.create(id: Vendor.last ? Vendor.last.id + 1 : 0, name: name, email: email)
+      end
     end
   end
 end
