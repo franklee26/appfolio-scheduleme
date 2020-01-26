@@ -1,5 +1,5 @@
 class LandownersController < ApplicationController
-  protect_from_forgery :except => [:add_tenant]
+  protect_from_forgery :except => [:add_tenant, :update_landowner]
 
   def index
     render json: Landowner.all, status: :ok
@@ -15,6 +15,40 @@ class LandownersController < ApplicationController
     @landowner = Landowner.find(params[:id])
     render json: @landowner
   end
+
+  # PATCH /tenants/update_tenants  
+  # expects json in the form:
+=begin
+  {
+    "name": "name",
+    "email": "email",
+    "landowner_id": 1,
+  }
+=end
+def update_landowner
+  body = JSON(request.body.read)
+  name = body["name"]
+  email = body["email"]
+  landowner_id = body["landowner_id"]
+  response = {}
+  @landowner = Landowner.find_by(id: landowner_id)
+  if Landowner.find_by(id: landowner_id) && name.class == String && email.class == String
+    @landowner.update_attribute(:name, name)
+    @landowner.update_attribute(:email, email)
+    response = {
+      code: 200,
+      name: name,
+      email: email,
+      landowner_id: landowner_id,
+    }
+  else
+    response = {
+      code: 400,
+      landowner_id: landowner_id
+    }
+  end
+  render json: response, status: :ok
+end
 
   # Adds a tenant association to this landowner
   def add_tenant

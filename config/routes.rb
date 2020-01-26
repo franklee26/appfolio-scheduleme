@@ -31,12 +31,14 @@ Rails.application.routes.draw do
   get 'landowner/:landowner_id', to: 'landowners#get', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
   get 'landowner/tenants/:landowner_id', to: 'landowners#tenants', landowner_id: /[^\/]+/
+  patch 'landowner/update_landowner', to: 'landowners#update_landowner'
 
   # vendor pages
   get 'vendors/search' => 'vendor#search'
   get 'vendors' => 'vendor#index'
   get 'vendors/profile' => 'vendor#profile'
   get 'vendors/show' => 'vendor#show'
+  patch 'vendors/update_vendor', to: 'vendorss#update_vendor'
 
   # resources
   resources :tenants
