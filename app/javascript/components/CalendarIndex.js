@@ -78,6 +78,12 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
     });
 };
 
+const handleClickJob = vendors => {
+  event.preventDefault();
+  console.log(vendors);
+  alert("dope");
+};
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -305,7 +311,7 @@ const CalendarIndex = props => {
             vendor =>
               vendor.landowners.filter(
                 landowner => landowner.id == props.user.id
-              ).length == 0
+              ).length == 0 && vendor.id != 0
           )
           .map(vendor => (
             <li key={vendor.id}>
@@ -323,14 +329,19 @@ const CalendarIndex = props => {
             {landownerResponse.tenants.map(tenants =>
               tenants.jobs.map(job =>
                 job.vendor_id != 0 ? (
-                  <li>
+                  <li key={job.id}>
                     CONFIRMED submitted by {tenants.name} id: {job.id} content:{" "}
                     {job.content}
                   </li>
                 ) : (
-                  <li>
-                    UNCONFIRMED submitted by {tenants.name} id: {job.id}{" "}
-                    content: {job.content}{" "}
+                  <li key={job.id}>
+                    <a
+                      href="#"
+                      onClick={e => handleClickJob(landownerResponse.vendors)}
+                    >
+                      UNCONFIRMED submitted by {tenants.name} id: {job.id}{" "}
+                      content: {job.content}{" "}
+                    </a>
                   </li>
                 )
               )

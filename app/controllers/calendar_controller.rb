@@ -18,6 +18,11 @@ class CalendarController < ApplicationController
     access_token = client.access_token
     json_response = get_json_from_token(access_token)
 
+    freebusy_times = get_freebusy_response(access_token, calendar_ids)["calendars"]
+
+    busy_times = get_list_of_times(freebusy_times)
+    free_times = get_free_times(busy_times)
+    puts free_times
     # find or build the user
     @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
   end
@@ -94,7 +99,6 @@ class CalendarController < ApplicationController
 
     busy_times = get_list_of_times(freebusy_times)
     # find or build the user
-    user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
     @free_times = get_free_times(busy_times)
   end
   
