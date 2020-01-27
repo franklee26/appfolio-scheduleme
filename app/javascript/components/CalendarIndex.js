@@ -107,7 +107,8 @@ const handleClickJob = (event, job, landowner_id, tenant_id) => {
         })
       )
     )
-    .then(res => alert("Approved job!"));
+    .then(res => alert("Approved job!"))
+    .then(res => window.location.reload(false));
 };
 
 /*
@@ -149,25 +150,28 @@ const CalendarIndex = props => {
             }));
           }
         )
-        .then(
+        .then(res => {
           fetch(`http://localhost:3000/tenants/${props.user.id}`, {
             method: "GET"
           })
             .then(res => res.json())
-            .then(res => {
-              setState(prevState => ({
-                ...prevState,
-                tenantResponse: res
-              }));
-            }),
-          error => {
-            setState(prevState => ({
-              ...prevState,
-              isLoaded: false,
-              error: error
-            }));
-          }
-        );
+            .then(
+              res => {
+                setState(prevState => ({
+                  ...prevState,
+                  isLoaded2: true,
+                  tenantResponse: res
+                }));
+              },
+              error => {
+                setState(prevState => ({
+                  ...prevState,
+                  isLoaded2: false,
+                  error: error
+                }));
+              }
+            );
+        });
     } else if (props.user_type == "Landowner") {
       fetch("http://localhost:3000/tenants/no_landowner", { method: "GET" })
         .then(res => res.json())
@@ -263,6 +267,12 @@ const CalendarIndex = props => {
         <h1>Loading data...</h1>
       </div>
     );
+  } else if (props.user_type == "Tenant" && !isLoaded2) {
+    return (
+      <div>
+        <h1>Getting tenant information...</h1>
+      </div>
+    );
   } else if ((!isLoaded2 || !isLoaded3) && props.user_type == "Landowner") {
     return (
       <div>
@@ -302,11 +312,17 @@ const CalendarIndex = props => {
         {tenantResponse.jobs
           .filter(job => job.status == "PROCESSING")
           .map(job => (
+            <li key={job.id}>content: {job.content}</li>
+          ))}
+
+        <h2>Landowner approved jobs are listed below: </h2>
+        {tenantResponse.jobs
+          .filter(job => job.status == "LANDOWNER APPROVED")
+          .map(job => (
             <li key={job.id}>
               content: {job.content} assigned vendor: {job.vendor_id}{" "}
             </li>
           ))}
-
         <h2>Scheduled jobs are listed below: </h2>
         {tenantResponse.jobs
           .filter(job => job.status == "COMPLETE")
@@ -363,7 +379,7 @@ const CalendarIndex = props => {
         )}
         <h2>Select user below to add as your listed tenant.</h2>
         {tenantResponse
-          .filter(tenant => tenant.name != 0)
+          .filter(tenant => tenant.id != 0)
           .map(tenant => (
             <li key={tenant.id}>
               <a

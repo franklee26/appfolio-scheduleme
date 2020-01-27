@@ -18,7 +18,6 @@ class JobNew extends React.Component {
           </div>
         );
       }
-      console.log(this.props);
       return (
         <form action={this.props.form_path} method="post">
           {errors}
