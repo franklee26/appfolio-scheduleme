@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'tenants/profile' => 'tenants#profile'
   get 'tenants/no_landowner', to: 'tenants#no_landowner'
   get 'tenants/get_freebusy/:id', to: 'tenants#get_freebusy'
+  patch 'tenants/update_tenant', to: 'tenants#update_tenant'
 
   # home page
   root 'homepage#index'
