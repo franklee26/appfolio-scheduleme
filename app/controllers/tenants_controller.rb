@@ -36,7 +36,6 @@ class TenantsController < ApplicationController
 
   # GET /tenants/new
   def new
-    @job = Job.new
   end
 
   # GET /tenants/1/edit

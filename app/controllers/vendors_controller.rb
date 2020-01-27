@@ -29,7 +29,8 @@ class VendorsController < ApplicationController
       "email": vendor.email,
       "created_at": vendor.created_at,
       "updated_at": vendor.updated_at,
-      "landowners": vendor.landowners
+      "landowners": vendor.landowners,
+      "jobs": vendor.jobs
     }
     render json: response, status: :ok
   end

@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   get 'sessions/logout', to: 'sessions#destroy'
 
   # jobs
+  post 'jobs/complete', to: 'jobs#complete'
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
 
 

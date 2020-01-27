@@ -24,6 +24,7 @@ class CalendarController < ApplicationController
     free_times = get_free_times(busy_times)
     # find or build the user
     @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], free_times)
+    session[:user_id] = @user.id
   end
 
   def user_selection
@@ -81,6 +82,7 @@ class CalendarController < ApplicationController
       events_temp = service.list_events(params[:calendar_id]).items
     end
     @events = []
+    @id = session[:user_id]
     # I should do some filtering
     events_temp.each do |event|
       if not event.end.date_time < (Time.now.localtime.beginning_of_day - 7.days)
@@ -204,21 +206,24 @@ class CalendarController < ApplicationController
         session[:tenant_id] = potential_tenant.id
         potential_tenant
       else
-        freebusies = []
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: Tenant.last ? Tenant.last.id + 1 : 0, landowner_id: 0, vendor_id: 0)
-          freebusies << temp
-        end
-        session[:tenant_id] = Tenant.last ? Tenant.last.id + 1 : 0
-        Tenant.create(
-          id: Tenant.last ? Tenant.last.id + 1 : 0, 
+        tenant = Tenant.new(
           name: name, 
           email: email, 
           created_at: Time.now, 
           updated_at: Time.now, 
           landowner_id: 0,
-          freebusies: freebusies
+          freebusies: []
           )
+        tenant.save!
+        freebusies = []
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: tenant.id, landowner_id: 0, vendor_id: 0)
+          freebusies << temp
+        end
+        tenant.freebusies = freebusies
+        tenant.save!
+        session[:tenant_id] = tenant.id
+        tenant
       end
     elsif user_type == "landowner"
       potential_landowner = Landowner.find_by(email: email)
@@ -231,19 +236,23 @@ class CalendarController < ApplicationController
         potential_landowner.save!
         potential_landowner
       else
-        freebusies = []
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: Landowner.last ? Landowner.last.id + 1 : 0, vendor_id: 0)
-          freebusies << temp
-        end
-        Landowner.create(
-          id: Landowner.last ? Landowner.last.id + 1 : 0, 
+        landowner = Landowner.new(
           name: name, 
           email: email,
-          freebusies: freebusies,
+          freebusies: [],
           created_at: Time.now, 
-          updated_at: Time.now, 
+          updated_at: Time.now,
+          vendor_ids: []
           )
+        landowner.save!
+        freebusies = []
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: landowner.id, vendor_id: 0)
+          freebusies << temp
+        end
+        landowner.freebusies = freebusies
+        landowner.save!
+        landowner
       end
     elsif user_type == "vendor"
       potential_vendor = Vendor.find_by(email: email)
@@ -256,17 +265,23 @@ class CalendarController < ApplicationController
         potential_vendor.save!
         potential_vendor
       else
-        freebusies = []
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor_id: Vendor.last ? Vendor.last.id + 1 : 0)
-          freebusies << temp
-        end
-        Vendor.create(
-          id: Vendor.last ? Vendor.last.id + 1 : 0, 
+        vendor = Vendor.new(
           name: name, 
           email: email,
-          freebusies: freebusies
+          freebusies: [],
+          created_at: Time.now, 
+          updated_at: Time.now,
+          landowner_ids: []
           )
+        vendor.save!
+        freebusies = []
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor_id: vendor.id)
+          freebusies << temp
+        end
+        vendor.freebusies = freebusies
+        vendor.save!
+        vendor
       end
     end
   end

@@ -6,7 +6,8 @@ const handleClickPost = (
   startTime,
   endTime,
   calendarId,
-  calendarName
+  calendarName,
+  job
 ) => {
   event.preventDefault();
   fetch(
@@ -21,12 +22,21 @@ const handleClickPost = (
             startTime
           )} to ${calendarName}! (status: ${res["status"]})`
         );
-        window.location.reload(false);
       },
       error => {
         alert(`Failed to add event to calendar with error ${error}`);
       }
-    );
+    )
+    .then(res =>
+      fetch("http://localhost:3000/jobs/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          job: job
+        })
+      })
+    )
+    .then(res => window.location.reload(false));
 };
 
 // date formatter helper
@@ -44,7 +54,9 @@ const Events = props => {
   const [state, setState] = useState({
     error: null,
     isLoaded: false,
-    calendarResponse: null
+    isLoaded2: false,
+    calendarResponse: null,
+    tenantResponse: null
   });
 
   // fetches calendar information, but this maybe overkill since all we want is the name...
@@ -55,18 +67,43 @@ const Events = props => {
       .then(res => res.json())
       .then(
         result => {
-          setState({ ...state, isLoaded: true, calendarResponse: result });
+          setState(prevState => ({
+            ...prevState,
+            isLoaded: true,
+            calendarResponse: result
+          }));
         },
         error => {
-          setState({ ...state, isLoaded: true, error: error });
+          setState(prevState => ({
+            ...prevState,
+            isLoaded: true,
+            error: error
+          }));
         }
-      );
+      )
+      .then(res => fetch(`http://localhost:3000/tenants/${props.id}`), {
+        method: "GET"
+      })
+      .then(res => res.json())
+      .then(res => {
+        setState(prevState => ({
+          ...prevState,
+          tenantResponse: res,
+          isLoaded2: true
+        }));
+      });
   }, []);
 
-  const { error, isLoaded, calendarResponse } = state;
+  const {
+    error,
+    isLoaded,
+    calendarResponse,
+    tenantResponse,
+    isLoaded2
+  } = state;
   if (error) {
     return <div>Error in mount: {error.message}</div>;
-  } else if (!isLoaded) {
+  } else if (!isLoaded || !isLoaded2) {
     return (
       <div>
         <h1>Loading and scheduling times...</h1>
@@ -90,6 +127,29 @@ const Events = props => {
         Submit your free times (pulled from the last two weeks from everyone's
         calendars):{" "}
       </h4>
+      {tenantResponse.jobs
+        .filter(job => job.status === "LANDOWNER APPROVED")
+        .map(job => (
+          <a
+            href="#"
+            onClick={e =>
+              handleClickPost(
+                e,
+                job.start,
+                job.end,
+                props.calendar_id,
+                calendarResponse["summary"],
+                job
+              )
+            }
+          >
+            <li key={job.id}>
+              Approved job: {job.content} from {shortFormatDate(job.start)} to{" "}
+              {shortFormatDate(job.end)}
+            </li>
+          </a>
+        ))}
+      {/*
       {props.free_times.map(timeHash => (
         <table>
           <td>
@@ -111,28 +171,7 @@ const Events = props => {
           </td>
         </table>
       ))}
-      {props.events.length ? (
-        <h1 align="center">
-          Calendar events for {calendarResponse["summary"]}:
-        </h1>
-      ) : (
-        `No events in ${calendarResponse["summary"]} calendar`
-      )}
-      <ul>
-        {props.events.map(event => (
-          <li key={event.id}>
-            {event.summary} starting at{" "}
-            {new Date(Date.parse(event.end.date_time)).toLocaleDateString(
-              "en-US",
-              {
-                weekday: "long",
-                hour: "2-digit",
-                minute: "2-digit"
-              }
-            )}
-          </li>
-        ))}
-      </ul>
+            */}
     </div>
   );
 };

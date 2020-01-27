@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
-  protect_from_forgery :except => [:new_temp_job]
+  protect_from_forgery :except => [:new_temp_job, :complete]
 
   # GET /jobs
   # GET /jobs.json
@@ -11,7 +11,6 @@ class JobsController < ApplicationController
 
   def new_temp_job
     body = JSON(request.body.read)
-
     job = Job.new
     job.content = body["content"]
     job.created_at = body["created_at"]
@@ -26,6 +25,23 @@ class JobsController < ApplicationController
 
     job.save!
     render json: body
+  end
+
+  def complete
+    body = JSON(request.body.read)
+    
+    job_id = body["job"]["id"]
+    job_content = body["job"]["content"]
+    job_tenant_id = body["job"]["tenant_id"]
+    # first make this job done!
+    job = Job.find(job_id)
+    job.status = "COMPLETE"
+    job.save!
+    # now delete all the jobs
+    to_delete_ids = Job.all.select{ |j| (j.status == "LANDOWNER APPROVED" || j.status == "PROCESSING") && j.content == job_content && j.tenant_id == job_tenant_id }.map { |j| j.id }
+    to_delete_ids.each do |id|
+      Job.delete(id)
+    end
   end
 
   # GET /jobs/1
@@ -48,6 +64,7 @@ class JobsController < ApplicationController
     @job = Job.new(job_params)
     @job.vendor_id = 0
     @job.tenant_id = session[:tenant_id]
+    @job.status = "PROCESSING"
     respond_to do |format|
       if @job.save
         format.html { redirect_to @job, notice: 'Job was successfully created.' }
