@@ -19,8 +19,8 @@ t_three = Tenant.create(name: "Steve Jobs", email: "sjobs@apple.com", landowner:
 
 # Vendor seeds
 Vendor.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT", occupation: "DEFAULT")
-v_one = Vendor.create(name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com")
-v_two = Vendor.create(name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com")
+v_one = Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com", zip: "12345")
+v_two = Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com", zip: "12345")
 # one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com")
 # two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com")
 # three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com")

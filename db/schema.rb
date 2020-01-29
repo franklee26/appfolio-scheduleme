@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20200126205404) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "zip"
   end
 
   add_foreign_key "freebusies", "landowners"

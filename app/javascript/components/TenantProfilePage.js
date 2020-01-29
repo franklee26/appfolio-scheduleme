@@ -48,16 +48,13 @@ class TenantProfilePage extends Component {
       })
     }).then((response) => {return response.json()}).then((data) => {
       if (data.code == 200){
-        // TODO: add an alert that it worked
-        console.log("successfully saved changes to db")
+        alert("Successfully Saved Shanges.")
       }
       else {
-        // TODO: add an alert that it failed
-
-        // reset the state since save failed
-        console.log("failed to save changes to db")
-        this.componentDidMount()
+        alert("Failed To Save Changes.")
       }
+      // reset the state to reflect current db values
+      this.componentDidMount()
     });
   }
 
