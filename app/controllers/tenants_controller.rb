@@ -81,9 +81,6 @@ class TenantsController < ApplicationController
   def edit
   end
 
-  def login
-  end
-
   def auth
     client = Signet::OAuth2::Client.new(clientOptions)
     session[:user_type] = "tenant"

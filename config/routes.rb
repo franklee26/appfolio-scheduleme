@@ -3,7 +3,6 @@ Rails.application.routes.draw do
 
   # tenants
   get 'tenants', to: 'tenants#index'
-  get 'tenants/login'
   get 'tenants/auth', to: 'tenants#auth'
   get 'tenants/profile' => 'tenants#profile'
   get 'tenants/no_landowner', to: 'tenants#no_landowner'
@@ -33,6 +32,7 @@ Rails.application.routes.draw do
   post 'landowner/add_vendor', to: 'landowners#add_vendor'
   delete 'landowner/tenants/:tenant_id', to: 'landowners#destroy_tenant', tenant_id: /[0-9]+/
   delete 'landowner/:landowner_id/vendors/:vendor_id', to: 'landowners#destroy_vendor', landowner_id: /[0-9]+/, vendor_id: /[0-9]+/
+  patch 'landowner/update_landowner', to: 'landowner#update_landowner'
 
   # vendor pages
   get 'vendors' => 'vendors#index'
