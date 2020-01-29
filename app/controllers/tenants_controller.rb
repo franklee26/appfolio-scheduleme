@@ -22,11 +22,11 @@ class TenantsController < ApplicationController
     @job = Job.new
   end
 
-  # PATCH /tenants/update_tenants
+  # PATCH /tenants/update_tenant
   # expects json in the form:
 =begin
   {
-	"tenant_id": 1,
+	  "tenant_id": 1,
     "name": "name",
     "email": "email",
     "landowner_id": 1,
@@ -70,8 +70,8 @@ class TenantsController < ApplicationController
     else
       response = {
         code: 400,
-        tenant_id: -1,
-        landowner_id: -1
+        tenant_id: tenant_id,
+        landowner_id: landowner_id
       }
     end
     render json: response, status: :ok
