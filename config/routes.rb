@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   post 'landowner/add_vendor', to: 'landowners#add_vendor'
   delete 'landowner/tenants/:tenant_id', to: 'landowners#destroy_tenant', tenant_id: /[0-9]+/
   delete 'landowner/:landowner_id/vendors/:vendor_id', to: 'landowners#destroy_vendor', landowner_id: /[0-9]+/, vendor_id: /[0-9]+/
-  patch 'landowner/update_landowner', to: 'landowner#update_landowner'
+  patch 'landowner/update_landowner', to: 'landowners#update_landowner'
 
   # vendor pages
   get 'vendors' => 'vendors#index'
