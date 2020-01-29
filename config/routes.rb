@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'tenants/auth', to: 'tenants#auth'
   get 'tenants/profile' => 'tenants#profile'
   get 'tenants/no_landowner', to: 'tenants#no_landowner'
+  get 'tenants/get_freebusy/:id', to: 'tenants#get_freebusy'
   patch 'tenants/update_tenant', to: 'tenants#update_tenant'
 
   # home page
@@ -16,6 +17,7 @@ Rails.application.routes.draw do
 
   # calendar calls
   get 'calendar', to: 'calendar#index'
+  get 'calendar/get_ids', to: 'calendar#get_ids'
   get 'calendar/login', to: 'calendar#user_selection'
   get 'calendar/callback', to: 'calendar#callback'
   get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
@@ -42,7 +44,15 @@ Rails.application.routes.draw do
   get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
   patch 'vendors/update_vendor', to: 'vendors#update_vendor'
 
+  # freebusy
+  get 'freebusy/schedule/:landowner_id/:tenant_id', to: 'freebusies#schedule'
+
+  # sessions
   get 'sessions/logout', to: 'sessions#destroy'
+
+  # jobs
+  post 'jobs/complete', to: 'jobs#complete'
+  post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
 
 
   # resources

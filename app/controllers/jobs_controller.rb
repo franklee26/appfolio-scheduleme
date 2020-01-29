@@ -1,10 +1,68 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
+  protect_from_forgery :except => [:new_temp_job, :complete]
 
   # GET /jobs
   # GET /jobs.json
   def index
     @jobs = Job.all
+    render json: @jobs
+  end
+
+  def new_temp_job
+    body = JSON(request.body.read)
+    job = Job.new
+    job.content = body["content"]
+    job.created_at = body["created_at"]
+    job.updated_at = body["updated_at"]
+    job.title = body["title"]
+    job.job_type = body["job_type"]
+    job.status = body["status"]
+    job.tenant_id = body["tenant_id"]
+    job.vendor_id = body["vendor_id"]
+    job.start = body["start"]
+    job.end = body["end"]
+
+    job.save!
+
+    # now delete the processing job
+    to_delete_ids = Job.all.select { 
+      |j| j.status == "PROCESSING" && j.content = job.content && j.tenant_id = job.tenant_id
+    }.map {
+      |j| j.id
+    }
+
+    if to_delete_ids.length == 1
+      to_delete_ids.each do |id|
+        Job.delete(id)
+      end
+    end
+
+    render json: body
+  end
+
+  def complete
+    body = JSON(request.body.read)
+    
+    job_id = body["job"]["id"]
+    job_content = body["job"]["content"]
+    job_tenant_id = body["job"]["tenant_id"]
+    # first make this job done!
+    job = Job.find(job_id)
+    job.status = "COMPLETE"
+    job.save!
+    # now delete all the jobs
+    to_delete_ids = Job.all.select{ 
+      |j| (j.status == "LANDOWNER APPROVED" || 
+        j.status == "PROCESSING") && 
+        j.content == job_content && 
+        j.tenant_id == job_tenant_id 
+    }.map { 
+      |j| j.id 
+    }
+    to_delete_ids.each do |id|
+      Job.delete(id)
+    end
   end
 
   # GET /jobs/1
@@ -25,7 +83,9 @@ class JobsController < ApplicationController
   # POST /jobs.json
   def create
     @job = Job.new(job_params)
-
+    @job.vendor_id = 0
+    @job.tenant_id = session[:tenant_id]
+    @job.status = "PROCESSING"
     respond_to do |format|
       if @job.save
         format.html { redirect_to @job, notice: 'Job was successfully created.' }
@@ -71,6 +131,6 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:content, :Tenant_id)
+      params.require(:job).permit(:content, :tenant_id, :vendor_id)
     end
 end

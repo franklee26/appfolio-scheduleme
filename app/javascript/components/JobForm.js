@@ -28,10 +28,6 @@ class JobForm extends React.Component {
           <label htmlFor="content">Content:</label>
           <input type="text" id="title" name="job[content]" defaultValue={this.props.content} />
         </div>
-        <div className="field">
-          <label htmlFor="Tenant_id">Tenant_id:</label>
-          <input type="number" id="price" name="job[Tenant_id]" defaultValue={this.props.Tenant_id} />
-        </div>
         <div className="actions">
           <button type="submit">Submit</button>
         </div>

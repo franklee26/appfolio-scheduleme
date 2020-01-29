@@ -18,8 +18,13 @@ class CalendarController < ApplicationController
     access_token = client.access_token
     json_response = get_json_from_token(access_token)
 
+    freebusy_times = get_freebusy_response(access_token, calendar_ids)["calendars"]
+
+    busy_times = get_list_of_times(freebusy_times)
+    free_times = get_free_times(busy_times)
     # find or build the user
-    @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
+    @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], free_times)
+    session[:user_id] = @user.id
   end
 
   def user_selection
@@ -77,6 +82,7 @@ class CalendarController < ApplicationController
       events_temp = service.list_events(params[:calendar_id]).items
     end
     @events = []
+    @id = session[:user_id]
     # I should do some filtering
     events_temp.each do |event|
       if not event.end.date_time < (Time.now.localtime.beginning_of_day - 7.days)
@@ -94,7 +100,6 @@ class CalendarController < ApplicationController
 
     busy_times = get_list_of_times(freebusy_times)
     # find or build the user
-    user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"])
     @free_times = get_free_times(busy_times)
   end
   
@@ -186,42 +191,97 @@ class CalendarController < ApplicationController
     goodTimes
   end
 
-  def find_or_create_user(user_type, name, email)
+  def find_or_create_user(user_type, name, email, times)
     if user_type == "tenant"
       potential_tenant = Tenant.find_by(email: email)
-      if Tenant.find_by(email: email)
+      if potential_tenant
+        # for every login, reset freebusy times
+        potential_tenant.freebusies.delete_all
+        # now repopulate with these new times
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant: potential_tenant, landowner_id: 0, vendor_id: 0)
+          potential_tenant.freebusies << temp
+        end
+        potential_tenant.save!
+        session[:tenant_id] = potential_tenant.id
         potential_tenant
       else
-        Tenant.create(
-          id: Tenant.last ? Tenant.last.id + 1 : 0, 
+        tenant = Tenant.new(
           name: name, 
           email: email, 
           created_at: Time.now, 
           updated_at: Time.now, 
-          landowner_id: 0
+          landowner_id: 0,
+          freebusies: []
           )
+        tenant.save!
+        freebusies = []
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: tenant.id, landowner_id: 0, vendor_id: 0)
+          freebusies << temp
+        end
+        tenant.freebusies = freebusies
+        tenant.save!
+        session[:tenant_id] = tenant.id
+        tenant
       end
     elsif user_type == "landowner"
       potential_landowner = Landowner.find_by(email: email)
-      if Landowner.find_by(email: email)
+      if potential_landowner
+        potential_landowner.freebusies.delete_all
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner: potential_landowner, vendor_id: 0)
+          potential_landowner.freebusies << temp
+        end
+        potential_landowner.save!
         potential_landowner
       else
-        Landowner.create(
-          id: Landowner.last ? Landowner.last.id + 1 : 0, 
+        landowner = Landowner.new(
           name: name, 
-          email: email
+          email: email,
+          freebusies: [],
+          created_at: Time.now, 
+          updated_at: Time.now,
+          vendor_ids: []
           )
+        landowner.save!
+        freebusies = []
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: landowner.id, vendor_id: 0)
+          freebusies << temp
+        end
+        landowner.freebusies = freebusies
+        landowner.save!
+        landowner
       end
     elsif user_type == "vendor"
       potential_vendor = Vendor.find_by(email: email)
-      if Vendor.find_by(email: email)
-       potential_vendor
+      if potential_vendor
+        potential_vendor.freebusies.delete_all
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor: potential_vendor)
+          potential_vendor.freebusies << temp
+        end
+        potential_vendor.save!
+        potential_vendor
       else
-        Vendor.create(
-          id: Vendor.last ? Vendor.last.id + 1 : 0, 
+        vendor = Vendor.new(
           name: name, 
-          email: email
+          email: email,
+          freebusies: [],
+          created_at: Time.now, 
+          updated_at: Time.now,
+          landowner_ids: []
           )
+        vendor.save!
+        freebusies = []
+        times.each do |time|
+          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor_id: vendor.id)
+          freebusies << temp
+        end
+        vendor.freebusies = freebusies
+        vendor.save!
+        vendor
       end
     end
   end

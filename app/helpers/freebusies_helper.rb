@@ -1,0 +1,2 @@
+module FreebusiesHelper
+end

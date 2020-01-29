@@ -73,6 +73,7 @@ end
       "created_at": vendor.created_at,
       "updated_at": vendor.updated_at,
       "landowners": vendor.landowners,
+      "jobs": vendor.jobs,
       "zip": vendor.zip
     }
     render json: response, status: :ok
