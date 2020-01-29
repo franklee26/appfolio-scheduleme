@@ -36,12 +36,10 @@ class LandownerProfilePage extends Component {
       })
     }).then((response) => {return response.json()}).then((data) => {
       if (data.code == 200){
-        // TODO: add an alert that it worked.
-        console.log("successfully saved changes to db")
+        alert("Successfully Saved Shanges.")
       }
       else {
-        // TODO: add an alert that it failed
-        console.log("failed to save changes to db")
+        alert("Failed To Save Changes.")
       }
       // reset the state to reflect current db values
       this.componentDidMount()
