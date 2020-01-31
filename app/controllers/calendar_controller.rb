@@ -22,8 +22,15 @@ class CalendarController < ApplicationController
 
     busy_times = get_list_of_times(freebusy_times)
     free_times = get_free_times(busy_times)
+
+    auth_token_info = {
+      access_token: access_token,
+      expires_at: DateTime.now + Rational(3500, 86400) # made it 2 minutes sooner just in case
+    }
+
     # find or build the user
-    @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], free_times)
+    @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], free_times, auth_token_info.to_json, client.refresh_token)
+
     session[:user_id] = @user.id
   end
 
@@ -191,7 +198,7 @@ class CalendarController < ApplicationController
     goodTimes
   end
 
-  def find_or_create_user(user_type, name, email, times)
+  def find_or_create_user(user_type, name, email, times, auth_token, refresh_token)
     if user_type == "tenant"
       potential_tenant = Tenant.find_by(email: email)
       if potential_tenant
@@ -201,6 +208,11 @@ class CalendarController < ApplicationController
         times.each do |time|
           temp = Freebusy.new(start: time[:start], end: time[:end], tenant: potential_tenant, landowner_id: 0, vendor_id: 0)
           potential_tenant.freebusies << temp
+        end
+        # update auth token for this tenant
+        potential_tenant.auth_token = auth_token
+        if refresh_token != nil
+          potential_tenant.refresh_token = refresh_token
         end
         potential_tenant.save!
         session[:tenant_id] = potential_tenant.id
@@ -212,7 +224,9 @@ class CalendarController < ApplicationController
           created_at: Time.now, 
           updated_at: Time.now, 
           landowner_id: 0,
-          freebusies: []
+          freebusies: [], 
+          auth_token: auth_token, 
+          refresh_token: refresh_token
           )
         tenant.save!
         freebusies = []
