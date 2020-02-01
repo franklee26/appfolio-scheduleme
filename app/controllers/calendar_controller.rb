@@ -186,6 +186,9 @@ class CalendarController < ApplicationController
         if viable == true
           goodTimes << {"start": temp_time, "end": temp_time_one_hour}
         end
+        if goodTimes.length >= 40
+          return goodTimes
+        end
       end
     end
     goodTimes

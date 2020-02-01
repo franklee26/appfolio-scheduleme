@@ -31,6 +31,7 @@ class TenantsController < ApplicationController
       "state": @tenant.state,
       "zip": @tenant.zip,
       "jobs": @tenant.jobs,
+      "has_approved_job": (@tenant.jobs.map { |j| j.status }.include? 'LANDOWNER APPROVED')
     }
     render json: response
   end

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import styles from "../styles/calendar";
 
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
@@ -119,7 +120,11 @@ const handleClickJob = (event, job, landowner_id, tenant_id) => {
         })
       )
     )
-    .then(res => alert("Approved job!"))
+    .then(res =>
+      alert(
+        "Found available times! Confirm job by adding job to your calendar."
+      )
+    )
     .then(res => window.location.reload(false))
     .catch(error => console.log(error));
 };
@@ -305,6 +310,43 @@ const CalendarIndex = props => {
             <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
           </li>
         ))}
+        {tenantResponse.has_approved_job ? (
+          <h2 align="center" className={styles.ready_job}>
+            You have jobs ready to be scheduled! Go to your calendar to confirm
+            job.
+          </h2>
+        ) : null}
+        <h2>Jobs ready to be processed for submission: </h2>
+        {tenantResponse.jobs
+          .filter(job => job.status == "PROCESSING")
+          .map(job => (
+            <a
+              href="#"
+              onClick={e =>
+                handleClickJob(
+                  e,
+                  job,
+                  tenantResponse.landowner_id,
+                  tenantResponse.id
+                )
+              }
+            >
+              <li key={job.id}>content: {job.content}</li>
+            </a>
+          ))}
+        <h2>Scheduled & confirmed jobs: </h2>
+        {tenantResponse.jobs
+          .filter(job => job.status == "COMPLETE")
+          .map(job => (
+            <li key={job.id}>
+              content: {job.content} assigned vendor: {job.vendor_id}{" "}
+            </li>
+          ))}
+        <h2 align="center">
+          <a href="http://localhost:3000/jobs/new">
+            Click here to submit a new job.
+          </a>
+        </h2>
         {props.user.landowner_id == 0 ? (
           <h2>
             You do not have a landowner yet! Your landowner will assign you.
@@ -316,27 +358,6 @@ const CalendarIndex = props => {
             {landownerResponse.email}{" "}
           </h2>
         )}
-        <h2>
-          <a href="http://localhost:3000/jobs/new">
-            Click here to submit a new job.
-          </a>
-        </h2>
-        <h2>Jobs ready to be scheduled:</h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "PROCESSING")
-          .map(job => (
-            <a href="#" onClick={e => handleClickJob(e, job, tenantResponse.landowner_id, tenantResponse.id)}>
-              <li key={job.id}>content: {job.content}</li>
-            </a>
-          ))}
-        <h2>Scheduled jobs are listed below: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "COMPLETE")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned vendor: {job.vendor_id}{" "}
-            </li>
-          ))}
       </div>
     );
   } else if (props.user_type == "Landowner") {
