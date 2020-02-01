@@ -80,6 +80,10 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
 
 const handleClickJob = (event, job, landowner_id, tenant_id) => {
   event.preventDefault();
+  if (landowner_id === 0) {
+    alert("Can't schedule job yet! (You have no landowner yet.)");
+    return;
+  }
   fetch(
     `http://localhost:3000/freebusy/schedule/${landowner_id}/${tenant_id}`,
     {
@@ -87,6 +91,14 @@ const handleClickJob = (event, job, landowner_id, tenant_id) => {
     }
   )
     .then(response => response.json())
+    .then(response => {
+      if (response.vendors.length === 0) {
+        alert("Can't schedule job yet! (Can not find any free times)");
+        throw new Error("No free times found...");
+      } else {
+        return response;
+      }
+    })
     .then(response =>
       response.vendors.map(v =>
         fetch("http://localhost:3000/jobs/new_temp_job", {
@@ -108,7 +120,8 @@ const handleClickJob = (event, job, landowner_id, tenant_id) => {
       )
     )
     .then(res => alert("Approved job!"))
-    .then(res => window.location.reload(false));
+    .then(res => window.location.reload(false))
+    .catch(error => console.log(error));
 };
 
 /*
@@ -308,20 +321,13 @@ const CalendarIndex = props => {
             Click here to submit a new job.
           </a>
         </h2>
-        <h2>Awaiting landowner approval jobs are listed below: </h2>
+        <h2>Jobs ready to be scheduled:</h2>
         {tenantResponse.jobs
           .filter(job => job.status == "PROCESSING")
           .map(job => (
-            <li key={job.id}>content: {job.content}</li>
-          ))}
-
-        <h2>Landowner approved jobs are listed below: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "LANDOWNER APPROVED")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned vendor: {job.vendor_id}{" "}
-            </li>
+            <a href="#" onClick={e => handleClickJob(e, job, tenantResponse.landowner_id, tenantResponse.id)}>
+              <li key={job.id}>content: {job.content}</li>
+            </a>
           ))}
         <h2>Scheduled jobs are listed below: </h2>
         {tenantResponse.jobs
@@ -408,40 +414,6 @@ const CalendarIndex = props => {
               </a>
             </li>
           ))}
-        {landownerResponse.tenants.length ? (
-          <div>
-            <h2>Your Tenant's Jobs: </h2>
-            {landownerResponse.tenants.map(tenants =>
-              tenants.jobs.map(job =>
-                job.vendor_id != 0 ? (
-                  <li key={job.id}>
-                    CONFIRMED submitted by {tenants.name} id: {job.id} content:{" "}
-                    {job.content}
-                  </li>
-                ) : (
-                  <li key={job.id}>
-                    <a
-                      href="#"
-                      onClick={e =>
-                        handleClickJob(
-                          e,
-                          job,
-                          landownerResponse.id,
-                          job.tenant_id
-                        )
-                      }
-                    >
-                      UNCONFIRMED submitted by {tenants.name} id: {job.id}{" "}
-                      content: {job.content}{" "}
-                    </a>
-                  </li>
-                )
-              )
-            )}
-          </div>
-        ) : (
-          <h2>You have no pending tenant jobs.</h2>
-        )}
       </div>
     );
   } else if (props.user_type == "Vendor") {
