@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200126205404) do
+ActiveRecord::Schema.define(version: 20200202041534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20200126205404) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "phone_number"
   end
 
   create_table "landowners_vendors", id: false, force: :cascade do |t|
@@ -67,6 +68,7 @@ ActiveRecord::Schema.define(version: 20200126205404) do
     t.string "city"
     t.string "state"
     t.string "zip"
+    t.string "phone_number"
     t.index ["landowner_id"], name: "index_tenants_on_landowner_id"
   end
 
@@ -77,6 +79,7 @@ ActiveRecord::Schema.define(version: 20200126205404) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "zip"
+    t.string "phone_number"
   end
 
   add_foreign_key "freebusies", "landowners"

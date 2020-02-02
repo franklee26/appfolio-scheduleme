@@ -9,7 +9,7 @@ const Homepage = props => {
         props.tenants.map(tenant => (
           <li
             key={tenant.id}
-          >{`ID: ${tenant.id} Name: ${tenant.name} Email: ${tenant.email}`}</li>
+          >{`ID: ${tenant.id} Name: ${tenant.name} Email: ${tenant.email} Phone Number: ${tenant.phone_number}`}</li>
         ))
       ) : (
         <p1> No tenants in database </p1>
@@ -22,7 +22,7 @@ const Homepage = props => {
           .map(landowner => (
             <li
               key={landowner.id}
-            >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email}`}</li>
+            >{`ID: ${landowner.id} Name: ${landowner.name} Email: ${landowner.email} Phone Number: ${landowner.phone_number}`}</li>
           ))
       ) : (
         <p1> No landowners in database </p1>
@@ -32,7 +32,7 @@ const Homepage = props => {
         props.vendors.map(vendor => (
           <li
             key={vendor.id}
-          >{`ID: ${vendor.id} Name: ${vendor.name} Email: ${vendor.email}`}</li>
+          >{`ID: ${vendor.id} Name: ${vendor.name} Email: ${vendor.email} Phone Number: ${vendor.phone_number}`}</li>
         ))
       ) : (
         <p1> No vendors in database </p1>
