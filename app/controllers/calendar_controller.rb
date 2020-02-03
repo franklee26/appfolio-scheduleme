@@ -5,26 +5,12 @@ require 'rest-client'
 class CalendarController < ApplicationController
   skip_before_action :verify_authenticity_token
   def index
-    client = Signet::OAuth2::Client.new(clientOptions)
-    client.update!(session[:authorization])
 
-    service = Google::Apis::CalendarV3::CalendarService.new
-    service.authorization = client
+    access_token = retrieveAccessToken(session[:user_id], session[:user_type])
+    @calendars = get_user_calendars(access_token)
+    calendar_ids = get_list_of_cal_ids(@calendars) #prob not needed anymore
 
-    # this is kinda stupid, I don't really know another way lmao
-    @calendars = service.list_calendar_lists.items
-    calendar_ids = get_list_of_cal_ids(@calendars)
-
-    access_token = client.access_token
-    json_response = get_json_from_token(access_token)
-
-    freebusy_times = get_freebusy_response(access_token, calendar_ids)["calendars"]
-
-    busy_times = get_list_of_times(freebusy_times)
-    free_times = get_free_times(busy_times)
-    # find or build the user
-    @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], free_times)
-    session[:user_id] = @user.id
+    @user = find_user(session[:user_id], session[:user_type]);
   end
 
   def user_selection
@@ -32,11 +18,18 @@ class CalendarController < ApplicationController
 
   # returns this response: https://developers.google.com/calendar/v3/reference/calendars#resource
   def get
+
+    # Get user's access token
+    user_type = session[:user_type]
+    user_id = session[:user_id]
+    access_token = retrieveAccessToken(user_id, user_type)
+
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
       params[:calendar_id]+"/events?alt=json&access_token=" + 
-      session[:authorization]["access_token"]
+      access_token
     )
+    
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     response = Net::HTTP.get(uri)
@@ -44,11 +37,17 @@ class CalendarController < ApplicationController
   end
 
   def post
+    # Get user's access token
+    user_type = session[:user_type]
+    user_id = session[:user_id]
+    access_token = retrieveAccessToken(user_id, user_type)
+
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
       params[:calendar_id]+"/events?alt=json&access_token=" + 
-      session[:authorization]["access_token"]
+      access_token
     )
+
     header = {'Content-Type': 'application/json'}
     request_body = {
       "start": {
@@ -71,8 +70,10 @@ class CalendarController < ApplicationController
   end
 
   def events
+    access_token = retrieveAccessToken(session[:user_id], session[:user_type])
+
     client = Signet::OAuth2::Client.new(clientOptions)
-    client.update!(session[:authorization])
+    client.update!(access_token: access_token)
 
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
@@ -102,12 +103,35 @@ class CalendarController < ApplicationController
     # find or build the user
     @free_times = get_free_times(busy_times)
   end
+
+  def schedule
+    landowner_id = params[:landowner_id]
+    tenant_id = params[:tenant_id]
+    # returns a list of viable vendors
+    viable_vendors = get_viable_vendors(landowner_id, tenant_id)
+    body = {
+      vendors: viable_vendors
+    }
+
+    render json: body
+  end
   
   def callback
     client = Signet::OAuth2::Client.new(clientOptions)
     client.code = params[:code]
     response = client.fetch_access_token!
     session[:authorization] = response
+
+    access_token = client.access_token
+    json_response = get_json_from_token(access_token) # look into whether this needs to be here
+
+    auth_token_info = {
+      access_token: access_token,
+      expires_at: DateTime.now + Rational(3500, 86400) # made it 2 minutes sooner just in case
+    }
+
+    @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], auth_token_info.to_json, client.refresh_token)
+    session[:user_id] = @user.id
 
     redirect_to '/calendar'
   end
@@ -153,6 +177,16 @@ class CalendarController < ApplicationController
     answer
   end
 
+  def get_user_calendars(access_token)
+    client = Signet::OAuth2::Client.new(clientOptions)
+    client.update!(access_token: access_token)
+
+    service = Google::Apis::CalendarV3::CalendarService.new
+    service.authorization = client
+    user_calendars = service.list_calendar_lists.items
+    user_calendars
+  end
+
   def get_list_of_cal_ids(calendars)
     answer = []
     calendars.each do |c|
@@ -191,16 +225,28 @@ class CalendarController < ApplicationController
     goodTimes
   end
 
-  def find_or_create_user(user_type, name, email, times)
+  def find_user(user_id, user_type) 
+    user = nil
+    if user_type == "tenant"
+      user = Tenant.find_by(id: user_id)
+    elsif user_type == "vendor"
+      user = Vendor.find_by(id: user_id)
+    elsif user_type == "landowner"
+      user = Landowner.find_by(id: user_id)
+    end
+    user
+  end
+
+  def find_or_create_user(user_type, name, email, auth_token, refresh_token)
+
     if user_type == "tenant"
       potential_tenant = Tenant.find_by(email: email)
       if potential_tenant
-        # for every login, reset freebusy times
-        potential_tenant.freebusies.delete_all
-        # now repopulate with these new times
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant: potential_tenant, landowner_id: 0, vendor_id: 0)
-          potential_tenant.freebusies << temp
+
+        # update auth token for this tenant
+        potential_tenant.auth_token = auth_token
+        if refresh_token != nil
+          potential_tenant.refresh_token = refresh_token
         end
         potential_tenant.save!
         session[:tenant_id] = potential_tenant.id
@@ -211,78 +257,112 @@ class CalendarController < ApplicationController
           email: email, 
           created_at: Time.now, 
           updated_at: Time.now, 
-          landowner_id: 0,
-          freebusies: []
+          landowner_id: 0, 
+          auth_token: auth_token, 
+          refresh_token: refresh_token
           )
         tenant.save!
-        freebusies = []
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: tenant.id, landowner_id: 0, vendor_id: 0)
-          freebusies << temp
-        end
-        tenant.freebusies = freebusies
-        tenant.save!
+
         session[:tenant_id] = tenant.id
         tenant
       end
     elsif user_type == "landowner"
       potential_landowner = Landowner.find_by(email: email)
       if potential_landowner
-        potential_landowner.freebusies.delete_all
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner: potential_landowner, vendor_id: 0)
-          potential_landowner.freebusies << temp
+
+        # update auth token for this landowner
+        potential_landowner.auth_token = auth_token
+        if refresh_token != nil
+          potential_landowner.refresh_token = refresh_token
         end
+
         potential_landowner.save!
         potential_landowner
       else
         landowner = Landowner.new(
           name: name, 
           email: email,
-          freebusies: [],
           created_at: Time.now, 
           updated_at: Time.now,
-          vendor_ids: []
+          vendor_ids: [],
+          auth_token: auth_token, 
+          refresh_token: refresh_token
           )
-        landowner.save!
-        freebusies = []
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: landowner.id, vendor_id: 0)
-          freebusies << temp
-        end
-        landowner.freebusies = freebusies
         landowner.save!
         landowner
       end
     elsif user_type == "vendor"
       potential_vendor = Vendor.find_by(email: email)
       if potential_vendor
-        potential_vendor.freebusies.delete_all
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor: potential_vendor)
-          potential_vendor.freebusies << temp
+
+        # update auth token for this vendor
+        potential_vendor.auth_token = auth_token
+        if refresh_token != nil
+          potential_vendor.refresh_token = refresh_token
         end
         potential_vendor.save!
+
         potential_vendor
       else
         vendor = Vendor.new(
           name: name, 
           email: email,
-          freebusies: [],
           created_at: Time.now, 
           updated_at: Time.now,
-          landowner_ids: []
+          landowner_ids: [], 
+          auth_token: auth_token, 
+          refresh_token: refresh_token
           )
         vendor.save!
-        freebusies = []
-        times.each do |time|
-          temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor_id: vendor.id)
-          freebusies << temp
-        end
-        vendor.freebusies = freebusies
-        vendor.save!
+
         vendor
       end
     end
+  end
+
+  private
+
+  def get_viable_vendors(landowner_id, tenant_id)
+    ans = []
+    landowner = Landowner.find_by(id: landowner_id)
+    tenant = Tenant.find_by(id: tenant_id)
+    vendors = landowner.vendors
+
+    # retrieve access token for tenant's account
+    access_token = retrieveAccessToken(tenant.id, "tenant")
+
+    tenant_calendars = get_user_calendars(access_token)
+    tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
+
+    # get tenant free times
+    t_freebusy_times = get_freebusy_response(access_token, tenant_calendar_ids)["calendars"] 
+    t_busy_times = get_list_of_times(t_freebusy_times)
+    tenant_free_times = get_free_times(t_busy_times)
+
+    tenant_start = tenant_free_times.map { |t| t[:start] }
+
+    vendors.each do |v|
+      # retrieve access token for vendor's account
+      access_token = retrieveAccessToken(v.id, "vendor")
+
+      vendor_calendars = get_user_calendars(access_token)
+      vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
+
+      # get vendor free times
+      v_freebusy_times = get_freebusy_response(access_token, vendor_calendar_ids)["calendars"] 
+      v_busy_times = get_list_of_times(v_freebusy_times)
+      vendor_free_times = get_free_times(v_busy_times)
+
+      # add free busy times to array "ans" until it reaches 10. 
+      vendor_free_times.each do |f|
+        if ans.length >= 10
+          return ans
+        end
+        if tenant_start.include? f[:start]
+          ans << {"vendor": v, "start": f[:start], "end": f[:end]}
+        end
+      end
+    end
+    ans
   end
 end
