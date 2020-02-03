@@ -10,6 +10,7 @@ class JobsController < ApplicationController
   end
 
   def new_temp_job
+
     body = JSON(request.body.read)
     job = Job.new
     job.content = body["content"]
@@ -24,6 +25,7 @@ class JobsController < ApplicationController
     job.end = body["end"]
 
     job.save!
+
 
     # now delete the processing job
     to_delete_ids = Job.all.select { 

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/calendar";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import CardColumns from "react-bootstrap/CardColumns";
+import { shortFormatDate } from "./Events.js";
 
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
@@ -86,7 +90,7 @@ const handleClickJob = (event, job, landowner_id, tenant_id) => {
     return;
   }
   fetch(
-    `http://localhost:3000/freebusy/schedule/${landowner_id}/${tenant_id}`,
+    `http://localhost:3000/calendar/schedule/${landowner_id}/${tenant_id}`,
     {
       method: "GET"
     }
@@ -301,52 +305,92 @@ const CalendarIndex = props => {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2>
-          {props.user.name}'s list of calendars under email {props.user.email}
-        </h2>
-        <h2>Please select a calendar below to add an event.</h2>
-        {props.calendars.map(calendar => (
-          <li key={calendar.id}>
-            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-          </li>
-        ))}
         {tenantResponse.has_approved_job ? (
           <h2 align="center" className={styles.ready_job}>
             You have jobs ready to be scheduled! Go to your calendar to confirm
             job.
           </h2>
         ) : null}
-        <h2>Jobs ready to be processed for submission: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "PROCESSING")
-          .map(job => (
-            <a
-              href="#"
-              onClick={e =>
-                handleClickJob(
-                  e,
-                  job,
-                  tenantResponse.landowner_id,
-                  tenantResponse.id
-                )
-              }
-            >
-              <li key={job.id}>content: {job.content}</li>
+        <h2 align="center">
+          {props.user.name}'s list of calendars under email {props.user.email}
+        </h2>
+        <CardColumns>
+          {props.calendars.map(calendar => (
+            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+              <Card border="info" style={{ width: "18rem" }}>
+                <Card.Body>
+                  <Card.Title>{calendar.summary}</Card.Title>
+                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                </Card.Body>
+              </Card>
             </a>
           ))}
+        </CardColumns>
+
+        <Button
+          variant="primary"
+          href="http://localhost:3000/jobs/new"
+          size="lg"
+          block
+        >
+          Click here to submit a new job
+        </Button>
+        <h2>Jobs ready to be processed for submission: </h2>
+
+        <CardColumns>
+          {tenantResponse.jobs
+            .filter(job => job.status == "PROCESSING")
+            .map(job => (
+              <a
+                style={{ cursor: "pointer" }}
+                href="#"
+                onClick={e =>
+                  handleClickJob(
+                    e,
+                    job,
+                    tenantResponse.landowner_id,
+                    tenantResponse.id
+                  )
+                }
+              >
+                <Card
+                  bg="warning"
+                  text="white"
+                  border="warning"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Header>Click to confirm job request</Card.Header>
+                  <Card.Body>
+                    <Card.Title>Job type: n/a</Card.Title>
+                    <Card.Text>Description: {job.content}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </a>
+            ))}
+        </CardColumns>
+
         <h2>Scheduled & confirmed jobs: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "COMPLETE")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned vendor: {job.vendor_id}{" "}
-            </li>
-          ))}
-        <h2 align="center">
-          <a href="http://localhost:3000/jobs/new">
-            Click here to submit a new job.
-          </a>
-        </h2>
+        <CardColumns>
+          {tenantResponse.jobs
+            .filter(job => job.status == "COMPLETE")
+            .map(job => (
+              <Card
+                bg="success"
+                text="white"
+                border="success"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>Job with vendor {job.vendor_id}</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Scheduled for {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
+                  </Card.Title>
+                  <Card.Text>Description: {job.content}</Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
         {props.user.landowner_id == 0 ? (
           <h2>
             You do not have a landowner yet! Your landowner will assign you.
