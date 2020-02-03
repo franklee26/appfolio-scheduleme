@@ -439,25 +439,52 @@ const CalendarIndex = props => {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2>
+        <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
         </h2>
-        <h2>Please select a calendar below to add an event.</h2>
-        {props.calendars.map(calendar => (
-          <li key={calendar.id}>
-            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-          </li>
-        ))}
+        <CardColumns>
+          {props.calendars.map(calendar => (
+            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+              <Card border="info" style={{ width: "18rem" }}>
+                <Card.Body>
+                  <Card.Title>{calendar.summary}</Card.Title>
+                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                </Card.Body>
+              </Card>
+            </a>
+          ))}
+        </CardColumns>
+
         {landownerResponse.tenants.length ? (
           <div>
             <h2>Your Tenants (click to delete tenant): </h2>
-            {landownerResponse.tenants.map(tenant => (
-              <li key={tenant.id}>
-                <a href="#" onClick={e => handleDeleteTenant(e, tenant.id)}>
-                  {tenant.name}
+            <CardColumns>
+              {landownerResponse.tenants.map(tenant => (
+                <a
+                  style={{ cursor: "pointer" }}
+                  href="#"
+                  onClick={e => handleDeleteTenant(e, tenant.id)}
+                >
+                  <Card
+                    bg="info"
+                    text="white"
+                    border="info"
+                    style={{ width: "18rem" }}
+                  >
+                    <Card.Body>
+                      <Card.Title>{tenant.name}</Card.Title>
+                      <Card.Text>
+                        Email: {tenant.email}
+                        <br />
+                        {tenant.street_address}
+                        <br />
+                        {tenant.city}, {tenant.state} {tenant.zip}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
                 </a>
-              </li>
-            ))}
+              ))}
+            </CardColumns>
           </div>
         ) : (
           <h2>You have no tenants.</h2>
@@ -465,51 +492,100 @@ const CalendarIndex = props => {
         {landownerResponse.vendors.length ? (
           <div>
             <h2>Your vendors (click to delete vendor): </h2>
-            {landownerResponse.vendors.map(vendor => (
-              <li key={vendor.id}>
+            <CardColumns>
+              {landownerResponse.vendors.map(vendor => (
                 <a
+                  style={{ cursor: "pointer" }}
                   href="#"
                   onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}
                 >
-                  {vendor.name} ({vendor.occupation})
+                  <Card
+                    bg="info"
+                    text="white"
+                    border="info"
+                    style={{ width: "18rem" }}
+                  >
+                    <Card.Body>
+                      <Card.Title>{vendor.name}</Card.Title>
+                      <Card.Text>
+                        Email: {vendor.email}
+                        <br />
+                        Occupation: {vendor.occupation}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
                 </a>
-              </li>
-            ))}
+              ))}
+            </CardColumns>
           </div>
         ) : (
-          <h2>You have no vendors.</h2>
+          <h2>You have no vendors</h2>
         )}
+
         <h2>Select user below to add as your listed tenant.</h2>
-        {tenantResponse
-          .filter(tenant => tenant.id != 0)
-          .map(tenant => (
-            <li key={tenant.id}>
+        <CardColumns>
+          {tenantResponse
+            .filter(tenant => tenant.id != 0)
+            .map(tenant => (
               <a
+                style={{ cursor: "pointer" }}
                 href="#"
                 onClick={e => handleClickTenant(e, props.user.id, tenant.id)}
               >
-                {tenant.name}
+                <Card
+                  bg="secondary"
+                  text="white"
+                  border="secondary"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Body>
+                    <Card.Title>{tenant.name}</Card.Title>
+                    <Card.Text>
+                      Email: {tenant.email}
+                      <br />
+                      {tenant.street_address}
+                      <br />
+                      {tenant.city}, {tenant.state} {tenant.zip}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
               </a>
-            </li>
-          ))}
+            ))}
+        </CardColumns>
+
         <h2>Select user below to add as your listed vendor.</h2>
-        {vendorResponse
-          .filter(
-            vendor =>
-              vendor.landowners.filter(
-                landowner => landowner.id == props.user.id
-              ).length == 0 && vendor.id != 0
-          )
-          .map(vendor => (
-            <li key={vendor.id}>
+        <CardColumns>
+          {vendorResponse
+            .filter(
+              vendor =>
+                vendor.landowners.filter(
+                  landowner => landowner.id == props.user.id
+                ).length == 0 && vendor.id != 0
+            )
+            .map(vendor => (
               <a
+                style={{ cursor: "pointer" }}
                 href="#"
                 onClick={e => handleClickVendor(e, props.user.id, vendor.id)}
               >
-                {vendor.name} ({vendor.occupation})
+                <Card
+                  bg="secondary"
+                  text="white"
+                  border="secondary"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Body>
+                    <Card.Title>{vendor.name}</Card.Title>
+                    <Card.Text>
+                      Email: {vendor.email}
+                      <br />
+                      Occupation: {vendor.occupation}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
               </a>
-            </li>
-          ))}
+            ))}
+        </CardColumns>
       </div>
     );
   } else if (props.user_type == "Vendor") {
