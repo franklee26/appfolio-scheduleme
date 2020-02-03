@@ -5,23 +5,12 @@ require 'rest-client'
 class CalendarController < ApplicationController
   skip_before_action :verify_authenticity_token
   def index
-    # client = Signet::OAuth2::Client.new(clientOptions)
-    # client.update!(session[:authorization])
-
-    # service = Google::Apis::CalendarV3::CalendarService.new
-    # service.authorization = client
-
-    # # this is kinda stupid, I don't really know another way lmao
-    # @calendars = service.list_calendar_lists.items
-    # calendar_ids = get_list_of_cal_ids(@calendars)
 
     access_token = retrieveAccessToken(session[:user_id], session[:user_type])
     @calendars = get_user_calendars(access_token)
     calendar_ids = get_list_of_cal_ids(@calendars) #prob not needed anymore
 
     @user = find_user(session[:user_id], session[:user_type]);
-    binding.pry
-
   end
 
   def user_selection
@@ -59,7 +48,6 @@ class CalendarController < ApplicationController
       access_token
     )
 
-    binding.pry
     header = {'Content-Type': 'application/json'}
     request_body = {
       "start": {
@@ -125,7 +113,6 @@ class CalendarController < ApplicationController
       vendors: viable_vendors
     }
 
-    binding.pry
     render json: body
   end
   
@@ -138,10 +125,6 @@ class CalendarController < ApplicationController
     access_token = client.access_token
     json_response = get_json_from_token(access_token) # look into whether this needs to be here
 
-    #freebusy_times = get_freebusy_response(access_token, calendar_ids)["calendars"] # will probably delete
-    #busy_times = get_list_of_times(freebusy_times)
-    #free_times = get_free_times(busy_times)  # Delete these two also
-
     auth_token_info = {
       access_token: access_token,
       expires_at: DateTime.now + Rational(3500, 86400) # made it 2 minutes sooner just in case
@@ -149,8 +132,6 @@ class CalendarController < ApplicationController
 
     @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], auth_token_info.to_json, client.refresh_token)
     session[:user_id] = @user.id
-
-    binding.pry
 
     redirect_to '/calendar'
   end
@@ -200,12 +181,9 @@ class CalendarController < ApplicationController
     client = Signet::OAuth2::Client.new(clientOptions)
     client.update!(access_token: access_token)
 
-    binding.pry
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
-    binding.pry
     user_calendars = service.list_calendar_lists.items
-    binding.pry
     user_calendars
   end
 
@@ -264,13 +242,6 @@ class CalendarController < ApplicationController
     if user_type == "tenant"
       potential_tenant = Tenant.find_by(email: email)
       if potential_tenant
-        # for every login, reset freebusy times
-        # potential_tenant.freebusies.delete_all
-        # now repopulate with these new times
-        # times.each do |time|
-        #   temp = Freebusy.new(start: time[:start], end: time[:end], tenant: potential_tenant, landowner_id: 0, vendor_id: 0)
-        #   potential_tenant.freebusies << temp
-        # end
 
         # update auth token for this tenant
         potential_tenant.auth_token = auth_token
@@ -292,24 +263,13 @@ class CalendarController < ApplicationController
           refresh_token: refresh_token
           )
         tenant.save!
-        # freebusies = []
-        # times.each do |time|
-        #   temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: tenant.id, landowner_id: 0, vendor_id: 0)
-        #   freebusies << temp
-        # end
-        # tenant.freebusies = freebusies
-        tenant.save!
+
         session[:tenant_id] = tenant.id
         tenant
       end
     elsif user_type == "landowner"
       potential_landowner = Landowner.find_by(email: email)
       if potential_landowner
-        # potential_landowner.freebusies.delete_all
-        # times.each do |time|
-        #   temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner: potential_landowner, vendor_id: 0)
-        #   potential_landowner.freebusies << temp
-        # end
 
         # update auth token for this landowner
         potential_landowner.auth_token = auth_token
@@ -331,31 +291,19 @@ class CalendarController < ApplicationController
           refresh_token: refresh_token
           )
         landowner.save!
-        # freebusies = []
-        # times.each do |time|
-        #   temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: landowner.id, vendor_id: 0)
-        #   freebusies << temp
-        # end
-        # landowner.freebusies = freebusies
-        # landowner.save!
         landowner
       end
     elsif user_type == "vendor"
       potential_vendor = Vendor.find_by(email: email)
       if potential_vendor
-        # potential_vendor.freebusies.delete_all
-        # times.each do |time|
-        #   temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor: potential_vendor)
-        #   potential_vendor.freebusies << temp
-        # end
 
         # update auth token for this vendor
         potential_vendor.auth_token = auth_token
         if refresh_token != nil
           potential_vendor.refresh_token = refresh_token
         end
-
         potential_vendor.save!
+
         potential_vendor
       else
         vendor = Vendor.new(
@@ -369,13 +317,7 @@ class CalendarController < ApplicationController
           refresh_token: refresh_token
           )
         vendor.save!
-        # freebusies = []
-        # times.each do |time|
-        #   temp = Freebusy.new(start: time[:start], end: time[:end], tenant_id: 0, landowner_id: 0, vendor_id: vendor.id)
-        #   freebusies << temp
-        # end
-        # vendor.freebusies = freebusies
-        # vendor.save!
+
         vendor
       end
     end
@@ -392,46 +334,20 @@ class CalendarController < ApplicationController
     # retrieve access token for tenant's account
     access_token = retrieveAccessToken(tenant.id, "tenant")
 
-# # set up client object with the valid access token 
-#   t_client = Signet::OAuth2::Client.new(clientOptions)
-#   t_client.update!(access_token: access_token)
-
-#   # create service object and put client in service authorization
-#   t_service = Google::Apis::CalendarV3::CalendarService.new
-#   t_service.authorization = t_client
-
-#   # gets list of tenant calendars. Frank said this can be improved
-#   t_calendars = t_service.list_calendar_lists.items
-#   t_calendar_ids = get_list_of_cal_ids(t_calendars)
-    binding.pry
     tenant_calendars = get_user_calendars(access_token)
     tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
-
-    binding.pry
 
     # get tenant free times
     t_freebusy_times = get_freebusy_response(access_token, tenant_calendar_ids)["calendars"] 
     t_busy_times = get_list_of_times(t_freebusy_times)
     tenant_free_times = get_free_times(t_busy_times)
 
-    binding.pry
     tenant_start = tenant_free_times.map { |t| t[:start] }
 
     vendors.each do |v|
       # retrieve access token for vendor's account
       access_token = retrieveAccessToken(v.id, "vendor")
 
-      # # set up client object with the valid access token 
-      # client = Signet::OAuth2::Client.new(clientOptions)
-      # client.update!(access_token: access_token)
-
-      # # create service object and put client in service authorization
-      # service = Google::Apis::CalendarV3::CalendarService.new
-      # service.authorization = client
-
-      # # gets list of vendor calendars. Frank said this can be improved
-      # @calendars = service.list_calendar_lists.items
-      # calendar_ids = get_list_of_cal_ids(@calendars)
       vendor_calendars = get_user_calendars(access_token)
       vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
 
@@ -440,7 +356,6 @@ class CalendarController < ApplicationController
       v_busy_times = get_list_of_times(v_freebusy_times)
       vendor_free_times = get_free_times(v_busy_times)
 
-      binding.pry
       # add free busy times to array "ans" until it reaches 10. 
       vendor_free_times.each do |f|
         if ans.length >= 10
@@ -451,36 +366,6 @@ class CalendarController < ApplicationController
         end
       end
     end
-
-    binding.pry
     ans
   end
-
-
-  # def get_viable_vendors(landowner_id, tenant_id)
-  #   ans = []
-  #   landowner = Landowner.find(landowner_id)
-  #   tenant = Tenant.find(tenant_id)
-  #   vendors = landowner.vendors
-    
-  #   landowner_start = landowner.freebusies.map { |l| l.start }
-  #   tenant_start = tenant.freebusies.map { |t| t.start }
-  #   landowner_tenant = landowner_start & tenant_start
-  #   if not landowner_tenant
-  #     # nothing in common among landowner_tenant
-  #     return []
-  #   end
-  #   # ok so there's sitll hope
-  #   vendors.each do |v|
-  #     v.freebusies.each do |f|
-  #       if ans.length >= 10
-  #         return ans
-  #       end
-  #       if landowner_tenant.include? f.start
-  #         ans << {"vendor": v, "start": f.start, "end": f.end}
-  #       end
-  #     end
-  #   end
-  #   ans
-  # end
 end

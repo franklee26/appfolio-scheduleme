@@ -33,7 +33,6 @@ class LandownersController < ApplicationController
       "tenants": tenants,
       "vendors": landowner.vendors
     }
-    binding.pry
     render json: response, status: :ok
   end
 

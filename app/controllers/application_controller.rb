@@ -57,8 +57,6 @@ class ApplicationController < ActionController::Base
     end
     user.save!
 
-    binding.pry
-
     # return access token
     new_auth_token[:access_token]
   end
@@ -84,8 +82,6 @@ class ApplicationController < ActionController::Base
     # Check if access token has expired. If no, return access token. If yes, refresh then return new one. 
     current_time = DateTime.now
     expired_time = DateTime.parse(auth_token["expires_at"])
-
-    binding.pry
 
     if current_time - expired_time < 0
       auth_token["access_token"]
