@@ -123,6 +123,7 @@ class CalendarController < ApplicationController
     session[:authorization] = response
 
     access_token = client.access_token
+    refresh_token = client.refresh_token
     json_response = get_json_from_token(access_token) # look into whether this needs to be here
 
     auth_token_info = {
@@ -130,9 +131,41 @@ class CalendarController < ApplicationController
       expires_at: DateTime.now + Rational(3500, 86400) # made it 2 minutes sooner just in case
     }
 
+    # Find and create user if not exist. Then store into our session
     @user = find_or_create_user(session[:user_type], json_response["name"], json_response["email"], auth_token_info.to_json, client.refresh_token)
     session[:user_id] = @user.id
 
+    # For each user type of the same email, if it exists in our database already, update its refresh/access token
+    # For Tenant
+    tenant = Tenant.find_by(email: @user.email)
+    if tenant != nil
+      tenant.auth_token = auth_token_info.to_json
+      if refresh_token != nil
+        tenant.refresh_token = refresh_token
+      end
+      tenant.save!
+    end
+
+    # For Landowner
+    landowner = Landowner.find_by(email: @user.email)
+    if landowner != nil
+      landowner.auth_token = auth_token_info.to_json
+      if refresh_token != nil
+        landowner.refresh_token = refresh_token
+      end
+      landowner.save!
+    end
+
+    # For Vendors
+    vendor = Vendor.find_by(email: @user.email)
+    if vendor != nil
+      vendor.auth_token = auth_token_info.to_json
+      if refresh_token != nil
+        vendor.refresh_token = refresh_token
+      end
+      vendor.save!
+    end
+    
     redirect_to '/calendar'
   end
 
