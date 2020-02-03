@@ -258,7 +258,6 @@ class CalendarController < ApplicationController
           created_at: Time.now, 
           updated_at: Time.now, 
           landowner_id: 0, 
-          freebusies: [],
           auth_token: auth_token, 
           refresh_token: refresh_token
           )
@@ -283,7 +282,6 @@ class CalendarController < ApplicationController
         landowner = Landowner.new(
           name: name, 
           email: email,
-          freebusies: [],
           created_at: Time.now, 
           updated_at: Time.now,
           vendor_ids: [],
@@ -309,7 +307,6 @@ class CalendarController < ApplicationController
         vendor = Vendor.new(
           name: name, 
           email: email,
-          freebusies: [],
           created_at: Time.now, 
           updated_at: Time.now,
           landowner_ids: [], 

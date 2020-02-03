@@ -10,23 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200202024104) do
+ActiveRecord::Schema.define(version: 20200203033338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "freebusies", force: :cascade do |t|
-    t.datetime "start"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "tenant_id"
-    t.bigint "landowner_id"
-    t.bigint "vendor_id"
-    t.datetime "end"
-    t.index ["landowner_id"], name: "index_freebusies_on_landowner_id"
-    t.index ["tenant_id"], name: "index_freebusies_on_tenant_id"
-    t.index ["vendor_id"], name: "index_freebusies_on_vendor_id"
-  end
 
   create_table "jobs", force: :cascade do |t|
     t.text "content"
@@ -85,9 +72,6 @@ ActiveRecord::Schema.define(version: 20200202024104) do
     t.string "refresh_token"
   end
 
-  add_foreign_key "freebusies", "landowners"
-  add_foreign_key "freebusies", "tenants"
-  add_foreign_key "freebusies", "vendors"
   add_foreign_key "jobs", "tenants"
   add_foreign_key "jobs", "vendors"
   add_foreign_key "tenants", "landowners"
