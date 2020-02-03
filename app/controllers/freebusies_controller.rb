@@ -15,28 +15,38 @@ class FreebusiesController < ApplicationController
 
   def get_viable_vendors(landowner_id, tenant_id)
     ans = []
-    landowner = Landowner.find(landowner_id)
-    tenant = Tenant.find(tenant_id)
+    landowner = Landowner.find(landowner)
     vendors = landowner.vendors
-    
-    landowner_start = landowner.freebusies.map { |l| l.start }
-    tenant_start = tenant.freebusies.map { |t| t.start }
-    landowner_tenant = landowner_start & tenant_start
-    if not landowner_tenant
-      # nothing in common among landowner_tenant
-      return []
-    end
-    # ok so there's sitll hope
-    vendors.each do |v|
-      v.freebusies.each do |f|
-        if ans.length >= 10
-          return ans
-        end
-        if landowner_tenant.include? f.start
-          ans << {"vendor": v, "start": f.start, "end": f.end}
-        end
-      end
-    end
-    ans
+
+    # vendors.each do |v|
+    #   vendor_freebusy = 
+    # end
   end
+
+  # def get_viable_vendors(landowner_id, tenant_id)
+  #   ans = []
+  #   landowner = Landowner.find(landowner_id)
+  #   tenant = Tenant.find(tenant_id)
+  #   vendors = landowner.vendors
+    
+  #   landowner_start = landowner.freebusies.map { |l| l.start }
+  #   tenant_start = tenant.freebusies.map { |t| t.start }
+  #   landowner_tenant = landowner_start & tenant_start
+  #   if not landowner_tenant
+  #     # nothing in common among landowner_tenant
+  #     return []
+  #   end
+  #   # ok so there's sitll hope
+  #   vendors.each do |v|
+  #     v.freebusies.each do |f|
+  #       if ans.length >= 10
+  #         return ans
+  #       end
+  #       if landowner_tenant.include? f.start
+  #         ans << {"vendor": v, "start": f.start, "end": f.end}
+  #       end
+  #     end
+  #   end
+  #   ans
+  # end
 end

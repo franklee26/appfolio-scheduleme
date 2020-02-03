@@ -11,21 +11,27 @@ class ApplicationController < ActionController::Base
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
       scope: [Google::Apis::CalendarV3::AUTH_CALENDAR, "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
-      redirect_uri: "http://localhost:3000/calendar/callback", 
-      prompt: "consent"
+      redirect_uri: "http://localhost:3000/calendar/callback",
+      prompt: 'consent'
 		}
   end
 
 
   # Refresh the token and returns the new access token. 
   # TODO: add checks for landowner and Vendor as well
-  def refreshToken(user_email, user_type)
+  def refreshToken(user_id, user_type)
 
-    # get stored access_token and refresh_token
+    # Get user using user_id and user_type
     user = nil
     if user_type == "tenant"
-      user = Tenant.find_by(email: user_email)
+      user = Tenant.find_by(id: user_id)
+    elsif user_type == "vendor"
+      user = Vendor.find_by(id: user_id)
+    elsif user_type == "landowner"
+      user = Landowner.find_by(id: user_id)
     end
+
+    # get stored access_token and refresh_token
     auth_token = JSON.parse(user.auth_token) #and access specific field
     refresh_token = user.refresh_token
 
@@ -45,25 +51,33 @@ class ApplicationController < ActionController::Base
     }
 
     # save token information into database for user
-    user.auth_token = new_auth_token
+    user.auth_token = new_auth_token.to_json
     if refresh_token != nil
       user.refresh_token = refresh_token
     end
     user.save!
 
+    binding.pry
+
     # return access token
-    new_auth_token
+    new_auth_token[:access_token]
   end
 
 
   # Checks if access token has expired. If it has expired, it will refresh it. Returns a json with the access token and the expiration time. 
-  def retrieveAccessToken(user_email, user_type)
+  def retrieveAccessToken(user_id, user_type)
 
-    # Get user auth information. Contains access token and refresh token. 
+    # Get user using user_id and user_type
     user = nil
     if user_type == "tenant"
-      user = Tenant.find_by(email: user_email)
+      user = Tenant.find_by(id: user_id)
+    elsif user_type == "vendor"
+      user = Vendor.find_by(id: user_id)
+    elsif user_type == "landowner"
+      user = Landowner.find_by(id: user_id)
     end
+
+    # Get user auth information. Contains access token and refresh token. 
     auth_token = JSON.parse(user.auth_token) #and access specific field
     refresh_token = user.refresh_token
 
@@ -71,10 +85,12 @@ class ApplicationController < ActionController::Base
     current_time = DateTime.now
     expired_time = DateTime.parse(auth_token["expires_at"])
 
+    binding.pry
+
     if current_time - expired_time < 0
-      auth_token
+      auth_token["access_token"]
     else
-      refreshToken(user_email, user_type)
+      refreshToken(user_id, user_type)
     end
   end
 
