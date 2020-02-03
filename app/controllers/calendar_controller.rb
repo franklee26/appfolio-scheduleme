@@ -165,9 +165,7 @@ class CalendarController < ApplicationController
       end
       vendor.save!
     end
-
-    binding.pry
-
+    
     redirect_to '/calendar'
   end
 
