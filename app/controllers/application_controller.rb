@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
 
   # Refresh the token and returns the new access token. 
-  # TODO: add checks for landowner and Vendor as well
+  # TODO: Maybe return error if fail. Right now it assumes your user_id is legit. 
   def refreshToken(user_id, user_type)
 
     # Get user using user_id and user_type
@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
     client.update!({refresh_token: refresh_token})
     client.refresh!
 
-    # construct auth_token json to put into database
+    # construct auth_token json to store into database
     access_token = client.access_token
     refresh_token = client.refresh_token
     expires_at = DateTime.now + Rational(3500, 86400)
@@ -50,12 +50,38 @@ class ApplicationController < ActionController::Base
       expires_at: expires_at
     }
 
-    # save token information into database for user
-    user.auth_token = new_auth_token.to_json
-    if refresh_token != nil
-      user.refresh_token = refresh_token
+    user_email = user.email;
+
+    # save token information into database for each user type
+    # For Tenant
+    tenant = Tenant.find_by(email: user_email)
+    if tenant != nil
+      tenant.auth_token = new_auth_token.to_json
+      if refresh_token != nil
+        tenant.refresh_token = refresh_token
+      end
+      tenant.save!
     end
-    user.save!
+
+    # For Landowner
+    landowner = Landowner.find_by(email: user_email)
+    if landowner != nil
+      landowner.auth_token = new_auth_token.to_json
+      if refresh_token != nil
+        landowner.refresh_token = refresh_token
+      end
+      landowner.save!
+    end
+
+    # For Vendors
+    vendor = Vendor.find_by(email: user_email)
+    if vendor != nil
+      vendor.auth_token = new_auth_token.to_json
+      if refresh_token != nil
+        vendor.refresh_token = refresh_token
+      end
+      vendor.save!
+    end
 
     # return access token
     new_auth_token[:access_token]
@@ -63,6 +89,7 @@ class ApplicationController < ActionController::Base
 
 
   # Checks if access token has expired. If it has expired, it will refresh it. Returns a json with the access token and the expiration time. 
+  # TODO: Maybe return error if fail. Right now it assumes your user_id is legit. 
   def retrieveAccessToken(user_id, user_type)
 
     # Get user using user_id and user_type
