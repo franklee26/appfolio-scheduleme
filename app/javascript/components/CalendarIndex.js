@@ -3,6 +3,7 @@ import styles from "../styles/calendar";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
+import Alert from "react-bootstrap/Alert";
 import { shortFormatDate } from "./Events.js";
 
 // POST request adds tenant to the landowner
@@ -149,6 +150,8 @@ const CalendarIndex = props => {
     isLoaded3: false,
     vendorResponse: null
   });
+
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     if (props.user_type == "Tenant") {
@@ -306,10 +309,38 @@ const CalendarIndex = props => {
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
         {tenantResponse.has_approved_job ? (
-          <h2 align="center" className={styles.ready_job}>
-            You have jobs ready to be scheduled! Go to your calendar to confirm
-            job.
-          </h2>
+          !show ? (
+            <Button
+              size="lg"
+              variant="success"
+              onClick={() => setShow(true)}
+              block
+            >
+              ⚠ Alert: You have jobs ready to be scheduled!
+            </Button>
+          ) : (
+            <Alert show={show} variant="success">
+              <Alert.Heading>
+                You have jobs ready to be scheduled!
+              </Alert.Heading>
+              <p>
+                Your job request was matched with your landowner's vendors. We
+                found several times for you to schedule your job; don't worry,
+                we made sure these times do not conflict with your schedule.
+                Click one of your calendars to schedule and we'll take care of
+                everything else.
+              </p>
+              <hr />
+              <div className="d-flex justify-content-end">
+                <Button
+                  onClick={() => setShow(false)}
+                  variant="outline-success"
+                >
+                  Hide alert
+                </Button>
+              </div>
+            </Alert>
+          )
         ) : null}
         <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
