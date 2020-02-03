@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  job: one
+  text: MyString
+  rating: 1.5
+
+two:
+  job: two
+  text: MyString
+  rating: 1.5

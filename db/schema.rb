@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20200210055436) do
+=======
+ActiveRecord::Schema.define(version: 20200203070512) do
+>>>>>>> Basic Review Scaffold with belong_to association with job
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +51,15 @@ ActiveRecord::Schema.define(version: 20200210055436) do
     t.index ["vendor_id", "landowner_id"], name: "index_landowners_vendors_on_vendor_id_and_landowner_id"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "job_id"
+    t.string "text"
+    t.float "rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_reviews_on_job_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -78,5 +91,6 @@ ActiveRecord::Schema.define(version: 20200210055436) do
 
   add_foreign_key "jobs", "tenants"
   add_foreign_key "jobs", "vendors"
+  add_foreign_key "reviews", "jobs"
   add_foreign_key "tenants", "landowners"
 end
