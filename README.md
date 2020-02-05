@@ -1,12 +1,13 @@
-# Appfolio: Uber for Vendors
+# Appfolio: ScheduleMe
 
 ## About
 
 Rails webapp developed by Frank (lead), Raul (scribe), Edward (developer), Eric (developer) and Wei-Yee (developer).
 
 ## Versioning
-* Rails 5.1.7
-* PostgreSQL 11.5
+
+- Rails 5.1.7
+- PostgreSQL 11.5
 
 ## Workflow
 
