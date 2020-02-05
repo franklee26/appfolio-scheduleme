@@ -81,7 +81,7 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
 const handleClickJob = (event, job, landowner_id, tenant_id) => {
   event.preventDefault();
   fetch(
-    `http://localhost:3000/freebusy/schedule/${landowner_id}/${tenant_id}`,
+    `http://localhost:3000/calendar/schedule/${landowner_id}/${tenant_id}`,
     {
       method: "GET"
     }
