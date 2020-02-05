@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20200203033338) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "phone_number"
     t.string "auth_token"
     t.string "refresh_token"
   end
@@ -56,6 +57,7 @@ ActiveRecord::Schema.define(version: 20200203033338) do
     t.string "city"
     t.string "state"
     t.string "zip"
+    t.string "phone_number"
     t.string "auth_token"
     t.string "refresh_token"
     t.index ["landowner_id"], name: "index_tenants_on_landowner_id"
@@ -68,6 +70,7 @@ ActiveRecord::Schema.define(version: 20200203033338) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "zip"
+    t.string "phone_number"
     t.string "auth_token"
     t.string "refresh_token"
   end

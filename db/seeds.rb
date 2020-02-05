@@ -8,19 +8,19 @@
 
 # Landowner seeds
 # THIS LANDOWNER IS SUPER IMPORTANT! THIS IS THE DEFAULT LANDOWNER SO DO NOT DELETE THIS. MAKE SURE YOU SEED THIS DATA FIRST.
-Landowner.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT")
-Landowner.create(name: "Tech Lead", email: "thetechlead@techlead.the")
+Landowner.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT", phone_number: "4156966969")
+Landowner.create(name: "Tech Lead", email: "thetechlead@techlead.the", phone_number: "4151234567")
 
 # Tenant seeds
-Tenant.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.com", landowner: Landowner.first, street_address: "DEFAULT", city: "DEFAULT", state: "DEFAULT", zip: "DEFAULT")
-t_one = Tenant.create(name: "John Lennon", email: "jlennon@gmail.com", landowner: Landowner.first, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
-t_two = Tenant.create(name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com", landowner: Landowner.first, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
-t_three = Tenant.create(name: "Steve Jobs", email: "sjobs@apple.com", landowner: Landowner.first, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345")
+Tenant.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.com", landowner: Landowner.first, street_address: "DEFAULT", city: "DEFAULT", state: "DEFAULT", zip: "DEFAULT", phone_number: "4151111111")
+t_one = Tenant.create(name: "John Lennon", email: "jlennon@gmail.com", landowner: Landowner.first, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345", phone_number: "4157654321")
+t_two = Tenant.create(name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com", landowner: Landowner.first, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345", phone_number: "4153334567")
+t_three = Tenant.create(name: "Steve Jobs", email: "sjobs@apple.com", landowner: Landowner.first, street_address: "123 seasame street", city: "Goleta", state: "CA", zip: "12345", phone_number: "4155524567")
 
 # Vendor seeds
-Vendor.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT", occupation: "DEFAULT")
-v_one = Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com", zip: "12345")
-v_two = Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com", zip: "12345")
+Vendor.create(id: 0, name: "DEFAULT", email: "DEFAULT@DEFAULT.DEFAULT", occupation: "DEFAULT", phone_number: "6506966969")
+v_one = Vendor.create(id: 10, name: "Bob Electrician", occupation: "Electrician", email: "electrician@gmail.com", zip: "12345", phone_number: "8056966969")
+v_two = Vendor.create(id: 11, name: "Bob Plumber", occupation: "Plumber", email: "plumber@gmail.com", zip: "12345", phone_number: "5106966969")
 # one = Tenant.create(id: 1, name: "John Lennon", email: "jlennon@gmail.com")
 # two = Tenant.create(id: 2, name: "Benedino Cucumberpatch", email: "bcucumberpatch@gmail.com")
 # three = Tenant.create(id: 3, name: "Steve Jobs", email: "sjobs@apple.com")
