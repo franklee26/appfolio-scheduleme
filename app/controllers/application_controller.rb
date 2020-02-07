@@ -60,6 +60,7 @@ class ApplicationController < ActionController::Base
       if refresh_token != nil
         tenant.refresh_token = refresh_token
       end
+      tenant.skip_validations = true
       tenant.save!
     end
 

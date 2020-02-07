@@ -328,11 +328,11 @@ const CalendarIndex = props => {
                 border="success"
                 style={{ width: "18rem" }}
               >
-                <Card.Header>Job with vendor {job.vendor_id}</Card.Header>
+                <Card.Header>{job.title}</Card.Header>
                 <Card.Body>
                   <Card.Title>
                     Scheduled for {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)}
+                    {shortFormatDate(job.end)} with id: {job.vendor_id}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
                 </Card.Body>

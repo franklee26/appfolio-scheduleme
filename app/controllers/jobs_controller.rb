@@ -61,6 +61,7 @@ class JobsController < ApplicationController
     @tenant_id = session[:tenant_id]
     @landowner_id = Tenant.find(@tenant_id).landowner_id
     @job = Job.new
+    @num_jobs = Tenant.find(@tenant_id).jobs.length
   end
 
   # GET /jobs/1/edit
@@ -120,6 +121,6 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:content, :tenant_id, :vendor_id)
+      params.require(:job).permit(:content, :tenant_id, :vendor_id, :title, :job_type)
     end
 end

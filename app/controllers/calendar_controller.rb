@@ -143,6 +143,7 @@ class CalendarController < ApplicationController
       if refresh_token != nil
         tenant.refresh_token = refresh_token
       end
+      tenant.skip_validations = true
       tenant.save!
     end
 
@@ -153,6 +154,7 @@ class CalendarController < ApplicationController
       if refresh_token != nil
         landowner.refresh_token = refresh_token
       end
+      landowner.skip_validations = true
       landowner.save!
     end
 
@@ -163,6 +165,7 @@ class CalendarController < ApplicationController
       if refresh_token != nil
         vendor.refresh_token = refresh_token
       end
+      vendor.skip_validations = true
       vendor.save!
     end
     
@@ -284,6 +287,7 @@ class CalendarController < ApplicationController
         if refresh_token != nil
           potential_tenant.refresh_token = refresh_token
         end
+        potential_tenant.skip_validations = true
         potential_tenant.save!
         session[:tenant_id] = potential_tenant.id
         potential_tenant
