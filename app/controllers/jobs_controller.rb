@@ -14,8 +14,6 @@ class JobsController < ApplicationController
     body = JSON(request.body.read)
     job = Job.new
     job.content = body["content"]
-    job.created_at = body["created_at"]
-    job.updated_at = body["updated_at"]
     job.title = body["title"]
     job.job_type = body["job_type"]
     job.status = body["status"]
@@ -74,6 +72,8 @@ class JobsController < ApplicationController
 
   # GET /jobs/new
   def new
+    @tenant_id = session[:tenant_id]
+    @landowner_id = Tenant.find(@tenant_id).landowner_id
     @job = Job.new
   end
 
@@ -84,6 +84,7 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
+    # essentially just a check now
     @job = Job.new(job_params)
     @job.vendor_id = 0
     @job.tenant_id = session[:tenant_id]

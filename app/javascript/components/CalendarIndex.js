@@ -84,56 +84,6 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
     });
 };
 
-const handleClickJob = (event, job, landowner_id, tenant_id) => {
-  event.preventDefault();
-  if (landowner_id === 0) {
-    alert("Can't schedule job yet! (You have no landowner yet.)");
-    return;
-  }
-  fetch(
-    `http://localhost:3000/calendar/schedule/${landowner_id}/${tenant_id}`,
-    {
-      method: "GET"
-    }
-  )
-    .then(response => response.json())
-    .then(response => {
-      if (response.vendors.length === 0) {
-        alert("Can't schedule job yet! (Can not find any free times)");
-        throw new Error("No free times found...");
-      } else {
-        return response;
-      }
-    })
-    .then(response =>
-      response.vendors.map(v =>
-        fetch("http://localhost:3000/jobs/new_temp_job", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content: job.content,
-            created_at: job.created_at,
-            updated_at: job.updated_at,
-            title: job.title,
-            job_type: job.job_type,
-            status: "LANDOWNER APPROVED",
-            tenant_id: job.tenant_id,
-            start: v.start,
-            end: v.end,
-            vendor_id: v.vendor.id
-          })
-        })
-      )
-    )
-    .then(res =>
-      alert(
-        "Found available times! Confirm job by adding job to your calendar."
-      )
-    )
-    .then(res => window.location.reload(false))
-    .catch(error => console.log(error));
-};
-
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -366,39 +316,6 @@ const CalendarIndex = props => {
         >
           Click here to submit a new job
         </Button>
-        <h2>Jobs ready to be processed for submission: </h2>
-
-        <CardColumns>
-          {tenantResponse.jobs
-            .filter(job => job.status == "PROCESSING")
-            .map(job => (
-              <a
-                style={{ cursor: "pointer" }}
-                href="#"
-                onClick={e =>
-                  handleClickJob(
-                    e,
-                    job,
-                    tenantResponse.landowner_id,
-                    tenantResponse.id
-                  )
-                }
-              >
-                <Card
-                  bg="warning"
-                  text="white"
-                  border="warning"
-                  style={{ width: "18rem" }}
-                >
-                  <Card.Header>Click to confirm job request</Card.Header>
-                  <Card.Body>
-                    <Card.Title>Job type: n/a</Card.Title>
-                    <Card.Text>Description: {job.content}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
-            ))}
-        </CardColumns>
 
         <h2>Scheduled & confirmed jobs: </h2>
         <CardColumns>
