@@ -24,20 +24,6 @@ class JobsController < ApplicationController
 
     job.save!
 
-
-    # now delete the processing job
-    to_delete_ids = Job.all.select { 
-      |j| j.status == "PROCESSING" && j.content = job.content && j.tenant_id = job.tenant_id
-    }.map {
-      |j| j.id
-    }
-
-    if to_delete_ids.length == 1
-      to_delete_ids.each do |id|
-        Job.delete(id)
-      end
-    end
-
     render json: body
   end
 
