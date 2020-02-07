@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from "react";
+import styles from "../styles/calendar";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import CardColumns from "react-bootstrap/CardColumns";
+import Alert from "react-bootstrap/Alert";
+import { shortFormatDate } from "./Events.js";
 
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
@@ -78,39 +84,6 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
     });
 };
 
-const handleClickJob = (event, job, landowner_id, tenant_id) => {
-  event.preventDefault();
-  fetch(
-    `http://localhost:3000/calendar/schedule/${landowner_id}/${tenant_id}`,
-    {
-      method: "GET"
-    }
-  )
-    .then(response => response.json())
-    .then(response =>
-      response.vendors.map(v =>
-        fetch("http://localhost:3000/jobs/new_temp_job", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content: job.content,
-            created_at: job.created_at,
-            updated_at: job.updated_at,
-            title: job.title,
-            job_type: job.job_type,
-            status: "LANDOWNER APPROVED",
-            tenant_id: job.tenant_id,
-            start: v.start,
-            end: v.end,
-            vendor_id: v.vendor.id
-          })
-        })
-      )
-    )
-    .then(res => alert("Approved job!"))
-    .then(res => window.location.reload(false));
-};
-
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -127,6 +100,8 @@ const CalendarIndex = props => {
     isLoaded3: false,
     vendorResponse: null
   });
+
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     if (props.user_type == "Tenant") {
@@ -283,15 +258,87 @@ const CalendarIndex = props => {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2>
+        {tenantResponse.has_approved_job ? (
+          !show ? (
+            <Button
+              size="lg"
+              variant="success"
+              onClick={() => setShow(true)}
+              block
+            >
+              ⚠ Alert: You have jobs ready to be scheduled!
+            </Button>
+          ) : (
+            <Alert show={show} variant="success">
+              <Alert.Heading>
+                You have jobs ready to be scheduled!
+              </Alert.Heading>
+              <p>
+                Your job request was matched with your landowner's vendors. We
+                found several times for you to schedule your job; don't worry,
+                we made sure these times do not conflict with your schedule.
+                Click one of your calendars to schedule and we'll take care of
+                everything else.
+              </p>
+              <hr />
+              <div className="d-flex justify-content-end">
+                <Button
+                  onClick={() => setShow(false)}
+                  variant="outline-success"
+                >
+                  Hide alert
+                </Button>
+              </div>
+            </Alert>
+          )
+        ) : null}
+        <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
         </h2>
-        <h2>Please select a calendar below to add an event.</h2>
-        {props.calendars.map(calendar => (
-          <li key={calendar.id}>
-            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-          </li>
-        ))}
+        <CardColumns>
+          {props.calendars.map(calendar => (
+            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+              <Card border="info" style={{ width: "18rem" }}>
+                <Card.Body>
+                  <Card.Title>{calendar.summary}</Card.Title>
+                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                </Card.Body>
+              </Card>
+            </a>
+          ))}
+        </CardColumns>
+
+        <Button
+          variant="primary"
+          href="http://localhost:3000/jobs/new"
+          size="lg"
+          block
+        >
+          Click here to submit a new job
+        </Button>
+
+        <h2>Scheduled & confirmed jobs: </h2>
+        <CardColumns>
+          {tenantResponse.jobs
+            .filter(job => job.status == "COMPLETE")
+            .map(job => (
+              <Card
+                bg="success"
+                text="white"
+                border="success"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>Job with vendor {job.vendor_id}</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Scheduled for {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
+                  </Card.Title>
+                  <Card.Text>Description: {job.content}</Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
         {props.user.landowner_id == 0 ? (
           <h2>
             You do not have a landowner yet! Your landowner will assign you.
@@ -303,59 +350,58 @@ const CalendarIndex = props => {
             {landownerResponse.email}{" "}
           </h2>
         )}
-        <h2>
-          <a href="http://localhost:3000/jobs/new">
-            Click here to submit a new job.
-          </a>
-        </h2>
-        <h2>Awaiting landowner approval jobs are listed below: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "PROCESSING")
-          .map(job => (
-            <li key={job.id}>content: {job.content}</li>
-          ))}
-
-        <h2>Landowner approved jobs are listed below: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "LANDOWNER APPROVED")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned vendor: {job.vendor_id}{" "}
-            </li>
-          ))}
-        <h2>Scheduled jobs are listed below: </h2>
-        {tenantResponse.jobs
-          .filter(job => job.status == "COMPLETE")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned vendor: {job.vendor_id}{" "}
-            </li>
-          ))}
       </div>
     );
   } else if (props.user_type == "Landowner") {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2>
+        <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
         </h2>
-        <h2>Please select a calendar below to add an event.</h2>
-        {props.calendars.map(calendar => (
-          <li key={calendar.id}>
-            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-          </li>
-        ))}
+        <CardColumns>
+          {props.calendars.map(calendar => (
+            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+              <Card border="info" style={{ width: "18rem" }}>
+                <Card.Body>
+                  <Card.Title>{calendar.summary}</Card.Title>
+                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                </Card.Body>
+              </Card>
+            </a>
+          ))}
+        </CardColumns>
+
         {landownerResponse.tenants.length ? (
           <div>
             <h2>Your Tenants (click to delete tenant): </h2>
-            {landownerResponse.tenants.map(tenant => (
-              <li key={tenant.id}>
-                <a href="#" onClick={e => handleDeleteTenant(e, tenant.id)}>
-                  {tenant.name}
+            <CardColumns>
+              {landownerResponse.tenants.map(tenant => (
+                <a
+                  style={{ cursor: "pointer" }}
+                  href="#"
+                  onClick={e => handleDeleteTenant(e, tenant.id)}
+                >
+                  <Card
+                    bg="info"
+                    text="white"
+                    border="info"
+                    style={{ width: "18rem" }}
+                  >
+                    <Card.Body>
+                      <Card.Title>{tenant.name}</Card.Title>
+                      <Card.Text>
+                        Email: {tenant.email}
+                        <br />
+                        {tenant.street_address}
+                        <br />
+                        {tenant.city}, {tenant.state} {tenant.zip}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
                 </a>
-              </li>
-            ))}
+              ))}
+            </CardColumns>
           </div>
         ) : (
           <h2>You have no tenants.</h2>
@@ -363,85 +409,100 @@ const CalendarIndex = props => {
         {landownerResponse.vendors.length ? (
           <div>
             <h2>Your vendors (click to delete vendor): </h2>
-            {landownerResponse.vendors.map(vendor => (
-              <li key={vendor.id}>
+            <CardColumns>
+              {landownerResponse.vendors.map(vendor => (
                 <a
+                  style={{ cursor: "pointer" }}
                   href="#"
                   onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}
                 >
-                  {vendor.name} ({vendor.occupation})
+                  <Card
+                    bg="info"
+                    text="white"
+                    border="info"
+                    style={{ width: "18rem" }}
+                  >
+                    <Card.Body>
+                      <Card.Title>{vendor.name}</Card.Title>
+                      <Card.Text>
+                        Email: {vendor.email}
+                        <br />
+                        Occupation: {vendor.occupation}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
                 </a>
-              </li>
-            ))}
+              ))}
+            </CardColumns>
           </div>
         ) : (
-          <h2>You have no vendors.</h2>
+          <h2>You have no vendors</h2>
         )}
+
         <h2>Select user below to add as your listed tenant.</h2>
-        {tenantResponse
-          .filter(tenant => tenant.id != 0)
-          .map(tenant => (
-            <li key={tenant.id}>
+        <CardColumns>
+          {tenantResponse
+            .filter(tenant => tenant.id != 0)
+            .map(tenant => (
               <a
+                style={{ cursor: "pointer" }}
                 href="#"
                 onClick={e => handleClickTenant(e, props.user.id, tenant.id)}
               >
-                {tenant.name}
+                <Card
+                  bg="secondary"
+                  text="white"
+                  border="secondary"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Body>
+                    <Card.Title>{tenant.name}</Card.Title>
+                    <Card.Text>
+                      Email: {tenant.email}
+                      <br />
+                      {tenant.street_address}
+                      <br />
+                      {tenant.city}, {tenant.state} {tenant.zip}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
               </a>
-            </li>
-          ))}
+            ))}
+        </CardColumns>
+
         <h2>Select user below to add as your listed vendor.</h2>
-        {vendorResponse
-          .filter(
-            vendor =>
-              vendor.landowners.filter(
-                landowner => landowner.id == props.user.id
-              ).length == 0 && vendor.id != 0
-          )
-          .map(vendor => (
-            <li key={vendor.id}>
+        <CardColumns>
+          {vendorResponse
+            .filter(
+              vendor =>
+                vendor.landowners.filter(
+                  landowner => landowner.id == props.user.id
+                ).length == 0 && vendor.id != 0
+            )
+            .map(vendor => (
               <a
+                style={{ cursor: "pointer" }}
                 href="#"
                 onClick={e => handleClickVendor(e, props.user.id, vendor.id)}
               >
-                {vendor.name} ({vendor.occupation})
+                <Card
+                  bg="secondary"
+                  text="white"
+                  border="secondary"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Body>
+                    <Card.Title>{vendor.name}</Card.Title>
+                    <Card.Text>
+                      Email: {vendor.email}
+                      <br />
+                      Occupation: {vendor.occupation}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
               </a>
-            </li>
-          ))}
-        {landownerResponse.tenants.length ? (
-          <div>
-            <h2>Your Tenant's Jobs: </h2>
-            {landownerResponse.tenants.map(tenants =>
-              tenants.jobs.map(job =>
-                job.vendor_id != 0 ? (
-                  <li key={job.id}>
-                    CONFIRMED submitted by {tenants.name} id: {job.id} content:{" "}
-                    {job.content}
-                  </li>
-                ) : (
-                  <li key={job.id}>
-                    <a
-                      href="#"
-                      onClick={e =>
-                        handleClickJob(
-                          e,
-                          job,
-                          landownerResponse.id,
-                          job.tenant_id
-                        )
-                      }
-                    >
-                      UNCONFIRMED submitted by {tenants.name} id: {job.id}{" "}
-                      content: {job.content}{" "}
-                    </a>
-                  </li>
-                )
-              )
-            )}
-          </div>
-        ) : (
-          <h2>You have no pending tenant jobs.</h2>
-        )}
+            ))}
+        </CardColumns>
       </div>
     );
   } else if (props.user_type == "Vendor") {
