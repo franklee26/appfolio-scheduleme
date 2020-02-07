@@ -46,8 +46,9 @@ class JobNew extends React.Component {
       }
     )
       .then(response => response.json())
+      .then(response => response.vendors.filter(v => v.vendor.occupation === this.state.job_type))
       .then(response => {
-        if (response.vendors.length === 0) {
+        if (response.length === 0) {
           alert("Can't schedule job yet! (Can not find any free times)");
           throw new Error("No free times found...");
         } else {
@@ -55,7 +56,7 @@ class JobNew extends React.Component {
         }
       })
       .then(response =>
-        response.vendors.map(v =>
+        response.map(v =>
           fetch("http://localhost:3000/jobs/new_temp_job", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
