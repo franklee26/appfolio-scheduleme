@@ -332,7 +332,7 @@ const CalendarIndex = props => {
                 <Card.Body>
                   <Card.Title>
                     Scheduled for {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)} with id: {job.vendor_id}
+                    {shortFormatDate(job.end)}assigned to {job.vendor_name}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
                 </Card.Body>
@@ -509,15 +509,22 @@ const CalendarIndex = props => {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2>
+        <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
         </h2>
-        <h2>Please select a calendar below to add an event.</h2>
-        {props.calendars.map(calendar => (
-          <li key={calendar.id}>
-            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-          </li>
-        ))}
+        <CardColumns>
+          {props.calendars.map(calendar => (
+            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+              <Card border="info" style={{ width: "18rem" }}>
+                <Card.Body>
+                  <Card.Title>{calendar.summary}</Card.Title>
+                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                </Card.Body>
+              </Card>
+            </a>
+          ))}
+        </CardColumns>
+
         {vendorResponse.landowners.length ? (
           <h2>Your assigned landowners: </h2>
         ) : (
@@ -531,13 +538,29 @@ const CalendarIndex = props => {
           ))}
         </ul>
         <h2>Your assigned jobs: </h2>
-        {vendorResponse.jobs
-          .filter(job => job.status == "COMPLETE")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned tenant: {job.tenant_id}{" "}
-            </li>
-          ))}
+        <CardColumns>
+          {vendorResponse.jobs
+            .filter(job => job.status == "COMPLETE")
+            .map(job => (
+              <Card
+                border="info"
+                bg="info"
+                text="white"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>{job.title}</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Requested by {job.tenant_name}
+                  </Card.Title>
+                  <Card.Text>
+                    {job.content} scheduled from {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
       </div>
     );
   }
