@@ -84,6 +84,20 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
     });
 };
 
+const handleCompleteJob = (event, job_id) => {
+  event.preventDefault();
+  fetch(`http://localhost:3000/jobs/finish/${job_id}`, {method: "PATCH"})
+  .then(response => response.json())
+  .then(response => {
+    if (response.status == 200) {
+      alert("Successfully marked job as complete.");
+      window.location.reload(false);
+    } else {
+      alert("Failer to mark job as complete.");
+    }
+  });
+}
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -317,10 +331,32 @@ const CalendarIndex = props => {
           Click here to submit a new job
         </Button>
 
-        <h2>Scheduled & confirmed jobs: </h2>
+        <h2>Scheduled jobs: </h2>
         <CardColumns>
           {tenantResponse.jobs
             .filter(job => job.status == "COMPLETE")
+            .map(job => (
+              <Card
+                bg="warning"
+                text="dark"
+                border="warning"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>{job.title}</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Scheduled for {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)} assigned to {job.vendor_name}
+                  </Card.Title>
+                  <Card.Text>Description: {job.content}</Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
+        <h2>Completed jobs: </h2>
+        <CardColumns>
+          {tenantResponse.jobs
+            .filter(job => job.status == "VENDOR COMPLETE")
             .map(job => (
               <Card
                 bg="success"
@@ -331,8 +367,8 @@ const CalendarIndex = props => {
                 <Card.Header>{job.title}</Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    Scheduled for {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)}assigned to {job.vendor_name}
+                    Completed by {job.vendor_name} from {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
                 </Card.Body>
@@ -537,15 +573,20 @@ const CalendarIndex = props => {
             </li>
           ))}
         </ul>
-        <h2>Your assigned jobs: </h2>
+        <h2>Your assigned jobs (click to make as completed): </h2>
         <CardColumns>
           {vendorResponse.jobs
             .filter(job => job.status == "COMPLETE")
             .map(job => (
+              <a
+                  style={{ cursor: "pointer" }}
+                  href="#"
+                  onClick={e => handleCompleteJob(e, job.id)}
+                >
               <Card
-                border="info"
-                bg="info"
-                text="white"
+                border="warning"
+                bg="warning"
+                text="dark"
                 style={{ width: "18rem" }}
               >
                 <Card.Header>{job.title}</Card.Header>
@@ -556,6 +597,31 @@ const CalendarIndex = props => {
                   <Card.Text>
                     {job.content} scheduled from {shortFormatDate(job.start)} to{" "}
                     {shortFormatDate(job.end)}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+              </a>
+            ))}
+        </CardColumns>
+        <h2>Your completed jobs: </h2>
+        <CardColumns>
+          {vendorResponse.jobs
+            .filter(job => job.status == "VENDOR COMPLETE")
+            .map(job => (
+              <Card
+                border="success"
+                bg="success"
+                text="white"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>{job.title} (DONE)</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Completed for {job.tenant_name} from {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
+                  </Card.Title>
+                  <Card.Text>
+                    {job.content}
                   </Card.Text>
                 </Card.Body>
               </Card>

@@ -27,6 +27,16 @@ class JobsController < ApplicationController
     render json: body
   end
 
+  def finish
+    job_id = params[:job_id]
+
+    job = Job.find(job_id)
+    job.status = "VENDOR COMPLETE"
+    job.save!
+
+    render json: {status: 200}
+  end
+
   def complete
     body = JSON(request.body.read)
     
