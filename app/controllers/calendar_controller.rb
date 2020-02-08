@@ -169,6 +169,10 @@ class CalendarController < ApplicationController
     redirect_to '/calendar'
   end
 
+  def test
+    get_shared_free_times()
+  end
+
 	private
   
   # for returning JSON response
@@ -226,6 +230,86 @@ class CalendarController < ApplicationController
       answer << c.id
     end
     answer
+  end
+
+  def get_shared_free_times()
+    t_access_token = retrieveAccessToken(4, "tenant")
+    tenant_calendars = get_user_calendars(t_access_token)
+    tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
+    t_freebusy_times = get_list_of_times(get_freebusy_response(t_access_token, tenant_calendar_ids)["calendars"])
+
+    v_access_token = retrieveAccessToken(1, "vendor")
+    vendor_calendars = get_user_calendars(v_access_token)
+    vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
+    v_freebusy_times = get_list_of_times(get_freebusy_response(v_access_token, vendor_calendar_ids)["calendars"])
+
+    tenant_times = (t_freebusy_times.map{|t| {"start"=> Time.parse(t["start"]).localtime, "end"=> Time.parse(t["end"]).localtime} if t["start"]}).compact
+    vendor_times = (v_freebusy_times.map{|t| {"start"=> Time.parse(t["start"]).localtime, "end"=> Time.parse(t["end"]).localtime} if t["start"]}).compact
+    t_index = 0
+    v_index = 0
+
+    # Combine Tenant's and Vendor's busy times together. Only retains relavent ones between day start and day end for first 14 days. 
+    combined_busy = []
+    (0..14).each do |day|
+      day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
+      day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
+      t_day_times = tenant_times.map{|t| t if t["start"] > day_start && t["start"] < day_end || t["end"] > day_start && t["end"] < day_end}
+      v_day_times = vendor_times.map{|t| t if t["start"] > day_start && t["start"] < day_end || t["end"] > day_start && t["end"] < day_end}
+      
+      combined_times = (t_day_times + v_day_times).compact
+      if combined_times.length > 0
+        binding.pry
+        combined_times = combined_times.sort_by { |t| t["start"] }
+        if combined_times[0]["start"] < day_start
+          combined_times[0]["start"] = day_start
+        end
+
+        if combined_times[combined_times.length-1]["end"] > day_end
+          combined_times[combined_times.length-1]["end"] = day_end
+        end
+
+        combined_times.each_with_index do |cur_busy, index| 
+          if index == combined_times.length - 1
+            combined_busy << cur_busy
+          else
+            if cur_busy["end"] < combined_times[index+1]["start"] 
+              combined_busy << cur_busy
+            else
+              combined_busy[index+1]["start"] = cur_busy["start"]
+              if cur_busy["end"] > combined_times[index+1]["end"]
+                combined_busy[index+1]["end"] = cur_busy["end"]
+              end
+            end
+          end
+        end
+      end
+    end
+
+    free_times = []
+    (0..14).each do |day|
+      day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
+      day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
+
+      busy_today = combined_busy.map{|t| t if t["start"] > day_start && t["end"] < day_end}.compact
+
+      cur_start = day_start
+      busy_today.each_with_index do |b_time, index|
+        if index == 0
+          if b_time["start"] >= day_start
+            free_times << {"start": day_start, "end": b_time["start"]}
+          end
+        elsif index == busy_today.length - 1
+          free_times << {"start": busy_today[index-1]["end"], "end": b_time["start"]}
+          if day_end > b_time["end"] 
+            free_times << {"start": b_time["end"], "end": day_end}
+          end
+        else
+          free_times << {"start": busy_today[index-1]["end"], "end": b_time["start"]}
+        end
+      end
+    end
+    binding.pry
+    free_times
   end
 
   def get_free_times(times)
