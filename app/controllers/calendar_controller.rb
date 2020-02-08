@@ -117,6 +117,7 @@ class CalendarController < ApplicationController
   end
   
   def callback
+
     client = Signet::OAuth2::Client.new(clientOptions)
     client.code = params[:code]
     response = client.fetch_access_token!
@@ -165,12 +166,26 @@ class CalendarController < ApplicationController
       end
       vendor.save!
     end
+    binding.pry
     
     redirect_to '/calendar'
   end
 
   def test
-    get_shared_free_times()
+    t_access_token = retrieveAccessToken(4, "tenant")
+    tenant_calendars = get_user_calendars(t_access_token)
+    tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
+    t_freebusy_times = get_list_of_times(get_freebusy_response(t_access_token, tenant_calendar_ids)["calendars"])
+
+    v_access_token = retrieveAccessToken(1, "vendor")
+    vendor_calendars = get_user_calendars(v_access_token)
+    vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
+    v_freebusy_times = get_list_of_times(get_freebusy_response(v_access_token, vendor_calendar_ids)["calendars"])
+
+
+
+    free_times = get_shared_free_times(t_freebusy_times, v_freebusy_times)
+    add_vendor_location_to_free_times(free_times)
   end
 
 	private
@@ -230,86 +245,6 @@ class CalendarController < ApplicationController
       answer << c.id
     end
     answer
-  end
-
-  def get_shared_free_times()
-    t_access_token = retrieveAccessToken(4, "tenant")
-    tenant_calendars = get_user_calendars(t_access_token)
-    tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
-    t_freebusy_times = get_list_of_times(get_freebusy_response(t_access_token, tenant_calendar_ids)["calendars"])
-
-    v_access_token = retrieveAccessToken(1, "vendor")
-    vendor_calendars = get_user_calendars(v_access_token)
-    vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
-    v_freebusy_times = get_list_of_times(get_freebusy_response(v_access_token, vendor_calendar_ids)["calendars"])
-
-    tenant_times = (t_freebusy_times.map{|t| {"start"=> Time.parse(t["start"]).localtime, "end"=> Time.parse(t["end"]).localtime} if t["start"]}).compact
-    vendor_times = (v_freebusy_times.map{|t| {"start"=> Time.parse(t["start"]).localtime, "end"=> Time.parse(t["end"]).localtime} if t["start"]}).compact
-    t_index = 0
-    v_index = 0
-
-    # Combine Tenant's and Vendor's busy times together. Only retains relavent ones between day start and day end for first 14 days. 
-    combined_busy = []
-    (0..14).each do |day|
-      day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
-      day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
-      t_day_times = tenant_times.map{|t| t if t["start"] > day_start && t["start"] < day_end || t["end"] > day_start && t["end"] < day_end}
-      v_day_times = vendor_times.map{|t| t if t["start"] > day_start && t["start"] < day_end || t["end"] > day_start && t["end"] < day_end}
-      
-      combined_times = (t_day_times + v_day_times).compact
-      if combined_times.length > 0
-        binding.pry
-        combined_times = combined_times.sort_by { |t| t["start"] }
-        if combined_times[0]["start"] < day_start
-          combined_times[0]["start"] = day_start
-        end
-
-        if combined_times[combined_times.length-1]["end"] > day_end
-          combined_times[combined_times.length-1]["end"] = day_end
-        end
-
-        combined_times.each_with_index do |cur_busy, index| 
-          if index == combined_times.length - 1
-            combined_busy << cur_busy
-          else
-            if cur_busy["end"] < combined_times[index+1]["start"] 
-              combined_busy << cur_busy
-            else
-              combined_busy[index+1]["start"] = cur_busy["start"]
-              if cur_busy["end"] > combined_times[index+1]["end"]
-                combined_busy[index+1]["end"] = cur_busy["end"]
-              end
-            end
-          end
-        end
-      end
-    end
-
-    free_times = []
-    (0..14).each do |day|
-      day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
-      day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
-
-      busy_today = combined_busy.map{|t| t if t["start"] > day_start && t["end"] < day_end}.compact
-
-      cur_start = day_start
-      busy_today.each_with_index do |b_time, index|
-        if index == 0
-          if b_time["start"] >= day_start
-            free_times << {"start": day_start, "end": b_time["start"]}
-          end
-        elsif index == busy_today.length - 1
-          free_times << {"start": busy_today[index-1]["end"], "end": b_time["start"]}
-          if day_end > b_time["end"] 
-            free_times << {"start": b_time["end"], "end": day_end}
-          end
-        else
-          free_times << {"start": busy_today[index-1]["end"], "end": b_time["start"]}
-        end
-      end
-    end
-    binding.pry
-    free_times
   end
 
   def get_free_times(times)
@@ -485,4 +420,220 @@ class CalendarController < ApplicationController
     end
     ans
   end
+
+
+  ### For a deeper scheduling ###
+  def get_shared_free_times(t_busy_times, v_busy_times)
+    tenant_times = (t_busy_times.map{|t| {"start"=> Time.parse(t["start"]).localtime, "end"=> Time.parse(t["end"]).localtime} if t["start"]}).compact
+    vendor_times = (v_busy_times.map{|t| {"start"=> Time.parse(t["start"]).localtime, "end"=> Time.parse(t["end"]).localtime} if t["start"]}).compact
+    t_index = 0
+    v_index = 0
+
+    # Combine Tenant's and Vendor's busy times together. Only retains relavent ones between day start and day end for first 14 days. 
+    combined_busy = []
+    (0..14).each do |day|
+      day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
+      day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
+      t_day_times = tenant_times.map{|t| t if t["start"] > day_start && t["start"] < day_end || t["end"] > day_start && t["end"] < day_end}
+      v_day_times = vendor_times.map{|t| t if t["start"] > day_start && t["start"] < day_end || t["end"] > day_start && t["end"] < day_end}
+      
+      combined_times = (t_day_times + v_day_times).compact
+      if combined_times.length > 0
+        combined_times = combined_times.sort_by { |t| t["start"] }
+        if combined_times[0]["start"] < day_start
+          combined_times[0]["start"] = day_start
+        end
+
+        if combined_times[combined_times.length-1]["end"] > day_end
+          combined_times[combined_times.length-1]["end"] = day_end
+        end
+
+        combined_times.each_with_index do |cur_busy, index| 
+          if index == combined_times.length - 1
+            combined_busy << cur_busy
+          else
+            if cur_busy["end"] < combined_times[index+1]["start"] 
+              combined_busy << cur_busy
+            else
+              combined_busy[index+1]["start"] = cur_busy["start"]
+              if cur_busy["end"] > combined_times[index+1]["end"]
+                combined_busy[index+1]["end"] = cur_busy["end"]
+              end
+            end
+          end
+        end
+      end
+    end
+
+    free_times = []
+    (0..14).each do |day|
+      day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
+      day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
+
+      busy_today = combined_busy.map{|t| t if t["start"] > day_start && t["end"] < day_end}.compact
+
+      cur_start = day_start
+
+      if busy_today.length == 0
+        free_times << {"start": day_start, "end": day_end}
+      end
+
+      busy_today.each_with_index do |b_time, index|
+        if index == 0
+          if b_time["start"] >= day_start
+            free_times << {"start": day_start, "end": b_time["start"]}
+          end
+        elsif index == busy_today.length - 1
+          free_times << {"start": busy_today[index-1]["end"], "end": b_time["start"]}
+          if day_end > b_time["end"] 
+            free_times << {"start": b_time["end"], "end": day_end}
+          end
+        else
+          free_times << {"start": busy_today[index-1]["end"], "end": b_time["start"]}
+        end
+      end
+    end
+    free_times
+  end
+
+  def add_vendor_location_to_free_times(free_times)
+    default_address = "18805 Nutmeg Drive, Morgan Hill, CA, 95037"
+
+    free_time_with_more_info = []
+    free_times.each do |f_time|
+      default_start = f_time[:start].beginning_of_day + (9).hours
+      default_end = f_time[:start].beginning_of_day + (17).hours
+
+      prev_job_loc = default_address
+      prev_job_end = default_start
+      post_job_loc = default_address
+      post_job_start = default_end
+
+      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]}' order by start desc limit 1;")
+      if prev_job.length == 1
+        prev_job = prev_job[0]
+        prev_tenant = Tenant.find(prev_job.tenant_id)        
+        job_loc = address_builder(prev_tenant.street_address, prev_tenant.city, prev_tenant.state, prev_tenant.zip)
+        if job_loc != ""
+          prev_job_loc = job_loc
+        end
+
+        if prev_job.end > default_start
+          prev_job_end = prev_job.end
+        end
+      end
+
+      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]}' order by start asc limit 1;")
+      if post_job.length == 1
+        post_job = post_job[0]
+        post_tenant = Tenant.find(post_job.tenant_id)
+        job_loc = address_builder(post_tenant.street_address, post_tenant.city, post_tenant.state, post_tenant.zip)
+        if job_loc != ""
+          post_job_loc = job_loc
+        end
+        if post_job.start < default_end
+          post_job_start = post_job.start
+        end
+      end
+
+
+      free_time_with_more_info << {
+        "start": f_time[:start], 
+        "end": f_time[:end], 
+        "prev_job_loc": prev_job_loc, 
+        "prev_job_end_time": prev_job_end, 
+        "post_job_loc": post_job_loc, 
+        "post_job_start_time": post_job_start
+      }
+    end
+    binding.pry
+    free_time_with_more_info
+  end
+
+  def address_builder(street, city, state, zip)
+    fields = [street, city, state, zip]
+    address = ""
+    fields.each do |field|
+      if field != nil
+        address += field + ", "
+      end
+    end
+
+    if address != ""
+      address.delete_suffix(', ') 
+    end
+
+    return address
+  end
+
+  # Pass in drive time. Numbers here are arbitrary and subject to change
+  def rate_dist(dist)
+    d_rating = 50.0
+    if dist <= 30
+      d_rating += ((30.0 - dist) / 30.0) * 50.0 
+    elsif dist <= 40
+      d_rating -= ((dist-30.0) / 10.0) * 20.0
+    elsif dist < 150
+      d_rating -= 20 - ((dist / 150.0) * 30.0)
+    else 
+      d_rating += 0
+    end
+    d_rating
+  end
+
+  # passed in slot time should be total time - drive time (and maybe also break time)
+  # numbers here are arbitrary and subject to change
+  def rate_slot(slot_time)
+    # these average times can be based off of a larger set of times in the future
+    avg_drive_time = 20
+    avg_work_time = 20
+
+    ideal_slot_time = avg_drive_time * 2 + avg_work_time
+    avg_left_over_time = (slot_time % ideal_slot_time) / (slot_time / ideal_slot_time) #might take in more calc on standard deviation
+
+    value = (100.0 * (ideal_slot_time - avg_left_over_time) / ideal_slot_time)
+    value
+  end
+
+  # formula is barely representative of an actual idea and subject to change
+  def rate_scheduled_time(pre_dist, post_dist, pre_slot, post_slot)
+    d1_rating = rate_dist(pre_dist)
+    d2_rating = rate_dist(post_dist)
+
+    pre_slot_rating = rate_slot(pre_slot)
+    post_slot_rating = rate_slot(post_slot)
+
+    pre_rating = ((d1_rating + pre_slot_rating) / 2.0 ) * d1_rating * pre_slot_rating / 100.0 / 100.0
+    post_rating = ((d2_rating + post_slot_rating) / 2.0) * d2_rating * post_slot_rating / 100.0 / 100.0
+
+    [d1_rating, d2_rating, pre_slot_rating, post_slot_rating, pre_rating, post_rating]
+  end
+
+  # schedule time based on the times given
+  def schedule_at_beginning_of_block(free_block, pre_drive_time, post_drive_time, event_time)
+    total_task_time =pre_drive_time + post_drive_time + event_time
+    block_time = free_block[:end] - free_block[:start]
+    if total_task_time < block_time
+      [{"start": free_block[:start]+(pre_drive_time).seconds, "end": free_block[:start]+(pre_drive_time+event_time).seconds}]
+    else
+      []
+    end
+  end
+
+  def schedule_at_end_of_block(free_block, pre_drive_time, post_drive_time, event_time)
+    total_task_time =pre_drive_time + post_drive_time + event_time
+    block_time = free_block[:end] - free_block[:start]
+    if total_task_time < block_time
+      [{"start": free_block[:end]+(post_drive_time+event_time).seconds, "end": free_block[:end]+(post_drive_time).seconds}]
+    else
+      []
+    end
+  end
+
+  def schedule_at_middle_of_block(free_block, pre_drive_time, post_drive_time, event_time)
+    avg_drive_time = 20
+    avg_work_time = 20
+
+  end
+
 end
