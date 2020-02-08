@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   # jobs
   post 'jobs/complete', to: 'jobs#complete'
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
+  patch 'jobs/finish/:job_id', to: 'jobs#finish'
 
 
   # resources

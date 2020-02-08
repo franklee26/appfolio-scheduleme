@@ -19,6 +19,25 @@ class TenantsController < ApplicationController
   # Returns a json containing all the fields for the tenant
   def show
     @tenant = Tenant.find(params[:id])
+    tenant_jobs = []
+
+    @tenant.jobs.each do |j|
+      job_obj = {
+        id: j.id,
+        content: j.content,
+        created_at: j.created_at,
+        updated_at: j.updated_at,
+        title: j.title,
+        job_type: j.job_type,
+        status: j.status,
+        tenant_id: j.tenant_id,
+        vendor_id: j.vendor_id,
+        start: j.start,
+        end: j.end,
+        vendor_name: j.vendor.name
+      }
+      tenant_jobs << job_obj
+    end
     response = {
       "id": @tenant.id,
       "name": @tenant.name,
@@ -30,7 +49,7 @@ class TenantsController < ApplicationController
       "city": @tenant.city,
       "state": @tenant.state,
       "zip": @tenant.zip,
-      "jobs": @tenant.jobs,
+      "jobs": tenant_jobs,
       "has_approved_job": (@tenant.jobs.map { |j| j.status }.include? 'LANDOWNER APPROVED')
     }
     render json: response

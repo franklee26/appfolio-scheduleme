@@ -311,7 +311,6 @@ class CalendarController < ApplicationController
         if refresh_token != nil
           potential_landowner.refresh_token = refresh_token
         end
-
         potential_landowner.save!
         potential_landowner
       else

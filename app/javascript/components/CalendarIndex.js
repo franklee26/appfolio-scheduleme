@@ -84,6 +84,20 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
     });
 };
 
+const handleCompleteJob = (event, job_id) => {
+  event.preventDefault();
+  fetch(`http://localhost:3000/jobs/finish/${job_id}`, {method: "PATCH"})
+  .then(response => response.json())
+  .then(response => {
+    if (response.status == 200) {
+      alert("Successfully marked job as complete.");
+      window.location.reload(false);
+    } else {
+      alert("Failer to mark job as complete.");
+    }
+  });
+}
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -317,10 +331,32 @@ const CalendarIndex = props => {
           Click here to submit a new job
         </Button>
 
-        <h2>Scheduled & confirmed jobs: </h2>
+        <h2>Scheduled jobs: </h2>
         <CardColumns>
           {tenantResponse.jobs
             .filter(job => job.status == "COMPLETE")
+            .map(job => (
+              <Card
+                bg="warning"
+                text="dark"
+                border="warning"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>{job.title}</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Scheduled for {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)} assigned to {job.vendor_name}
+                  </Card.Title>
+                  <Card.Text>Description: {job.content}</Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
+        <h2>Completed jobs: </h2>
+        <CardColumns>
+          {tenantResponse.jobs
+            .filter(job => job.status == "VENDOR COMPLETE")
             .map(job => (
               <Card
                 bg="success"
@@ -328,10 +364,10 @@ const CalendarIndex = props => {
                 border="success"
                 style={{ width: "18rem" }}
               >
-                <Card.Header>Job with vendor {job.vendor_id}</Card.Header>
+                <Card.Header>{job.title}</Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    Scheduled for {shortFormatDate(job.start)} to{" "}
+                    Completed by {job.vendor_name} from {shortFormatDate(job.start)} to{" "}
                     {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
@@ -509,15 +545,22 @@ const CalendarIndex = props => {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2>
+        <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
         </h2>
-        <h2>Please select a calendar below to add an event.</h2>
-        {props.calendars.map(calendar => (
-          <li key={calendar.id}>
-            <a href={`/calendar/${calendar.id}`}>{calendar.summary}</a>
-          </li>
-        ))}
+        <CardColumns>
+          {props.calendars.map(calendar => (
+            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+              <Card border="info" style={{ width: "18rem" }}>
+                <Card.Body>
+                  <Card.Title>{calendar.summary}</Card.Title>
+                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                </Card.Body>
+              </Card>
+            </a>
+          ))}
+        </CardColumns>
+
         {vendorResponse.landowners.length ? (
           <h2>Your assigned landowners: </h2>
         ) : (
@@ -530,14 +573,60 @@ const CalendarIndex = props => {
             </li>
           ))}
         </ul>
-        <h2>Your assigned jobs: </h2>
-        {vendorResponse.jobs
-          .filter(job => job.status == "COMPLETE")
-          .map(job => (
-            <li key={job.id}>
-              content: {job.content} assigned tenant: {job.tenant_id}{" "}
-            </li>
-          ))}
+        <h2>Your assigned jobs (click to make as completed): </h2>
+        <CardColumns>
+          {vendorResponse.jobs
+            .filter(job => job.status == "COMPLETE")
+            .map(job => (
+              <a
+                  style={{ cursor: "pointer" }}
+                  href="#"
+                  onClick={e => handleCompleteJob(e, job.id)}
+                >
+              <Card
+                border="warning"
+                bg="warning"
+                text="dark"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>{job.title}</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Requested by {job.tenant_name}
+                  </Card.Title>
+                  <Card.Text>
+                    {job.content} scheduled from {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+              </a>
+            ))}
+        </CardColumns>
+        <h2>Your completed jobs: </h2>
+        <CardColumns>
+          {vendorResponse.jobs
+            .filter(job => job.status == "VENDOR COMPLETE")
+            .map(job => (
+              <Card
+                border="success"
+                bg="success"
+                text="white"
+                style={{ width: "18rem" }}
+              >
+                <Card.Header>{job.title} (DONE)</Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    Completed for {job.tenant_name} from {shortFormatDate(job.start)} to{" "}
+                    {shortFormatDate(job.end)}
+                  </Card.Title>
+                  <Card.Text>
+                    {job.content}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
       </div>
     );
   }
