@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 class UserSelection extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {user_type: "Tenant"};
+    this.state = {user_type: "Tenant"}
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,9 +32,9 @@ class UserSelection extends React.Component {
   handleClick(event, curr_user){
     event.preventDefault();
     this.setState({user_type: curr_user});
-    if (this.state.user_type === "Tenant"){
+    if (curr_user == "Tenant"){
       window.location.href = "/tenants/auth";
-    } else if (this.state.user_type == "Landowner") {
+    } else if (curr_user == "Landowner") {
       window.location.href = "/landowner/auth";
     } else {
       window.location.href = "/vendors/auth";
@@ -43,6 +43,7 @@ class UserSelection extends React.Component {
   }
 
   render() {
+    console.log(this.state.user_type);
     return (
             <div>
               <Button variant="primary" size="lg" block onClick={e => this.handleClick(e, "Tenant")}>
