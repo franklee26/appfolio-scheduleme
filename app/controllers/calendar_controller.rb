@@ -38,9 +38,13 @@ class CalendarController < ApplicationController
 
   def post
     # Get user's access token
-    user_type = session[:user_type]
-    user_id = session[:user_id]
-    access_token = retrieveAccessToken(user_id, user_type)
+    body = JSON(request.body.read)
+    user_type = body["user_type"]
+    job_id = body["job_id"]
+    tenant_id = Job.find(job_id).tenant_id
+    vendor_id = Job.find(job_id).vendor_id
+
+    access_token = retrieveAccessToken(tenant_id, "tenant")
 
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
@@ -58,7 +62,34 @@ class CalendarController < ApplicationController
         "dateTime": params[:end],
         "timeZone": "America/Los_Angeles"
       },
-      "summary": "uber_for_vendors_appt",
+      "summary": "uber_for_vendors_appt_TENANT",
+      "colorId": "7"
+    }
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(uri.request_uri, header)
+    request.body = request_body.to_json
+    response = http.request(request).body
+
+    access_token = retrieveAccessToken(vendor_id, "vendor")
+
+    uri = URI.parse(
+      "https://www.googleapis.com/calendar/v3/calendars/" + 
+      params[:calendar_id]+"/events?alt=json&access_token=" + 
+      access_token
+    )
+
+    header = {'Content-Type': 'application/json'}
+    request_body = {
+      "start": {
+        "dateTime": params[:start],
+        "timeZone": "America/Los_Angeles"
+      },
+      "end": {
+        "dateTime": params[:end],
+        "timeZone": "America/Los_Angeles"
+      },
+      "summary": "uber_for_vendors_appt_VENDOR",
       "colorId": "7"
     }
     http = Net::HTTP.new(uri.host, uri.port)
