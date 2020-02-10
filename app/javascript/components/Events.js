@@ -8,14 +8,12 @@ const handleClickPost = (
   endTime,
   calendarId,
   calendarName,
-  job,
-  user_type
+  job
 ) => {
   event.preventDefault();
   fetch(
     `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
     { method: "POST", body: JSON.stringify({
-      user_type: user_type,
       job_id: job.id,
     }) }
   )

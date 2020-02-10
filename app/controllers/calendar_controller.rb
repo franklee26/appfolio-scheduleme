@@ -39,7 +39,6 @@ class CalendarController < ApplicationController
   def post
     # Get user's access token
     body = JSON(request.body.read)
-    user_type = body["user_type"]
     job_id = body["job_id"]
     job = Job.find(job_id)
     tenant_id = job.tenant_id
