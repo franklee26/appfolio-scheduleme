@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   get 'calendar/:calendar_id/response', to: 'calendar#get', calendar_id: /[^\/]+/
   post 'calendar/:calendar_id/:start/:end', to: 'calendar#post', calendar_id: /[^\/]+/, start: /[^\/]+/, end: /[^\/]+/
   get 'calendar/schedule/:landowner_id/:tenant_id', to: 'calendar#schedule'
-
+  patch 'calendar/add_default', to: 'calendar#add_default'
 
   # landowner page
   get 'landowner' => 'landowners#index'
