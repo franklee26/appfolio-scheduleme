@@ -103,8 +103,12 @@ class JobNew extends React.Component {
       );
     }
     return (
+    <div>
+        <header class = "bg-dark py-3">
+        <h1 align="center" class="display-3 text-white mt-5 mb-2">Submit A New Job</h1>
+        </header>
       <div className="container">
-        <h2 align="center">Job Submission</h2>
+
         <Form id="jobForm" action={this.props.form_path} method="post">
           <Form.Group controlId="authForm">
             <Form.Control
@@ -172,6 +176,7 @@ class JobNew extends React.Component {
             <a href={"http://localhost:3000/calendar"}>Back</a>
           </div>
         </Form>
+      </div>
       </div>
     );
   }
