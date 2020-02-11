@@ -42,7 +42,6 @@ Rails.application.routes.draw do
   get 'vendors/auth' => 'vendors#auth'
   get 'vendors/search' => 'vendors#search'
   get 'vendors/profile' => 'vendors#profile'
-  get 'vendors/public' => 'vendors#publicProfile'
   get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
   patch 'vendors/update_vendor', to: 'vendors#update_vendor'
 

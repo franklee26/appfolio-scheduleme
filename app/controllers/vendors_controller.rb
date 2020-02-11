@@ -107,10 +107,6 @@ end
   def profile
   end
 
-  # Goes to vendor publicprofile.html.erb page
-  def publicProfile
-  end
-
   def auth
     client = Signet::OAuth2::Client.new(clientOptions)
     session[:user_type] = "vendor"
