@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import styles from "../styles/calendar";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
@@ -86,17 +85,37 @@ const handleDeleteVendor = (event, landowner_id, vendor_id) => {
 
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
-  fetch(`http://localhost:3000/jobs/finish/${job_id}`, {method: "PATCH"})
-  .then(response => response.json())
-  .then(response => {
-    if (response.status == 200) {
-      alert("Successfully marked job as complete.");
-      window.location.reload(false);
-    } else {
-      alert("Failer to mark job as complete.");
-    }
-  });
-}
+  fetch(`http://localhost:3000/jobs/finish/${job_id}`, { method: "PATCH" })
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == 200) {
+        alert("Successfully marked job as complete.");
+        window.location.reload(false);
+      } else {
+        alert("Failed to mark job as complete.");
+      }
+    });
+};
+
+const handleAddCalendar = (event, id, calendar_id) => {
+  event.preventDefault();
+  fetch(`http://localhost:3000/calendar/add_default`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      vendor_id: id,
+      calendar_id: calendar_id
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == 200) {
+        alert("Successfully marked calendar as default.");
+      } else {
+        alert("Failed to mark calendar as default.");
+      }
+    });
+};
 
 /*
 isLoaded: mounting landowner response
@@ -367,8 +386,8 @@ const CalendarIndex = props => {
                 <Card.Header>{job.title}</Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    Completed by {job.vendor_name} from {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)}
+                    Completed by {job.vendor_name} from{" "}
+                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
                 </Card.Body>
@@ -550,7 +569,11 @@ const CalendarIndex = props => {
         </h2>
         <CardColumns>
           {props.calendars.map(calendar => (
-            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+            <a
+              style={{ cursor: "pointer" }}
+              href="#"
+              onClick={e => handleAddCalendar(e, props.user.id, calendar.id)}
+            >
               <Card border="info" style={{ width: "18rem" }}>
                 <Card.Body>
                   <Card.Title>{calendar.summary}</Card.Title>
@@ -573,33 +596,31 @@ const CalendarIndex = props => {
             </li>
           ))}
         </ul>
-        <h2>Your assigned jobs (click to make as completed): </h2>
+        <h2>Your assigned jobs (click to mark as complete): </h2>
         <CardColumns>
           {vendorResponse.jobs
             .filter(job => job.status == "COMPLETE")
             .map(job => (
               <a
-                  style={{ cursor: "pointer" }}
-                  href="#"
-                  onClick={e => handleCompleteJob(e, job.id)}
-                >
-              <Card
-                border="warning"
-                bg="warning"
-                text="dark"
-                style={{ width: "18rem" }}
+                style={{ cursor: "pointer" }}
+                href="#"
+                onClick={e => handleCompleteJob(e, job.id)}
               >
-                <Card.Header>{job.title}</Card.Header>
-                <Card.Body>
-                  <Card.Title>
-                    Requested by {job.tenant_name}
-                  </Card.Title>
-                  <Card.Text>
-                    {job.content} scheduled from {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+                <Card
+                  border="warning"
+                  bg="warning"
+                  text="dark"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Header>{job.title}</Card.Header>
+                  <Card.Body>
+                    <Card.Title>Requested by {job.tenant_name}</Card.Title>
+                    <Card.Text>
+                      {job.content} scheduled from {shortFormatDate(job.start)}{" "}
+                      to {shortFormatDate(job.end)}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
               </a>
             ))}
         </CardColumns>
@@ -617,12 +638,10 @@ const CalendarIndex = props => {
                 <Card.Header>{job.title} (DONE)</Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    Completed for {job.tenant_name} from {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)}
+                    Completed for {job.tenant_name} from{" "}
+                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                   </Card.Title>
-                  <Card.Text>
-                    {job.content}
-                  </Card.Text>
+                  <Card.Text>{job.content}</Card.Text>
                 </Card.Body>
               </Card>
             ))}

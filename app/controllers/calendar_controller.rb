@@ -38,10 +38,19 @@ class CalendarController < ApplicationController
 
   def post
     # Get user's access token
-    user_type = session[:user_type]
-    user_id = session[:user_id]
-    access_token = retrieveAccessToken(user_id, user_type)
+    body = JSON(request.body.read)
+    job_id = body["job_id"]
+    job = Job.find(job_id)
+    tenant_id = job.tenant_id
+    vendor_id = job.vendor_id
+    vendor_calendar_id = Vendor.find(vendor_id).calendar_id
+    if vendor_calendar_id == nil
+      render json: {status: 404}
+      return
+    end
 
+    access_token = retrieveAccessToken(tenant_id, "tenant")
+    # post to selected calendar
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
       params[:calendar_id]+"/events?alt=json&access_token=" + 
@@ -58,7 +67,36 @@ class CalendarController < ApplicationController
         "dateTime": params[:end],
         "timeZone": "America/Los_Angeles"
       },
-      "summary": "uber_for_vendors_appt",
+      "summary": "scheduleMe_appt_TENANT",
+      "description": job.title,
+      "colorId": "7"
+    }
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(uri.request_uri, header)
+    request.body = request_body.to_json
+    response = http.request(request).body
+
+    access_token = retrieveAccessToken(vendor_id, "vendor")
+
+    uri = URI.parse(
+      "https://www.googleapis.com/calendar/v3/calendars/" + 
+      vendor_calendar_id+"/events?alt=json&access_token=" + 
+      access_token
+    )
+
+    header = {'Content-Type': 'application/json'}
+    request_body = {
+      "start": {
+        "dateTime": params[:start],
+        "timeZone": "America/Los_Angeles"
+      },
+      "end": {
+        "dateTime": params[:end],
+        "timeZone": "America/Los_Angeles"
+      },
+      "summary": "scheduleMe_appt_VENDOR",
+      "description": job.title,
       "colorId": "7"
     }
     http = Net::HTTP.new(uri.host, uri.port)
@@ -167,6 +205,16 @@ class CalendarController < ApplicationController
     end
     
     redirect_to '/calendar'
+  end
+
+  def add_default
+    body = JSON(request.body.read)
+    vendor_id = body["vendor_id"]
+    calendar_id = body["calendar_id"]
+    vendor = Vendor.find(vendor_id)
+    vendor.calendar_id = calendar_id
+    vendor.save!
+    render json: {status: 200}
   end
 
 	private
@@ -377,27 +425,30 @@ class CalendarController < ApplicationController
     tenant_start = tenant_free_times.map { |t| t[:start] }
 
     vendors.each do |v|
-      # retrieve access token for vendor's account
-      access_token = retrieveAccessToken(v.id, "vendor")
+      if v.calendar_id != nil
+        # retrieve access token for vendor's account
+        access_token = retrieveAccessToken(v.id, "vendor")
 
-      vendor_calendars = get_user_calendars(access_token)
-      vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
+        vendor_calendars = get_user_calendars(access_token)
+        vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
 
-      # get vendor free times
-      v_freebusy_times = get_freebusy_response(access_token, vendor_calendar_ids)["calendars"] 
-      v_busy_times = get_list_of_times(v_freebusy_times)
-      vendor_free_times = get_free_times(v_busy_times)
+        # get vendor free times
+        v_freebusy_times = get_freebusy_response(access_token, vendor_calendar_ids)["calendars"] 
+        v_busy_times = get_list_of_times(v_freebusy_times)
+        vendor_free_times = get_free_times(v_busy_times)
 
-      # add free busy times to array "ans" until it reaches 10. 
-      vendor_free_times.each do |f|
-        if ans.length >= 10
-          return ans
-        end
-        if tenant_start.include? f[:start]
-          ans << {"vendor": v, "start": f[:start], "end": f[:end]}
+        # add free busy times to array "ans" until it reaches 10. 
+        vendor_free_times.each do |f|
+          if ans.length >= 10
+            return ans
+          end
+          if tenant_start.include? f[:start]
+            ans << {"vendor": v, "start": f[:start], "end": f[:end]}
+          end
         end
       end
     end
+
     ans
   end
 end
