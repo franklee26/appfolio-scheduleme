@@ -13,7 +13,7 @@ config/local_env.yml
 /test/tmp/
 /test/version_tmp/
 /tmp/
-
+.nosync
 # Used by dotenv library to load environment variables.
 # .env
 
@@ -59,3 +59,4 @@ build-iPhoneSimulator/
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+yarn.lock

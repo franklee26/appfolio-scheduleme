@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20200203070512) do
+=======
+ActiveRecord::Schema.define(version: 20200210055436) do
+>>>>>>> cb5f230e871710ff224d37b8247763600ba72db9
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +86,10 @@ ActiveRecord::Schema.define(version: 20200203070512) do
     t.string "auth_token"
     t.string "refresh_token"
     t.string "phone_number"
+<<<<<<< HEAD
+=======
+    t.string "calendar_id"
+>>>>>>> cb5f230e871710ff224d37b8247763600ba72db9
   end
 
   add_foreign_key "jobs", "tenants"

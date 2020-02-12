@@ -65,6 +65,26 @@ end
   # Returns a json containing all the fields for the vendor
   def show
     vendor = Vendor.find(params[:id])
+    vendor_jobs = []
+
+    vendor.jobs.each do |j|
+      job_obj = {
+        id: j.id,
+        content: j.content,
+        created_at: j.created_at,
+        updated_at: j.updated_at,
+        title: j.title,
+        job_type: j.job_type,
+        status: j.status,
+        tenant_id: j.tenant_id,
+        vendor_id: j.vendor_id,
+        start: j.start,
+        end: j.end,
+        tenant_name: j.tenant.name
+      }
+      vendor_jobs << job_obj
+    end
+
     response = {
       "id": vendor.id,
       "name": vendor.name,
@@ -73,7 +93,7 @@ end
       "created_at": vendor.created_at,
       "updated_at": vendor.updated_at,
       "landowners": vendor.landowners,
-      "jobs": vendor.jobs,
+      "jobs": vendor_jobs,
       "zip": vendor.zip
     }
     render json: response, status: :ok

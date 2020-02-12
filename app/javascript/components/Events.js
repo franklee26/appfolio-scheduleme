@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Button from "react-bootstrap/Button";
 
 // handle click and post request
 const handleClickPost = (
@@ -12,7 +13,9 @@ const handleClickPost = (
   event.preventDefault();
   fetch(
     `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
-    { method: "POST" }
+    { method: "POST", body: JSON.stringify({
+      job_id: job.id,
+    }) }
   )
     .then(res => res.json())
     .then(
@@ -40,7 +43,7 @@ const handleClickPost = (
 };
 
 // date formatter helper
-const shortFormatDate = date => {
+export const shortFormatDate = date => {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -149,6 +152,9 @@ const Events = props => {
             </li>
           </a>
         ))}
+      <Button variant="primary" size="lg" href="http://localhost:3000/calendar">
+        Back
+      </Button>
       {/*
       {props.free_times.map(timeHash => (
         <table>
