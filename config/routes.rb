@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
   get 'calendar/:calendar_id/response', to: 'calendar#get', calendar_id: /[^\/]+/
   post 'calendar/:calendar_id/:start/:end', to: 'calendar#post', calendar_id: /[^\/]+/, start: /[^\/]+/, end: /[^\/]+/
+  get 'calendar/schedule/:landowner_id/:tenant_id', to: 'calendar#schedule'
 
 
   # landowner page
@@ -49,6 +50,7 @@ Rails.application.routes.draw do
   get 'freebusy/schedule/:landowner_id/:tenant_id', to: 'freebusies#schedule'
 
   # sessions
+  get 'sessions/login', to: 'sessions#login'
   get 'sessions/logout', to: 'sessions#destroy'
 
   # jobs

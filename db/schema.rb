@@ -15,19 +15,6 @@ ActiveRecord::Schema.define(version: 20200203070512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "freebusies", force: :cascade do |t|
-    t.datetime "start"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "tenant_id"
-    t.bigint "landowner_id"
-    t.bigint "vendor_id"
-    t.datetime "end"
-    t.index ["landowner_id"], name: "index_freebusies_on_landowner_id"
-    t.index ["tenant_id"], name: "index_freebusies_on_tenant_id"
-    t.index ["vendor_id"], name: "index_freebusies_on_vendor_id"
-  end
-
   create_table "jobs", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -48,6 +35,9 @@ ActiveRecord::Schema.define(version: 20200203070512) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "auth_token"
+    t.string "refresh_token"
+    t.string "phone_number"
   end
 
   create_table "landowners_vendors", id: false, force: :cascade do |t|
@@ -76,6 +66,9 @@ ActiveRecord::Schema.define(version: 20200203070512) do
     t.string "city"
     t.string "state"
     t.string "zip"
+    t.string "auth_token"
+    t.string "refresh_token"
+    t.string "phone_number"
     t.index ["landowner_id"], name: "index_tenants_on_landowner_id"
   end
 
@@ -86,11 +79,11 @@ ActiveRecord::Schema.define(version: 20200203070512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "zip"
+    t.string "auth_token"
+    t.string "refresh_token"
+    t.string "phone_number"
   end
 
-  add_foreign_key "freebusies", "landowners"
-  add_foreign_key "freebusies", "tenants"
-  add_foreign_key "freebusies", "vendors"
   add_foreign_key "jobs", "tenants"
   add_foreign_key "jobs", "vendors"
   add_foreign_key "reviews", "jobs"
