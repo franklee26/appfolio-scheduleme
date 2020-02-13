@@ -20,6 +20,7 @@ class CustomNavbar extends React.Component {
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/about">About</Nav.Link>
+            <Nav.Link href="/vendors/search">Vendors</Nav.Link>
             <Nav.Link href="/calendar/login">Calendar</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="/jobs">Submit a Job</NavDropdown.Item>
