@@ -11,10 +11,14 @@
 # It's strongly recommended that you check this file into your version control system.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20200210055436) do
 =======
 ActiveRecord::Schema.define(version: 20200203070512) do
 >>>>>>> Basic Review Scaffold with belong_to association with job
+=======
+ActiveRecord::Schema.define(version: 20200210055436) do
+>>>>>>> schema
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
