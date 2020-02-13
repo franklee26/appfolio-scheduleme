@@ -432,29 +432,27 @@ const CalendarIndex = props => {
             <h2>Your Tenants (click to delete tenant): </h2>
             <CardColumns>
               {landownerResponse.tenants.map(tenant => (
-                <a
-                  style={{ cursor: "pointer" }}
-                  href="#"
-                  onClick={e => handleDeleteTenant(e, tenant.id)}
-                >
+
                   <Card
-                    bg="info"
-                    text="white"
-                    border="info"
-                    style={{ width: "18rem" }}
+                    ml-3
+                    border="primary"
                   >
+                    <Card.Header as="h5" align="center">{tenant.name}</Card.Header>                  
                     <Card.Body>
-                      <Card.Title>{tenant.name}</Card.Title>
                       <Card.Text>
-                        Email: {tenant.email}
+                        <b>Email:</b> {tenant.email}
                         <br />
-                        {tenant.street_address}
+                        <b>Address:</b> {tenant.street_address}
                         <br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         {tenant.city}, {tenant.state} {tenant.zip}
+
                       </Card.Text>
+                    <Button variant="outline-danger" onClick={e => handleDeleteTenant(e, tenant.id)}> Remove Tenant </Button>
+
                     </Card.Body>
                   </Card>
-                </a>
+
               ))}
             </CardColumns>
           </div>
@@ -466,27 +464,24 @@ const CalendarIndex = props => {
             <h2>Your vendors (click to delete vendor): </h2>
             <CardColumns>
               {landownerResponse.vendors.map(vendor => (
-                <a
-                  style={{ cursor: "pointer" }}
-                  href="#"
-                  onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}
-                >
-                  <Card
-                    bg="info"
-                    text="white"
-                    border="info"
-                    style={{ width: "18rem" }}
+
+                <Card
+                    ml-2
+                    border="success"
                   >
+                    <Card.Header as="h5">{vendor.name}</Card.Header>                  
                     <Card.Body>
-                      <Card.Title>{vendor.name}</Card.Title>
                       <Card.Text>
-                        Email: {vendor.email}
+                        <b>Email: </b>{vendor.email}
                         <br />
-                        Occupation: {vendor.occupation}
+                        <b>Occupation: </b>{vendor.occupation}
                       </Card.Text>
+                    <Button variant="outline-danger" onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}> Remove Vendor </Button>
+
                     </Card.Body>
                   </Card>
-                </a>
+
+
               ))}
             </CardColumns>
           </div>
@@ -499,29 +494,28 @@ const CalendarIndex = props => {
           {tenantResponse
             .filter(tenant => tenant.id != 0)
             .map(tenant => (
-              <a
-                style={{ cursor: "pointer" }}
-                href="#"
-                onClick={e => handleClickTenant(e, props.user.id, tenant.id)}
-              >
+
                 <Card
-                  bg="secondary"
-                  text="white"
-                  border="secondary"
-                  style={{ width: "18rem" }}
-                >
-                  <Card.Body>
-                    <Card.Title>{tenant.name}</Card.Title>
-                    <Card.Text>
-                      Email: {tenant.email}
-                      <br />
-                      {tenant.street_address}
-                      <br />
-                      {tenant.city}, {tenant.state} {tenant.zip}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
+                    ml-2
+                    border="primary"
+                  >
+                    <Card.Header as="h5">{tenant.name}</Card.Header>                  
+                    <Card.Body>
+                      <Card.Text>
+                        <b>Email: </b>
+                        {tenant.email}
+                        <br />
+                        <b>Address: </b>{tenant.street_address}
+                        <br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        
+                        {tenant.city}, {tenant.state} {tenant.zip}
+
+                      </Card.Text>
+                    <Button variant="outline-primary" onClick={e => handleClickTenant(e, props.user.id, tenant.id)}> Add Tenant </Button>
+
+                    </Card.Body>
+                  </Card>
+
             ))}
         </CardColumns>
 
@@ -535,27 +529,23 @@ const CalendarIndex = props => {
                 ).length == 0 && vendor.id != 0
             )
             .map(vendor => (
-              <a
-                style={{ cursor: "pointer" }}
-                href="#"
-                onClick={e => handleClickVendor(e, props.user.id, vendor.id)}
-              >
+
                 <Card
-                  bg="secondary"
-                  text="white"
-                  border="secondary"
-                  style={{ width: "18rem" }}
-                >
-                  <Card.Body>
-                    <Card.Title>{vendor.name}</Card.Title>
-                    <Card.Text>
-                      Email: {vendor.email}
-                      <br />
-                      Occupation: {vendor.occupation}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
+                    ml-2
+                    border="success"
+                  >
+                    <Card.Header as="h5">{vendor.name}</Card.Header>                  
+                    <Card.Body>
+                      <Card.Text>
+                        <b>Email: </b>{vendor.email}
+                        <br />
+                        <b>Occupation: </b>{vendor.occupation}
+                      </Card.Text>
+                    <Button variant="outline-success" onClick={e => handleClickVendor(e, props.user.id, vendor.id)}> Add Vendor </Button>
+
+                    </Card.Body>
+                  </Card>
+
             ))}
         </CardColumns>
       </div>
