@@ -9,6 +9,23 @@ import {
 } from "react-bootstrap";
 
 class CustomNavbar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      logged_in: false
+    }
+  }
+
+  componentDidMount() {
+    fetch("/sessions/current_user/")
+    .then((response) => {return response.json()})
+    .then((data) => {this.setState({ 
+      logged_in: data.user_type != "no user"
+    })
+    console.log(data)  
+  });
+  }
+
   render() {
     return (
       <Navbar bg="light" expand="lg">
@@ -30,8 +47,9 @@ class CustomNavbar extends React.Component {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-            <Button variant="outline-primary" href="/calendar/login">Login</Button>
-            <Button variant="outline-danger ml-2" href="/sessions/logout">Logout</Button>
+            {!(this.state.logged_in) && <Button variant="outline-primary" href="/calendar/login">Login</Button>}
+            {(this.state.logged_in) && <Button variant="outline-danger ml-2" href="/sessions/profile">Profile</Button>}
+            {(this.state.logged_in) && <Button variant="outline-danger ml-2" href="/sessions/logout">Logout</Button>}
         </Navbar.Collapse>
       </Navbar>
     );

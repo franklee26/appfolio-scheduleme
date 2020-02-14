@@ -1,0 +1,9 @@
+<% if @user_type == "tenant" %>
+    <%= react_component('TenantProfilePage', { id: @user.id}) %>
+<% elsif @user_type == "vendor"%>
+    <%= react_component('VendorProfilePage', { id: @user.id}) %>
+<% elsif @user_type == "landowner"%>
+    <%= react_component('LandownerProfilePage', { id: @user.id}) %>
+<% else%>
+    <%= react_component('UserSelection') %>
+<% end %>
