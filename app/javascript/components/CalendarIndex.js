@@ -390,6 +390,7 @@ const CalendarIndex = props => {
                     {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
+                  Add a review?
                 </Card.Body>
               </Card>
             ))}
