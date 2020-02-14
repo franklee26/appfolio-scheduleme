@@ -119,6 +119,7 @@ class JobNew extends React.Component {
         </header>
         <div className="container">
           <ProgressBar
+            animated
             now={33}
             variant="success"
             label="Step 1/3"
@@ -185,6 +186,7 @@ class JobNew extends React.Component {
                 variant="primary"
                 type="submit"
                 onClick={e => this.handleSubmit(e)}
+                style={{marginRight: "0.8rem"}}
               >
                 Submit
               </Button>

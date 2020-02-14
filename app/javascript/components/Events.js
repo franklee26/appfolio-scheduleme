@@ -129,6 +129,7 @@ const Events = props => {
       <h1 align="center">Selected Calendar: {calendarResponse["summary"]}</h1>
       <view align="center">
         <ProgressBar
+          animated
           now={100}
           variant="success"
           label="Step 3/3"
