@@ -85,7 +85,7 @@ class TenantsController < ApplicationController
     state = body["state"]
     response = {}
     @tenant = Tenant.find_by(id: tenant_id)
-    if Tenant.find_by(id: tenant_id) && (Landowner.find_by(id: landowner_id)||landowner_id == 1) && name.class == String && email.class == String && street_address.class == String && city.class == String && zip.class == String && state.class == String
+    if Tenant.find_by(id: tenant_id) && (Landowner.find_by(id: landowner_id)||landowner_id == 0) && name.class == String && email.class == String && street_address.class == String && city.class == String && zip.class == String && state.class == String
       @tenant.update_attribute(:landowner_id, landowner_id)
       @tenant.update_attribute(:name, name)
       @tenant.update_attribute(:email, email)
