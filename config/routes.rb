@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   # tenants
   get 'tenants', to: 'tenants#index'
   get 'tenants/auth', to: 'tenants#auth'
-  get 'tenants/profile' => 'tenants#profile'
   get 'tenants/no_landowner', to: 'tenants#no_landowner'
   get 'tenants/get_freebusy/:id', to: 'tenants#get_freebusy'
   patch 'tenants/update_tenant', to: 'tenants#update_tenant'
@@ -30,7 +29,6 @@ Rails.application.routes.draw do
   # landowner page
   get 'landowner' => 'landowners#index'
   get 'landowner/auth', to: 'landowners#auth'
-  get 'landowner/profile', to: 'landowners#profile'
   get 'landowner/:landowner_id', to: 'landowners#show', landowner_id: /[^\/]+/
   post 'landowner/add_tenant', to: 'landowners#add_tenant'
   post 'landowner/add_vendor', to: 'landowners#add_vendor'
@@ -42,7 +40,6 @@ Rails.application.routes.draw do
   get 'vendors' => 'vendors#index'
   get 'vendors/auth' => 'vendors#auth'
   get 'vendors/search' => 'vendors#search'
-  get 'vendors/profile' => 'vendors#profile'
   get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
   patch 'vendors/update_vendor', to: 'vendors#update_vendor'
 
@@ -52,12 +49,13 @@ Rails.application.routes.draw do
   # sessions
   get 'sessions/login', to: 'sessions#login'
   get 'sessions/logout', to: 'sessions#destroy'
+  get 'sessions/profile' => 'sessions#profile_page'
+  get 'sessions/current_user' => 'sessions#get_current_user'
 
   # jobs
   post 'jobs/complete', to: 'jobs#complete'
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
   patch 'jobs/finish/:job_id', to: 'jobs#finish'
-
 
   # resources
   resources :tenants
