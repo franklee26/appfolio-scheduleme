@@ -22,7 +22,6 @@ class CustomNavbar extends React.Component {
     .then((data) => {this.setState({ 
       logged_in: data.user_type != "no user"
     })
-    console.log(data)  
   });
   }
 

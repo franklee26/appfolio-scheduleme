@@ -75,7 +75,6 @@ class TenantsController < ApplicationController
 =end
   def update_tenant
     body = JSON(request.body.read)
-    puts body
     tenant_id = body["tenant_id"]
     name = body["name"]
     email = body["email"]
