@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
 import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
+import Modal from 'react-bootstrap/Modal';
 import { shortFormatDate } from "./Events.js";
+
 
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
@@ -26,6 +29,8 @@ const handleClickTenant = (event, landowner_id, tenant_id) => {
       }
     });
 };
+
+
 
 const handleClickVendor = (event, landowner_id, vendor_id) => {
   event.preventDefault();
@@ -97,6 +102,28 @@ const handleCompleteJob = (event, job_id) => {
     });
 };
 
+const handleJobReview = (event, job_id) => {
+  event.preventDefault();
+  fetch("http://localhost:3000/reviews.json", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      job_id: job_id,
+      //rating: rate,
+      //text: text
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      if (response.code == "200") {
+        alert("Successfully created review!");
+        window.location.reload(false);
+      } else {
+        alert("Failed to make new review");
+      }
+    });
+};
+
 const handleAddCalendar = (event, id, calendar_id) => {
   event.preventDefault();
   fetch(`http://localhost:3000/calendar/add_default`, {
@@ -117,6 +144,8 @@ const handleAddCalendar = (event, id, calendar_id) => {
     });
 };
 
+
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -124,6 +153,9 @@ landownerResponse: returns landowner with landowner id === landowner_id
 tenantResponse: returns all tenants without a landowner
 */
 const CalendarIndex = props => {
+  const [showM, setShowM] = useState(false);
+  const handleClose = () => setShowM(false);
+  const handleShow = () => setShowM(true);
   const [state, setState] = useState({
     error: null,
     isLoaded: false,
@@ -135,7 +167,6 @@ const CalendarIndex = props => {
   });
 
   const [show, setShow] = useState(true);
-
   useEffect(() => {
     if (props.user_type == "Tenant") {
       fetch(`http://localhost:3000/landowner/${props.user.landowner_id}`, {
@@ -390,7 +421,48 @@ const CalendarIndex = props => {
                     {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
-                  Add a review?
+                  <Button variant="primary" onClick={handleShow}>
+                    Review
+                  </Button>
+
+                  <Modal show={showM} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                    <Modal.Title>{job.title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    
+                    <Form>
+              
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Rate</Form.Label>
+                        <Form.Control as="select">
+                          <option>5</option>
+                          <option>4</option>
+                          <option>3</option>
+                          <option>2</option>
+                          <option>1</option>
+                        </Form.Control>
+                      </Form.Group>
+                      
+                      <Form.Group controlId="exampleForm.ControlTextarea1">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control as="textarea" rows="6" placeholder ="Review Description"/>
+                      </Form.Group>
+                    </Form>
+                  
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="danger" onClick={handleClose}>
+                        Exit
+                      </Button>
+                      <Button variant="primary" 
+                      onClick={(event) => { handleClose();handleJobReview(event, job.id);}}>
+                       Submit
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
                 </Card.Body>
               </Card>
             ))}

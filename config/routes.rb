@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :reviews
   get 'sessions/new'
 
   # tenants
@@ -58,8 +57,11 @@ Rails.application.routes.draw do
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
   patch 'jobs/finish/:job_id', to: 'jobs#finish'
 
+  # reviews
+  
 
   # resources
+  resources :reviews
   resources :tenants
   resources :vendors
   resources :landowners
