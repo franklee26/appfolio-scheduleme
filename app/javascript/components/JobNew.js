@@ -194,7 +194,7 @@ class JobNew extends React.Component {
 
           <Modal show={this.state.show}>
             <Modal.Header>
-              <Modal.Title>Successfully submitted job!</Modal.Title>
+              <Modal.Title>Successfully submitted job request!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               We found free times for this job. Click continue to finalise your
