@@ -6,6 +6,7 @@ import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
 import Modal from 'react-bootstrap/Modal';
 import { shortFormatDate } from "./Events.js";
+import $ from 'jquery';
 
 
 // POST request adds tenant to the landowner
@@ -106,7 +107,11 @@ const handleJobReview = (event, job_id, text, rate) => {
   event.preventDefault();
   fetch("http://localhost:3000/reviews/new_review", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json",
+                'Accept': 'application/json',
+                'X-Transaction': 'POST Example',
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+  },
     body: JSON.stringify({
       job_id: job_id,
       rating: rate,
@@ -115,7 +120,7 @@ const handleJobReview = (event, job_id, text, rate) => {
   })
     .then(response => response.json())
     .then(response => {
-      if (response.code == "200") {
+      if (response.status == "200") {
         alert("Successfully created review!");
         window.location.reload(false);
       } else {
