@@ -10,10 +10,16 @@ class CalendarController < ApplicationController
     @calendars = get_user_calendars(access_token)
     calendar_ids = get_list_of_cal_ids(@calendars) #prob not needed anymore
 
-    @user = find_user(session[:user_id], session[:user_type]);
+    @user = find_user(session[:user_id], session[:user_type])
   end
 
   def user_selection
+  end
+
+  def calendar_submission
+    access_token = retrieveAccessToken(session[:user_id], session[:user_type])
+    @user = find_user(session[:user_id], session[:user_type])
+    @calendars = get_user_calendars(access_token).filter { |c| c.summary != "Holidays in United States" && c.summary != @user.email && c.summary != "Contacts" }
   end
 
   # returns this response: https://developers.google.com/calendar/v3/reference/calendars#resource

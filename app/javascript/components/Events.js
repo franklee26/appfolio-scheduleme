@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 // handle click and post request
 const handleClickPost = (
@@ -13,9 +14,12 @@ const handleClickPost = (
   event.preventDefault();
   fetch(
     `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
-    { method: "POST", body: JSON.stringify({
-      job_id: job.id,
-    }) }
+    {
+      method: "POST",
+      body: JSON.stringify({
+        job_id: job.id
+      })
+    }
   )
     .then(res => res.json())
     .then(
@@ -39,7 +43,7 @@ const handleClickPost = (
         })
       })
     )
-    .then(res => window.location.reload(false));
+    .then(res => window.location.href = "/calendar");
 };
 
 // date formatter helper
@@ -125,11 +129,14 @@ const Events = props => {
   return (
     <div className="container">
       <h1 align="center">Selected Calendar: {calendarResponse["summary"]}</h1>
-      <h4>
-        {" "}
-        Submit your free times (pulled from the last two weeks from everyone's
-        calendars):{" "}
-      </h4>
+      <view align="center">
+        <ProgressBar
+          now={100}
+          variant="success"
+          label="Step 3/3"
+          style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
+        />
+      </view>
       {tenantResponse.jobs
         .filter(job => job.status === "LANDOWNER APPROVED")
         .map(job => (
@@ -152,32 +159,13 @@ const Events = props => {
             </li>
           </a>
         ))}
-      <Button variant="primary" size="lg" href="http://localhost:3000/calendar">
+      <Button variant="primary" size="lg" style={{marginRight: "0.8rem", marginTop: "0.8rem"}} href="http://localhost:3000/calendar/calendar_submission">
         Back
       </Button>
-      {/*
-      {props.free_times.map(timeHash => (
-        <table>
-          <td>
-            <a
-              href="#"
-              onClick={e => {
-                handleClickPost(
-                  e,
-                  timeHash["start"],
-                  timeHash["end"],
-                  props.calendar_id,
-                  calendarResponse["summary"]
-                );
-              }}
-            >
-              From {shortFormatDate(timeHash["start"])} to{" "}
-              {shortFormatDate(timeHash["end"])}{" "}
-            </a>
-          </td>
-        </table>
-      ))}
-            */}
+
+      <Button variant="primary" size="lg" style={{marginTop: "0.8rem"}} href="http://localhost:3000/calendar">
+        Home
+      </Button>
     </div>
   );
 };

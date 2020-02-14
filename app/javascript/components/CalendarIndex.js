@@ -295,14 +295,14 @@ const CalendarIndex = props => {
           !show ? (
             <Button
               size="lg"
-              variant="success"
+              variant="warning"
               onClick={() => setShow(true)}
               block
             >
               ⚠ Alert: You have jobs ready to be scheduled!
             </Button>
           ) : (
-            <Alert show={show} variant="success">
+            <Alert show={show} variant="warning">
               <Alert.Heading>
                 You have jobs ready to be scheduled!
               </Alert.Heading>
@@ -315,31 +315,17 @@ const CalendarIndex = props => {
               </p>
               <hr />
               <div className="d-flex justify-content-end">
+              <Button variant="outline-dark" style={{marginRight: "0.8rem"}} onClick={() => window.location.href = "/calendar/calendar_submission"}>Continue</Button>
                 <Button
                   onClick={() => setShow(false)}
-                  variant="outline-success"
+                  variant="outline-dark"
                 >
-                  Hide alert
+                  Hide
                 </Button>
               </div>
             </Alert>
           )
         ) : null}
-        <h2 align="center">
-          {props.user.name}'s list of calendars under email {props.user.email}
-        </h2>
-        <CardColumns>
-          {props.calendars.map(calendar => (
-            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
-              <Card border="info" style={{ width: "18rem" }}>
-                <Card.Body>
-                  <Card.Title>{calendar.summary}</Card.Title>
-                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
-                </Card.Body>
-              </Card>
-            </a>
-          ))}
-        </CardColumns>
 
         <Button
           variant="primary"
