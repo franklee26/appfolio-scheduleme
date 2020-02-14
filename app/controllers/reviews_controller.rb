@@ -17,6 +17,15 @@ class ReviewsController < ApplicationController
     @review = Review.new
   end
 
+  def new_temp_review
+    body = JSON(request.body.read)
+    review = Review.new
+    review.job_id = body["job_id"]
+    review.text = body["text"]
+    review.rating = body["rating"]
+    review.save!
+    render json: body
+  end
   # GET /reviews/1/edit
   def edit
   end
