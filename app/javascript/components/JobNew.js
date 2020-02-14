@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 
 class JobNew extends React.Component {
   constructor(props) {
@@ -13,13 +14,15 @@ class JobNew extends React.Component {
       content: props.content,
       title: `Job request #${this.props.num_jobs + 1}`,
       job_type: "---",
-      show: false
+      show: false,
+      loading: false
     };
     this.handleContentChange = this.handleContentChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleJobTypeChange = this.handleJobTypeChange.bind(this);
     this.setShow = this.setShow.bind(this);
+    this.setLoading = this.setLoading.bind(this);
   }
 
   handleContentChange(event) {
@@ -38,8 +41,13 @@ class JobNew extends React.Component {
     this.setState({ show: true });
   }
 
+  setLoading(event) {
+    this.setState({ loading: true });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
+    this.setLoading();
     if (this.props.landowner_id_call === 0) {
       alert("Can't schedule job yet! (You have no landowner yet.)");
       return;
@@ -182,14 +190,30 @@ class JobNew extends React.Component {
             </Form.Group>
 
             <div className="actions">
-              <Button
-                variant="primary"
-                type="submit"
-                onClick={e => this.handleSubmit(e)}
-                style={{marginRight: "0.8rem"}}
-              >
-                Submit
-              </Button>
+              {this.state.loading ? (
+                <Button
+                  variant="primary"
+                  style={{ marginRight: "0.8rem" }}
+                  disabled
+                >
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  type="submit"
+                  onClick={e => this.handleSubmit(e)}
+                  style={{ marginRight: "0.8rem" }}
+                >
+                  Submit
+                </Button>
+              )}
               <a href={"http://localhost:3000/calendar"}>Back</a>
             </div>
           </Form>
