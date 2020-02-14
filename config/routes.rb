@@ -58,7 +58,7 @@ Rails.application.routes.draw do
   patch 'jobs/finish/:job_id', to: 'jobs#finish'
 
   # reviews
-  
+  post 'reviews/new_review', to: 'reviews#new_temp_review'
 
   # resources
   resources :reviews

@@ -102,15 +102,15 @@ const handleCompleteJob = (event, job_id) => {
     });
 };
 
-const handleJobReview = (event, job_id) => {
+const handleJobReview = (event, job_id, text, rate) => {
   event.preventDefault();
-  fetch("http://localhost:3000/reviews.json", {
+  fetch("http://localhost:3000/reviews/new_review", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       job_id: job_id,
-      //rating: rate,
-      //text: text
+      rating: rate,
+      text: text
     })
   })
     .then(response => response.json())
@@ -146,6 +146,7 @@ const handleAddCalendar = (event, id, calendar_id) => {
 
 
 
+
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -165,6 +166,19 @@ const CalendarIndex = props => {
     isLoaded3: false,
     vendorResponse: null
   });
+  const [State, SetState]= useState({
+    text: '',
+    rate: ''
+  });
+  const handleSelect= (event) => {
+    console.log(event.target.value)
+    SetState({text: text, rate: event.target.value})
+  };
+  const handleText= (event) => {
+    console.log(event.target.value)
+    SetState({text: event.target.value, rate: rate})
+  };
+
 
   const [show, setShow] = useState(true);
   useEffect(() => {
@@ -298,6 +312,10 @@ const CalendarIndex = props => {
     isLoaded2,
     isLoaded3
   } = state;
+  const {
+    text,
+    rate
+  } = State;
   if (error) {
     return <div>Error in loading... please refresh.</div>;
   } else if (!isLoaded) {
@@ -435,18 +453,25 @@ const CalendarIndex = props => {
               
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Rate</Form.Label>
-                        <Form.Control as="select">
-                          <option>5</option>
-                          <option>4</option>
-                          <option>3</option>
-                          <option>2</option>
-                          <option>1</option>
+                        <Form.Control as="select" 
+                        onChange = {event => handleSelect(event)}
+                        placeholder="Select Rating"
+                        >
+                          <option>---</option>
+                          <option value ="5">5</option>
+                          <option value ="4">4</option>
+                          <option value ="3">3</option>
+                          <option value ="2">2</option>
+                          <option value ="1">1</option>
                         </Form.Control>
                       </Form.Group>
                       
                       <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control as="textarea" rows="6" placeholder ="Review Description"/>
+                        <Form.Control as="textarea" rows="6" placeholder ="Review Description"
+
+                        onChange = {event => handleText(event)}
+                        />
                       </Form.Group>
                     </Form>
                   
@@ -457,7 +482,7 @@ const CalendarIndex = props => {
                         Exit
                       </Button>
                       <Button variant="primary" 
-                      onClick={(event) => { handleClose();handleJobReview(event, job.id);}}>
+                      onClick={(event) => { handleClose();handleJobReview(event,job.id,text,rate);}}>
                        Submit
                       </Button>
                     </Modal.Footer>
