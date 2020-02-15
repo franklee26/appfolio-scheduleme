@@ -1,46 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
-
-// handle click and post request
-const handleClickPost = (
-  event,
-  startTime,
-  endTime,
-  calendarId,
-  calendarName,
-  job
-) => {
-  event.preventDefault();
-  fetch(
-    `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
-    { method: "POST", body: JSON.stringify({
-      job_id: job.id,
-    }) }
-  )
-    .then(res => res.json())
-    .then(
-      res => {
-        alert(
-          `Successfully added event starting at ${shortFormatDate(
-            startTime
-          )} to ${calendarName}! (status: ${res["status"]})`
-        );
-      },
-      error => {
-        alert(`Failed to add event to calendar with error ${error}`);
-      }
-    )
-    .then(res =>
-      fetch("http://localhost:3000/jobs/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          job: job
-        })
-      })
-    )
-    .then(res => window.location.reload(false));
-};
+import ProgressBar from "react-bootstrap/ProgressBar";
+import Modal from "react-bootstrap/Modal";
 
 // date formatter helper
 export const shortFormatDate = date => {
@@ -59,8 +20,48 @@ const Events = props => {
     isLoaded: false,
     isLoaded2: false,
     calendarResponse: null,
-    tenantResponse: null
+    tenantResponse: null,
+    show: false
   });
+
+  // handle click and post request
+  const handleClickPost = (
+    event,
+    startTime,
+    endTime,
+    calendarId,
+    calendarName,
+    job
+  ) => {
+    event.preventDefault();
+    fetch(
+      `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          job_id: job.id
+        })
+      }
+    )
+      .then(res => res.json())
+      .then(
+        res => {
+          setState({...state, show: true})
+        },
+        error => {
+          alert(`Failed to add event to calendar with error ${error}`);
+        }
+      )
+      .then(res =>
+        fetch("http://localhost:3000/jobs/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            job: job
+          })
+        })
+      )
+  };
 
   // fetches calendar information, but this maybe overkill since all we want is the name...
   useEffect(() => {
@@ -102,7 +103,8 @@ const Events = props => {
     isLoaded,
     calendarResponse,
     tenantResponse,
-    isLoaded2
+    isLoaded2,
+    show
   } = state;
   if (error) {
     return <div>Error in mount: {error.message}</div>;
@@ -125,11 +127,15 @@ const Events = props => {
   return (
     <div className="container">
       <h1 align="center">Selected Calendar: {calendarResponse["summary"]}</h1>
-      <h4>
-        {" "}
-        Submit your free times (pulled from the last two weeks from everyone's
-        calendars):{" "}
-      </h4>
+      <view align="center">
+        <ProgressBar
+          animated
+          now={100}
+          variant="success"
+          label="Step 3/3"
+          style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
+        />
+      </view>
       {tenantResponse.jobs
         .filter(job => job.status === "LANDOWNER APPROVED")
         .map(job => (
@@ -152,32 +158,42 @@ const Events = props => {
             </li>
           </a>
         ))}
-      <Button variant="primary" size="lg" href="http://localhost:3000/calendar">
+      <Button
+        variant="primary"
+        size="lg"
+        style={{ marginRight: "0.8rem", marginTop: "0.8rem" }}
+        href="http://localhost:3000/calendar/calendar_submission"
+      >
         Back
       </Button>
-      {/*
-      {props.free_times.map(timeHash => (
-        <table>
-          <td>
-            <a
-              href="#"
-              onClick={e => {
-                handleClickPost(
-                  e,
-                  timeHash["start"],
-                  timeHash["end"],
-                  props.calendar_id,
-                  calendarResponse["summary"]
-                );
-              }}
-            >
-              From {shortFormatDate(timeHash["start"])} to{" "}
-              {shortFormatDate(timeHash["end"])}{" "}
-            </a>
-          </td>
-        </table>
-      ))}
-            */}
+
+      <Button
+        variant="primary"
+        size="lg"
+        style={{ marginTop: "0.8rem" }}
+        href="http://localhost:3000/calendar"
+      >
+        Home
+      </Button>
+
+      <Modal show={show}>
+            <Modal.Header>
+              <Modal.Title>Successfully submitted job!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Your job is scheduled! The job event has been added to your calendar as a confirmation.
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="primary"
+                onClick={e =>
+                  (window.location.href = "/calendar")
+                }
+              >
+                Done
+              </Button>
+            </Modal.Footer>
+          </Modal>
     </div>
   );
 };

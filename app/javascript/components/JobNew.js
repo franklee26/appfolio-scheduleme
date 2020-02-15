@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
+import ProgressBar from "react-bootstrap/ProgressBar";
+import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 
 class JobNew extends React.Component {
   constructor(props) {
@@ -9,12 +13,16 @@ class JobNew extends React.Component {
     this.state = {
       content: props.content,
       title: `Job request #${this.props.num_jobs + 1}`,
-      job_type: "---"
+      job_type: "---",
+      show: false,
+      loading: false
     };
     this.handleContentChange = this.handleContentChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleJobTypeChange = this.handleJobTypeChange.bind(this);
+    this.setShow = this.setShow.bind(this);
+    this.setLoading = this.setLoading.bind(this);
   }
 
   handleContentChange(event) {
@@ -29,8 +37,17 @@ class JobNew extends React.Component {
     this.setState({ job_type: event.target.value });
   }
 
+  setShow(event) {
+    this.setState({ show: true });
+  }
+
+  setLoading(event) {
+    this.setState({ loading: true });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
+    this.setLoading();
     if (this.props.landowner_id_call === 0) {
       alert("Can't schedule job yet! (You have no landowner yet.)");
       return;
@@ -46,7 +63,11 @@ class JobNew extends React.Component {
       }
     )
       .then(response => response.json())
-      .then(response => response.vendors.filter(v => v.vendor.occupation === this.state.job_type))
+      .then(response =>
+        response.vendors.filter(
+          v => v.vendor.occupation === this.state.job_type
+        )
+      )
       .then(response => {
         if (response.length === 0) {
           alert("Can't schedule job yet! (Can not find any free times)");
@@ -73,12 +94,7 @@ class JobNew extends React.Component {
           })
         )
       )
-      .then(res =>
-        alert(
-          "Found available times! Confirm job by adding job to your calendar."
-        )
-      )
-      .then(res => document.getElementById("jobForm").submit())
+      .then(res => this.setShow())
       .catch(error => console.log(error));
   }
 
@@ -103,80 +119,125 @@ class JobNew extends React.Component {
       );
     }
     return (
-    <div>
-        <header class = "bg-dark py-3">
-        <h1 align="center" class="display-3 text-white mt-5 mb-2">Submit A New Job</h1>
+      <div>
+        <header class="bg-dark py-3">
+          <h1 align="center" class="display-3 text-white mt-5 mb-2">
+            Submit A New Job
+          </h1>
         </header>
-      <div className="container">
-
-        <Form id="jobForm" action={this.props.form_path} method="post">
-          <Form.Group controlId="authForm">
-            <Form.Control
-              name="authenticity_token"
-              type="hidden"
-              defaultValue={this.props.csrf_token}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="methodForm">
-            <Form.Control
-              name="_method"
-              type="hidden"
-              defaultValue={this.props.form_method}
-            />
-          </Form.Group>
-
-          <Form.Row>
-            <Form.Group controlId="JobTitle">
-              <Form.Label>Job Title</Form.Label>
+        <div className="container">
+          <ProgressBar
+            animated
+            now={33}
+            variant="success"
+            label="Step 1/3"
+            style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
+          />
+          <Form id="jobForm" action={this.props.form_path} method="post">
+            <Form.Group controlId="authForm">
               <Form.Control
-                name="job[title]"
-                defaultValue={`Job request #${this.props.num_jobs + 1}`}
-                onChange={this.handleTitleChange}
+                name="authenticity_token"
+                type="hidden"
+                defaultValue={this.props.csrf_token}
               />
             </Form.Group>
-            <Form.Group as={Col} controlId="JobType">
-              <Form.Label>Job Type</Form.Label>
-              <Form.Control as="select" onChange={this.handleJobTypeChange}>
-                <option>---</option>
-                <option>Electrician</option>
-                <option>Plumber</option>
-                <option>Carpenter</option>
-                <option>Gardener</option>
-                <option>Household cleaning</option>
-                <option>Internet and Cable</option>
-                <option>Other</option>
-              </Form.Control>
+
+            <Form.Group controlId="methodForm">
+              <Form.Control
+                name="_method"
+                type="hidden"
+                defaultValue={this.props.form_method}
+              />
             </Form.Group>
-          </Form.Row>
 
-          <Form.Group>
-            <Form.Label>Describe your job request</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows="5"
-              columns="20"
-              type="text"
-              id="title"
-              name="job[content]"
-              defaultValue={this.props.content}
-              onChange={this.handleContentChange}
-              placeholder="Job description"
-            />
-          </Form.Group>
+            <Form.Row>
+              <Form.Group controlId="JobTitle">
+                <Form.Label>Job Title</Form.Label>
+                <Form.Control
+                  name="job[title]"
+                  defaultValue={`Job request #${this.props.num_jobs + 1}`}
+                  onChange={this.handleTitleChange}
+                />
+              </Form.Group>
+              <Form.Group as={Col} controlId="JobType">
+                <Form.Label>Job Type</Form.Label>
+                <Form.Control as="select" onChange={this.handleJobTypeChange}>
+                  <option>---</option>
+                  <option>Electrician</option>
+                  <option>Plumber</option>
+                  <option>Carpenter</option>
+                  <option>Gardener</option>
+                  <option>Household cleaning</option>
+                  <option>Internet and Cable</option>
+                  <option>Other</option>
+                </Form.Control>
+              </Form.Group>
+            </Form.Row>
 
-          <div className="actions">
-            <Button
-              variant="primary"
-              type="submit"
-              onClick={e => this.handleSubmit(e)}
-            >
-              Submit
-            </Button>
-            <a href={"http://localhost:3000/calendar"}>Back</a>
-          </div>
-        </Form>
-      </div>
+            <Form.Group>
+              <Form.Label>Describe your job request</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows="5"
+                columns="20"
+                type="text"
+                id="title"
+                name="job[content]"
+                defaultValue={this.props.content}
+                onChange={this.handleContentChange}
+                placeholder="Job description"
+              />
+            </Form.Group>
+
+            <div className="actions">
+              {this.state.loading ? (
+                <Button
+                  variant="primary"
+                  style={{ marginRight: "0.8rem" }}
+                  disabled
+                >
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  type="submit"
+                  onClick={e => this.handleSubmit(e)}
+                  style={{ marginRight: "0.8rem" }}
+                >
+                  Submit
+                </Button>
+              )}
+              <a href={"http://localhost:3000/calendar"}>Back</a>
+            </div>
+          </Form>
+
+          <Modal show={this.state.show}>
+            <Modal.Header>
+              <Modal.Title>Successfully submitted job request!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              We found free times for this job. Click continue to finalise your
+              submission.
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="primary"
+                onClick={e =>
+                  (window.location.href = "/calendar/calendar_submission")
+                }
+              >
+                Continue
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
     );
   }
