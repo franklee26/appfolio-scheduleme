@@ -157,9 +157,4 @@ end
     redirect_to client.authorization_uri.to_s
   end
 
-
-  # Goes to landowner's profile.html.erb page
-  def profile
-  end
-
 end

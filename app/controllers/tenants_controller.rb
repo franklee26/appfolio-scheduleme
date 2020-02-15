@@ -85,7 +85,7 @@ class TenantsController < ApplicationController
     state = body["state"]
     response = {}
     @tenant = Tenant.find_by(id: tenant_id)
-    if Tenant.find_by(id: tenant_id) && Landowner.find_by(id: landowner_id) && name.class == String && email.class == String && street_address.class == String && city.class == String && zip.class == String && state.class == String
+    if Tenant.find_by(id: tenant_id) && (Landowner.find_by(id: landowner_id)||landowner_id == 0) && name.class == String && email.class == String && street_address.class == String && city.class == String && zip.class == String && state.class == String
       @tenant.update_attribute(:landowner_id, landowner_id)
       @tenant.update_attribute(:name, name)
       @tenant.update_attribute(:email, email)
@@ -122,9 +122,5 @@ class TenantsController < ApplicationController
     client = Signet::OAuth2::Client.new(clientOptions)
     session[:user_type] = "tenant"
     redirect_to client.authorization_uri.to_s
-  end
-
-  # Goes to tenant profile.html.erb page
-  def profile
   end
 end
