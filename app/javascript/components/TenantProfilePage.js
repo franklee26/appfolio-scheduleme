@@ -78,14 +78,7 @@ class TenantProfilePage extends Component {
               onChange={e => this.handleChange(e)}
             />
           </div>
-          <div>
-            <label>Email</label>
-            <input
-              value={this.state.email}
-              name="email"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
+          
           <div>
             <label>Landlord ID</label>
             <input
