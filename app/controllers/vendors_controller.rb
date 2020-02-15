@@ -70,11 +70,10 @@ def update_rating
   vendor = Vendor.find_by(id: vendor_id)
   if vendor 
     if vendor.rating
-      r = vendor.rating * vendor.num * 1.0 + rating * 1.0
-      g = vendor.num + num
-      rate = r/g
+      r = (vendor.rating).to_f * (vendor.num).to_f * 1.0 + (rating).to_f * 1.0
       n = vendor.num + 1
-      vendor.update_attribute(:rating, rate )
+      rate = r/n
+      vendor.update_attribute(:rating, rate)
       vendor.update_attribute(:num, n)
     else  
       vendor.update_attribute(:rating, rating )

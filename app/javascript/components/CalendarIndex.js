@@ -110,7 +110,7 @@ const handleUpdateVendorRating = (vendor_id, rate) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       vendor_id: vendor_id,
-      rating: parseFloat(rate),
+      rating: rate,
       num: 1
     })
   })
@@ -125,6 +125,11 @@ const handleUpdateVendorRating = (vendor_id, rate) => {
 };
 
 const handleJobReview = (event, job_id, text, rate, vendor_id) => {
+  console.log(job_id);
+  console.log(vendor_id);
+  console.log(text);
+  console.log(rate);
+  parseFloat(rate);
   event.preventDefault();
   fetch("http://localhost:3000/reviews/new_review", {
     method: "POST",
@@ -183,9 +188,18 @@ landownerResponse: returns landowner with landowner id === landowner_id
 tenantResponse: returns all tenants without a landowner
 */
 const CalendarIndex = props => {
-  const [showM, setShowM] = useState(false);
-  const handleClose = () => setShowM(false);
-  const handleShow = () => setShowM(true);
+  const [STATE, SETSTATE] = useState({
+    showM: false,
+    TITLE: "",
+    JID: null,
+    VID: null
+  });
+  const handleClose = () => {
+    SETSTATE({showM: false});
+  };
+  const handleShow = (title, JID, VID) => {
+    SETSTATE({showM: true, TITLE: title, JID: JID, VID: VID })
+  };
   const [state, setState] = useState({
     error: null,
     isLoaded: false,
@@ -345,6 +359,12 @@ const CalendarIndex = props => {
     text,
     rate
   } = State;
+  const {
+    showM,
+    TITLE,
+    JID,
+    VID
+  } = STATE;
   if (error) {
     return <div>Error in loading... please refresh.</div>;
   } else if (!isLoaded) {
@@ -468,13 +488,13 @@ const CalendarIndex = props => {
                     {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
-                  <Button variant="primary" onClick={handleShow}>
+                  <Button variant="primary" onClick={() => handleShow(job.title, job.id, job.vendor_id)}>
                     Review
                   </Button>
 
                   <Modal show={showM} onHide={handleClose}>
                     <Modal.Header closeButton>
-                    <Modal.Title>{job.title}</Modal.Title>
+                    <Modal.Title>{TITLE}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                     
@@ -511,7 +531,7 @@ const CalendarIndex = props => {
                         Exit
                       </Button>
                       <Button variant="primary" 
-                      onClick={(event) => { handleClose(); handleJobReview(event,job.id,text,rate,job.vendor_id);}}>
+                      onClick={(event) => { handleClose(); handleJobReview(event,JID,text,rate,VID);}}>
                        Submit
                       </Button>
                     </Modal.Footer>
