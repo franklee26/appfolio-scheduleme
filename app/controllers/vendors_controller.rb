@@ -61,6 +61,31 @@ def update_vendor
   render json: response, status: :ok
 end
 
+
+def update_rating
+  body = JSON(request.body.read)
+  rating = body["rating"]
+  vendor_id = body["vendor_id"]
+  num = body["num"]
+  vendor = Vendor.find_by(id: vendor_id)
+  if vendor 
+    if vendor.rating
+      r = vendor.rating * vendor.num * 1.0 + rating * 1.0
+      g = vendor.num + num
+      rate = r/g
+      n = vendor.num + 1
+      vendor.update_attribute(:rating, rate )
+      vendor.update_attribute(:num, n)
+    else  
+      vendor.update_attribute(:rating, rating )
+      vendor.update_attribute(:num, 1)
+    end
+    render json: {status: 200}
+  else
+    render json: {status: 400}
+  end
+end
+
   # GET /vendor/1
   # Returns a json containing all the fields for the vendor
   def show

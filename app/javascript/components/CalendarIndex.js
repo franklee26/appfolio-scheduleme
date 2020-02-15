@@ -103,7 +103,28 @@ const handleCompleteJob = (event, job_id) => {
     });
 };
 
-const handleJobReview = (event, job_id, text, rate) => {
+
+const handleUpdateVendorRating = (vendor_id, rate) => {
+  fetch(`http://localhost:3000/vendors/update_rating`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      vendor_id: vendor_id,
+      rating: parseFloat(rate),
+      num: 1
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == 200) {
+        alert("Successfully updated vendor");
+      } else {
+        alert("Failed to update vendor");
+      }
+    });
+};
+
+const handleJobReview = (event, job_id, text, rate, vendor_id) => {
   event.preventDefault();
   fetch("http://localhost:3000/reviews/new_review", {
     method: "POST",
@@ -121,13 +142,16 @@ const handleJobReview = (event, job_id, text, rate) => {
     .then(response => response.json())
     .then(response => {
       if (response.status == "200") {
-        alert("Successfully created review!");
-        window.location.reload(false);
-      } else {
-        alert("Failed to make new review");
+        handleUpdateVendorRating(vendor_id, rate);
+      } else if(response.status == "210") {
+        alert("Already Reviewed");
+        //Need to update rating instead of adding new one
       }
     });
 };
+
+
+
 
 const handleAddCalendar = (event, id, calendar_id) => {
   event.preventDefault();
@@ -487,7 +511,7 @@ const CalendarIndex = props => {
                         Exit
                       </Button>
                       <Button variant="primary" 
-                      onClick={(event) => { handleClose();handleJobReview(event,job.id,text,rate);}}>
+                      onClick={(event) => { handleClose(); handleJobReview(event,job.id,text,rate,job.vendor_id);}}>
                        Submit
                       </Button>
                     </Modal.Footer>

@@ -20,12 +20,18 @@ class ReviewsController < ApplicationController
 
   def new_temp_review
     body = JSON(request.body.read)
-    @review = Review.new
-    @review.job_id = body["job_id"]
-    @review.text = body["text"]
-    @review.rating = body["rating"]
-    @review.save!
-    render json: {status: 200}
+    job_id = body["job_id"]
+    first = Review.find_by(job_id: job_id)
+    if first
+      render json: {status: 210}
+    else
+      @review = Review.new
+      @review.job_id = body["job_id"]
+      @review.text = body["text"]
+      @review.rating = body["rating"]
+      @review.save!
+      render json: {status: 200}
+    end
   end
   # GET /reviews/1/edit
   def edit
