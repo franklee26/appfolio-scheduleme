@@ -23,7 +23,6 @@ class JobsController < ApplicationController
     job.end = body["end"]
 
     job.save!
-
     render json: body
   end
 

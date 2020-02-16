@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   get 'vendors/search' => 'vendors#search'
   get 'vendors/:id', to: 'vendors#show', id: /[0-9]+/
   patch 'vendors/update_vendor', to: 'vendors#update_vendor'
-
+  patch 'vendors/update_rating', to: 'vendors#update_rating'
   # freebusy
   get 'freebusy/schedule/:landowner_id/:tenant_id', to: 'freebusies#schedule'
 
@@ -57,7 +57,12 @@ Rails.application.routes.draw do
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
   patch 'jobs/finish/:job_id', to: 'jobs#finish'
 
+  # reviews
+  post 'reviews/new_review', to: 'reviews#new_temp_review'
+
+
   # resources
+  resources :reviews
   resources :tenants
   resources :vendors
   resources :landowners
