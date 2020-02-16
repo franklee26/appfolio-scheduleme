@@ -22,9 +22,6 @@ class ReviewsController < ApplicationController
     body = JSON(request.body.read)
     job_id = body["job_id"]
     first = Review.find_by(job_id: job_id)
-    job = Job.find(job_id)
-    job.reviewed = true
-    job.save!
     if first
       render json: {status: 210}
     else
