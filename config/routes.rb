@@ -59,9 +59,6 @@ Rails.application.routes.draw do
   # reviews
   post 'reviews/new_review', to: 'reviews#new_temp_review'
 
-  #ratings
-  post 'ratings/new_rating', to: 'ratings#new_rating'
-  patch 'ratings/:vendor_id', to: 'ratings#new_update'
 
   # resources
   resources :reviews

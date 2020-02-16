@@ -111,7 +111,6 @@ const handleUpdateVendorRating = (vendor_id, rate) => {
     body: JSON.stringify({
       vendor_id: vendor_id,
       rating: rate,
-      num: 1
     })
   })
     .then(response => response.json())
@@ -125,10 +124,6 @@ const handleUpdateVendorRating = (vendor_id, rate) => {
 };
 
 const handleJobReview = (event, job_id, text, rate, vendor_id) => {
-  console.log(job_id);
-  console.log(vendor_id);
-  console.log(text);
-  console.log(rate);
   parseFloat(rate);
   event.preventDefault();
   fetch("http://localhost:3000/reviews/new_review", {
@@ -150,7 +145,7 @@ const handleJobReview = (event, job_id, text, rate, vendor_id) => {
         handleUpdateVendorRating(vendor_id, rate);
       } else if(response.status == "210") {
         alert("Already Reviewed");
-        //Need to update rating instead of adding new one
+        window.location.reload(false);
       }
     });
 };
@@ -214,11 +209,9 @@ const CalendarIndex = props => {
     rate: ''
   });
   const handleSelect= (event) => {
-    console.log(event.target.value)
     SetState({text: text, rate: event.target.value})
   };
   const handleText= (event) => {
-    console.log(event.target.value)
     SetState({text: event.target.value, rate: rate})
   };
 
