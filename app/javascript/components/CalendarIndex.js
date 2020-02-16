@@ -518,7 +518,7 @@ const CalendarIndex = props => {
                         variant="primary"
                         onClick={event => {
                           SETSTATE({ ...STATE, showM: false });
-                          handleJobReview(event, job.id, text, rate, VID);
+                          handleJobReview(event, JID, text, rate, VID);
                         }}
                       >
                         Submit
