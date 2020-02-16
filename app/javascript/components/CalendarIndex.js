@@ -4,10 +4,9 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
-import Modal from 'react-bootstrap/Modal';
+import Modal from "react-bootstrap/Modal";
 import { shortFormatDate } from "./Events.js";
-import $ from 'jquery';
-
+import $ from "jquery";
 
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
@@ -30,8 +29,6 @@ const handleClickTenant = (event, landowner_id, tenant_id) => {
       }
     });
 };
-
-
 
 const handleClickVendor = (event, landowner_id, vendor_id) => {
   event.preventDefault();
@@ -103,56 +100,6 @@ const handleCompleteJob = (event, job_id) => {
     });
 };
 
-
-const handleUpdateVendorRating = (vendor_id, rate) => {
-  fetch(`http://localhost:3000/vendors/update_rating`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      vendor_id: vendor_id,
-      rating: rate,
-    })
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == 200) {
-        alert("Successfully updated vendor");
-      } else {
-        alert("Failed to update vendor");
-      }
-    });
-};
-
-const handleJobReview = (event, job_id, text, rate, vendor_id) => {
-  parseFloat(rate);
-  event.preventDefault();
-  fetch("http://localhost:3000/reviews/new_review", {
-    method: "POST",
-    headers: { "Content-Type": "application/json",
-                'Accept': 'application/json',
-                'X-Transaction': 'POST Example',
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-  },
-    body: JSON.stringify({
-      job_id: job_id,
-      rating: rate,
-      text: text
-    })
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == "200") {
-        handleUpdateVendorRating(vendor_id, rate);
-      } else if(response.status == "210") {
-        alert("Already Reviewed");
-        window.location.reload(false);
-      }
-    });
-};
-
-
-
-
 const handleAddCalendar = (event, id, calendar_id) => {
   event.preventDefault();
   fetch(`http://localhost:3000/calendar/add_default`, {
@@ -173,9 +120,6 @@ const handleAddCalendar = (event, id, calendar_id) => {
     });
 };
 
-
-
-
 /*
 isLoaded: mounting landowner response
 isLoaded2: mounting landowner's tenants response
@@ -189,12 +133,6 @@ const CalendarIndex = props => {
     JID: null,
     VID: null
   });
-  const handleClose = () => {
-    SETSTATE({showM: false});
-  };
-  const handleShow = (title, JID, VID) => {
-    SETSTATE({showM: true, TITLE: title, JID: JID, VID: VID })
-  };
   const [state, setState] = useState({
     error: null,
     isLoaded: false,
@@ -202,21 +140,65 @@ const CalendarIndex = props => {
     tenantResponse: null,
     isLoaded2: false,
     isLoaded3: false,
-    vendorResponse: null
+    vendorResponse: null,
+    reviewSuccess: false
   });
-  const [State, SetState]= useState({
-    text: '',
-    rate: ''
+  const [State, SetState] = useState({
+    text: "",
+    rate: ""
   });
-  const handleSelect= (event) => {
-    SetState({text: text, rate: event.target.value})
-  };
-  const handleText= (event) => {
-    SetState({text: event.target.value, rate: rate})
-  };
-
 
   const [show, setShow] = useState(true);
+
+  const handleUpdateVendorRating = (vendor_id, rate, job_id) => {
+    fetch(`http://localhost:3000/vendors/update_rating`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        vendor_id: vendor_id,
+        rating: rate,
+        job_id: job_id
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.status == 200) {
+          /* alert("Successfully updated vendor"); */
+          setState({ ...state, reviewSuccess: true });
+        } else {
+          alert("Failed to update vendor");
+        }
+      });
+  };
+
+  const handleJobReview = (event, job_id, text, rate, vendor_id) => {
+    parseFloat(rate);
+    event.preventDefault();
+    fetch("http://localhost:3000/reviews/new_review", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Transaction": "POST Example",
+        "X-CSRF-Token": $('meta[name="csrf-token"]').attr("content")
+      },
+      body: JSON.stringify({
+        job_id: job_id,
+        rating: rate,
+        text: text
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.status == "200") {
+          handleUpdateVendorRating(vendor_id, rate, job_id);
+        } else if (response.status == "210") {
+          alert("Already Reviewed");
+          window.location.reload(false);
+        }
+      });
+  };
+
   useEffect(() => {
     if (props.user_type == "Tenant") {
       fetch(`http://localhost:3000/landowner/${props.user.landowner_id}`, {
@@ -346,18 +328,11 @@ const CalendarIndex = props => {
     tenantResponse,
     vendorResponse,
     isLoaded2,
-    isLoaded3
+    isLoaded3,
+    reviewSuccess
   } = state;
-  const {
-    text,
-    rate
-  } = State;
-  const {
-    showM,
-    TITLE,
-    JID,
-    VID
-  } = STATE;
+  const { text, rate } = State;
+  const { showM, TITLE, JID, VID } = STATE;
   if (error) {
     return <div>Error in loading... please refresh.</div>;
   } else if (!isLoaded) {
@@ -406,11 +381,16 @@ const CalendarIndex = props => {
               </p>
               <hr />
               <div className="d-flex justify-content-end">
-              <Button variant="outline-dark" style={{marginRight: "0.8rem"}} onClick={() => window.location.href = "/calendar/calendar_submission"}>Continue</Button>
                 <Button
-                  onClick={() => setShow(false)}
                   variant="outline-dark"
+                  style={{ marginRight: "0.8rem" }}
+                  onClick={() =>
+                    (window.location.href = "/calendar/calendar_submission")
+                  }
                 >
+                  Continue
+                </Button>
+                <Button onClick={() => setShow(false)} variant="outline-dark">
                   Hide
                 </Button>
               </div>
@@ -467,55 +447,84 @@ const CalendarIndex = props => {
                     {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
-                  <Button variant="primary" onClick={() => handleShow(job.title, job.id, job.vendor_id)}>
-                    Review
-                  </Button>
+                  {job.reviewed ? (
+                    <Button variant="primary" disabled>
+                      Reviewed
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        SETSTATE({
+                          showM: true,
+                          TITLE: job.title,
+                          JID: job.id,
+                          VID: job.vendor_id
+                        })
+                      }
+                    >
+                      Review
+                    </Button>
+                  )}
 
-                  <Modal show={showM} onHide={handleClose}>
+                  <Modal
+                    show={showM}
+                    onHide={e => SETSTATE({ ...STATE, showM: false })}
+                  >
                     <Modal.Header closeButton>
-                    <Modal.Title>{TITLE}</Modal.Title>
+                      <Modal.Title>{TITLE}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                    
-                    <Form>
-              
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Rate</Form.Label>
-                        <Form.Control as="select" 
-                        onChange = {event => handleSelect(event)}
-                        placeholder="Select Rating"
-                        >
-                          <option>---</option>
-                          <option value ="5">5</option>
-                          <option value ="4">4</option>
-                          <option value ="3">3</option>
-                          <option value ="2">2</option>
-                          <option value ="1">1</option>
-                        </Form.Control>
-                      </Form.Group>
-                      
-                      <Form.Group controlId="exampleForm.ControlTextarea1">
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control as="textarea" rows="6" placeholder ="Review Description"
+                      <Form>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                          <Form.Label>Rate</Form.Label>
+                          <Form.Control
+                            as="select"
+                            onChange={event =>
+                              SetState({ ...State, rate: event.target.value })
+                            }
+                            placeholder="Select Rating"
+                          >
+                            <option>---</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                          </Form.Control>
+                        </Form.Group>
 
-                        onChange = {event => handleText(event)}
-                        />
-                      </Form.Group>
-                    </Form>
-                  
-
+                        <Form.Group controlId="exampleForm.ControlTextarea1">
+                          <Form.Label>Description</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows="6"
+                            placeholder="Review Description"
+                            onChange={event =>
+                              SetState({ ...State, text: event.target.value })
+                            }
+                          />
+                        </Form.Group>
+                      </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                      <Button variant="danger" onClick={handleClose}>
+                      <Button
+                        variant="danger"
+                        onClick={e => SETSTATE({ ...STATE, showM: false })}
+                      >
                         Exit
                       </Button>
-                      <Button variant="primary" 
-                      onClick={(event) => { handleClose(); handleJobReview(event,JID,text,rate,VID);}}>
-                       Submit
+                      <Button
+                        variant="primary"
+                        onClick={event => {
+                          SETSTATE({ ...STATE, showM: false });
+                          handleJobReview(event, JID, text, rate, VID);
+                        }}
+                      >
+                        Submit
                       </Button>
                     </Modal.Footer>
                   </Modal>
-
                 </Card.Body>
               </Card>
             ))}
@@ -531,6 +540,22 @@ const CalendarIndex = props => {
             {landownerResponse.email}{" "}
           </h2>
         )}
+        <Modal show={reviewSuccess}>
+          <Modal.Header>
+            <Modal.Title>Successfully submitted review for job!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            We recorded your review and rating for the completed job.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => window.location.reload(false)}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   } else if (props.user_type == "Landowner") {

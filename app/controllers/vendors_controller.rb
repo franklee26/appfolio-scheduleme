@@ -66,6 +66,10 @@ def update_rating
   body = JSON(request.body.read)
   rating = body["rating"]
   vendor_id = body["vendor_id"]
+  job_id = body["job_id"]
+  job = Job.find(job_id)
+  job.reviewed = true
+  job.save!
   vendor = Vendor.find_by(id: vendor_id)
   if vendor 
     if vendor.rating

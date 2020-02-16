@@ -34,7 +34,8 @@ class TenantsController < ApplicationController
         vendor_id: j.vendor_id,
         start: j.start,
         end: j.end,
-        vendor_name: j.vendor.name
+        vendor_name: j.vendor.name,
+        reviewed: j.reviewed
       }
       tenant_jobs << job_obj
     end
