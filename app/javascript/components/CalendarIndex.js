@@ -7,6 +7,7 @@ import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
 import { shortFormatDate } from "./Events.js";
 import $ from "jquery";
+import StarRatings from "react-star-ratings";
 
 // POST request adds tenant to the landowner
 const handleClickTenant = (event, landowner_id, tenant_id) => {
@@ -145,7 +146,7 @@ const CalendarIndex = props => {
   });
   const [State, SetState] = useState({
     text: "",
-    rate: ""
+    rate: "0.0"
   });
 
   const [show, setShow] = useState(true);
@@ -476,22 +477,21 @@ const CalendarIndex = props => {
                     </Modal.Header>
                     <Modal.Body>
                       <Form>
-                        <Form.Group controlId="exampleForm.ControlSelect1">
-                          <Form.Label>Rate</Form.Label>
-                          <Form.Control
-                            as="select"
-                            onChange={event =>
-                              SetState({ ...State, rate: event.target.value })
+                        <Form.Group controlId="starRating">
+                          <Form.Label style={{ marginRight: "1.0rem" }}>
+                            Rate
+                          </Form.Label>
+                          <StarRatings
+                            rating={parseFloat(rate)}
+                            starRatedColor="gold"
+                            starHoverColor="gold"
+                            starSpacing="2px"
+                            changeRating={(rating, name) =>
+                              SetState({ ...State, rate: rating })
                             }
-                            placeholder="Select Rating"
-                          >
-                            <option>---</option>
-                            <option value="5">5</option>
-                            <option value="4">4</option>
-                            <option value="3">3</option>
-                            <option value="2">2</option>
-                            <option value="1">1</option>
-                          </Form.Control>
+                            numberOfStars={5}
+                            name="rating"
+                          />
                         </Form.Group>
 
                         <Form.Group controlId="exampleForm.ControlTextarea1">

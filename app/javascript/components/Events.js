@@ -172,14 +172,17 @@ const Events = props => {
                   <Card.Text>
                     {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                     <br />
-                    Vendor: {job.vendor_name} {                  <StarRatings
-                      rating={parseFloat(job.vendor_rating.toFixed(2))}
-                      starDimension="19px"
-                      starSpacing="1px"
-                      starRatedColor="gold"
-                      numberOfStars={5}
-                      name="rating"
-                    />}
+                    Vendor: {job.vendor_name}{" "}
+                    {
+                      <StarRatings
+                        rating={parseFloat(job.vendor_rating.toFixed(2))}
+                        starDimension="19px"
+                        starSpacing="1px"
+                        starRatedColor="gold"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    }
                     <br />
                     Content: {job.content}
                   </Card.Text>
