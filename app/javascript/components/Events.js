@@ -4,6 +4,7 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
+import StarRatings from "react-star-ratings";
 
 // date formatter helper
 export const shortFormatDate = date => {
@@ -164,15 +165,21 @@ const Events = props => {
                 bg="info"
                 text="white"
                 border="info"
-                style={{ width: "18rem" }}
+                style={{ width: "21rem" }}
               >
                 <Card.Body>
                   <Card.Title>{job.title}</Card.Title>
                   <Card.Text>
                     {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
                     <br />
-                    Vendor: {job.vendor_name} ({job.vendor_rating.toFixed(2)}
-                    /5.00)
+                    Vendor: {job.vendor_name} {                  <StarRatings
+                      rating={parseFloat(job.vendor_rating.toFixed(2))}
+                      starDimension="19px"
+                      starSpacing="1px"
+                      starRatedColor="gold"
+                      numberOfStars={5}
+                      name="rating"
+                    />}
                     <br />
                     Content: {job.content}
                   </Card.Text>
