@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Modal from "react-bootstrap/Modal";
+import Card from "react-bootstrap/Card";
+import CardColumns from "react-bootstrap/CardColumns";
+import StarRatings from "react-star-ratings";
 
 // date formatter helper
 export const shortFormatDate = date => {
@@ -46,7 +49,7 @@ const Events = props => {
       .then(res => res.json())
       .then(
         res => {
-          setState({...state, show: true})
+          setState({ ...state, show: true });
         },
         error => {
           alert(`Failed to add event to calendar with error ${error}`);
@@ -60,7 +63,7 @@ const Events = props => {
             job: job
           })
         })
-      )
+      );
   };
 
   // fetches calendar information, but this maybe overkill since all we want is the name...
@@ -133,31 +136,61 @@ const Events = props => {
           now={100}
           variant="success"
           label="Step 3/3"
-          style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
+          style={{
+            height: "35px",
+            fontSize: "25px",
+            marginTop: "0.8rem",
+            marginBottom: "0.8rem"
+          }}
         />
       </view>
-      {tenantResponse.jobs
-        .filter(job => job.status === "LANDOWNER APPROVED")
-        .map(job => (
-          <a
-            href="#"
-            onClick={e =>
-              handleClickPost(
-                e,
-                job.start,
-                job.end,
-                props.calendar_id,
-                calendarResponse["summary"],
-                job
-              )
-            }
-          >
-            <li key={job.id}>
-              Approved job: {job.content} from {shortFormatDate(job.start)} to{" "}
-              {shortFormatDate(job.end)}
-            </li>
-          </a>
-        ))}
+      <CardColumns>
+        {tenantResponse.jobs
+          .filter(job => job.status === "LANDOWNER APPROVED")
+          .map(job => (
+            <a
+              href="#"
+              onClick={e =>
+                handleClickPost(
+                  e,
+                  job.start,
+                  job.end,
+                  props.calendar_id,
+                  calendarResponse["summary"],
+                  job
+                )
+              }
+            >
+              <Card
+                bg="info"
+                text="white"
+                border="info"
+                style={{ width: "21rem" }}
+              >
+                <Card.Body>
+                  <Card.Title>{job.title}</Card.Title>
+                  <Card.Text>
+                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
+                    <br />
+                    Vendor: {job.vendor_name}{" "}
+                    {
+                      <StarRatings
+                        rating={parseFloat(job.vendor_rating.toFixed(2))}
+                        starDimension="19px"
+                        starSpacing="1px"
+                        starRatedColor="gold"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    }
+                    <br />
+                    Content: {job.content}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </a>
+          ))}
+      </CardColumns>
       <Button
         variant="primary"
         size="lg"
@@ -177,23 +210,22 @@ const Events = props => {
       </Button>
 
       <Modal show={show}>
-            <Modal.Header>
-              <Modal.Title>Successfully submitted job!</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Your job is scheduled! The job event has been added to your calendar as a confirmation.
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="primary"
-                onClick={e =>
-                  (window.location.href = "/calendar")
-                }
-              >
-                Done
-              </Button>
-            </Modal.Footer>
-          </Modal>
+        <Modal.Header>
+          <Modal.Title>Successfully submitted job!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Your job is scheduled! The job event has been added to your calendar
+          as a confirmation.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={e => (window.location.href = "/calendar")}
+          >
+            Done
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
