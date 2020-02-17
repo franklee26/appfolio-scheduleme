@@ -36,7 +36,7 @@ class TenantsController < ApplicationController
         end: j.end,
         vendor_name: j.vendor.name,
         reviewed: j.reviewed,
-        vendor_rating: j.vendor.rating
+        vendor_rating: j.vendor.rating == nil ? 0 : j.vendor.rating
       }
       tenant_jobs << job_obj
     end
