@@ -1,4 +1,4 @@
-# Appfolio: Uber for Vendors
+# Appfolio: ScheduleMe
 
 ## About
 
