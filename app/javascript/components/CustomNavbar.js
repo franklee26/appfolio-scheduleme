@@ -34,10 +34,10 @@ class CustomNavbar extends React.Component {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="/">Home</Nav.Link>
+            {!(this.state.logged_in) && <Nav.Link href="/">Home</Nav.Link>}
+            {(this.state.logged_in) && <Nav.Link href="/calendar">Home</Nav.Link>}
             <Nav.Link href="/about">About</Nav.Link>
             <Nav.Link href="/vendors/search">Vendors</Nav.Link>
-            <Nav.Link href="/calendar/login">Calendar</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="/jobs">Submit a Job</NavDropdown.Item>
               <NavDropdown.Divider />
