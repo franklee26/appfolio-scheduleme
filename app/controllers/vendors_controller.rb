@@ -127,6 +127,14 @@ end
     render json: response, status: :ok
   end
 
+  def display
+    @vendor = Vendor.find(params[:id])
+
+    # now find all of the vendor's reviews
+    reviewed_job_ids = @vendor.jobs.filter { |j| j.reviewed }.map { |j| j.id}
+    @reviews = Review.all.filter { |r| reviewed_job_ids.include? r.job_id }
+  end
+
   def search
     @vendor = Vendor.all.sort { |t1, t2| t1.id <=> t2.id }
   end

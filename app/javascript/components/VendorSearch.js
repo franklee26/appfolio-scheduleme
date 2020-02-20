@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
+import StarRatings from "react-star-ratings";
 
 class VendorSearch extends Component {
   constructor(props) {
@@ -41,12 +42,6 @@ class VendorSearch extends Component {
     });
   }
 
-  handleBack(e) {
-    this.setState({
-      vendorSelected: false
-    });
-  }
-
   handleVendorListClick(e, vendor) {
     e.preventDefault();
     this.setState({
@@ -57,27 +52,8 @@ class VendorSearch extends Component {
 
   render() {
     if(this.state.vendorSelected) {
-      console.log(this.state.selectedVendor);
-      return (
-        <div>
-          <div>
-            <header className = "bg-dark py-3">
-            <h1 align="center" className="display-3 text-white mt-5 mb-2">{this.state.selectedVendor.name}</h1>
-            </header>
-          </div>
-          <div className="container">
-            <div>
-            <div>This is a proof of concept vendor profile page. Users will be able to see a list of vendor reviews once reviews have been implemented</div>
-            <Button 
-              variant="primary"
-              type="submit" onClick={e =>this.handleBack(e)}
-            >
-              Back
-            </Button>
-            </div>
-          </div>
-        </div>
-      );
+      window.location.href = `/vendors/display/${this.state.selectedVendor.id}`;
+      return (<div> </div>);
     } else {
       return (
         <div>
@@ -129,7 +105,16 @@ class VendorSearch extends Component {
                 {this.state.list.length ? (
                   this.state.list.map(vendor => (
                     <Button variant="secondary" size="lg" block onClick={e => this.handleVendorListClick(e,vendor)}>
-                      Name: {vendor.name}    Ocupation: {vendor.occupation}
+                      Name: {vendor.name}    Ocupation: {vendor.occupation}                     ({
+                      <StarRatings
+                        rating={parseFloat(vendor.rating ? vendor.rating.toFixed(2) : "0.0")}
+                        starDimension="19px"
+                        starSpacing="1px"
+                        starRatedColor="gold"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    })
                     </Button>
                   ))
                 ) : (

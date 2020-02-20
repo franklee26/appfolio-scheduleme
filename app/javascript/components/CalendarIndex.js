@@ -678,7 +678,6 @@ const CalendarIndex = props => {
 
         <h2>Select user below to add as your listed vendor.</h2>
         <CardColumns>
-          {console.log(vendorResponse)}
           {vendorResponse
             .filter(
               vendor =>
