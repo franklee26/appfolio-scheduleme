@@ -39,7 +39,8 @@ class VendorSearch extends Component {
     vendors = vendors.filter(vendor => {
       let occupationCheck =
         this.state.occupation.length == 0 ||
-        this.state.occupation.toUpperCase() == vendor.occupation.toUpperCase();
+        this.state.occupation.toUpperCase() ==
+          (vendor.occupation ? vendor.occupation.toUpperCase() : "n/a");
       let nameCheck =
         this.state.name.length == 0 ||
         vendor.name.toUpperCase().indexOf(this.state.name.toUpperCase()) != -1;
