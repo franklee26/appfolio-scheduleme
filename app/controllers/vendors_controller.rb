@@ -127,12 +127,15 @@ end
     render json: response, status: :ok
   end
 
+  # this is for displaying the vendor from search: this is NOT the vendor profile page...
   def display
     @vendor = Vendor.find(params[:id])
 
     # now find all of the vendor's reviews
     reviewed_job_ids = @vendor.jobs.filter { |j| j.reviewed }.map { |j| j.id}
     @reviews = Review.all.filter { |r| reviewed_job_ids.include? r.job_id }
+
+    # for mapping review to tenant name (no direct association for this yet)
     @review_to_tenant = @reviews.to_h { |r| [r.id, Job.find(r.job_id).tenant.name] }
   end
 
