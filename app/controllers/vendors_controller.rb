@@ -12,7 +12,8 @@ class VendorsController < ApplicationController
         "email": v.email,
         "created_at": v.created_at,
         "updated_at": v.updated_at,
-        "landowners": v.landowners
+        "landowners": v.landowners,
+        "rating": v.rating ? v.rating : 0.0
       }
       response << vendor_obj
     end
@@ -124,6 +125,18 @@ end
       "zip": vendor.zip
     }
     render json: response, status: :ok
+  end
+
+  # this is for displaying the vendor from search: this is NOT the vendor profile page...
+  def display
+    @vendor = Vendor.find(params[:id])
+
+    # now find all of the vendor's reviews
+    reviewed_job_ids = @vendor.jobs.filter { |j| j.reviewed }.map { |j| j.id}
+    @reviews = Review.all.filter { |r| reviewed_job_ids.include? r.job_id }
+
+    # for mapping review to tenant name (no direct association for this yet)
+    @review_to_tenant = @reviews.to_h { |r| [r.id, Job.find(r.job_id).tenant.name] }
   end
 
   def search
