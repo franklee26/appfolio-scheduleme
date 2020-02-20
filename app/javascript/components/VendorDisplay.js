@@ -29,8 +29,8 @@ const VendorDisplay = props => {
                 name="rating"
               />
               <h3 style={{ marginTop: "0.8rem" }}>
-                {props.vendor.rating ? parseFloat(props.vendor.rating) : 0.0}
-                /5.0 from {props.vendor.num ? props.vendor.num : 0} review(s)
+                {props.vendor.rating ? parseFloat(props.vendor.rating.toFixed(2)) : 0.0}
+                /5.00 from {props.vendor.num ? props.vendor.num : 0} review(s)
               </h3>
             </div>
           </h1>
