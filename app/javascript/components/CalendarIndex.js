@@ -9,84 +9,6 @@ import { shortFormatDate } from "./Events.js";
 import $ from "jquery";
 import StarRatings from "react-star-ratings";
 
-// POST request adds tenant to the landowner
-const handleClickTenant = (event, landowner_id, tenant_id) => {
-  event.preventDefault();
-  fetch("http://localhost:3000/landowner/add_tenant", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      landowner_id: landowner_id,
-      tenant_id: tenant_id
-    })
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.code == "200") {
-        alert("Successfully added tenant!");
-        window.location.reload(false);
-      } else {
-        alert("Failed to add tenant (returned code 400)");
-      }
-    });
-};
-
-const handleClickVendor = (event, landowner_id, vendor_id) => {
-  event.preventDefault();
-  fetch("http://localhost:3000/landowner/add_vendor", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      landowner_id: landowner_id,
-      vendor_id: vendor_id
-    })
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.code == "200") {
-        alert("Successfully added vendor!");
-        window.location.reload(false);
-      } else {
-        alert("Failed to add vendor (returned code 400)");
-      }
-    });
-};
-
-const handleDeleteTenant = (event, tenant_id) => {
-  event.preventDefault();
-  fetch(`http://localhost:3000/landowner/tenants/${tenant_id}`, {
-    method: "DELETE"
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == "200") {
-        alert("Successfully removed tenant.");
-        window.location.reload(false);
-      } else {
-        alert("Failed to remove tenant.");
-      }
-    });
-};
-
-const handleDeleteVendor = (event, landowner_id, vendor_id) => {
-  event.preventDefault();
-  fetch(
-    `http://localhost:3000/landowner/${landowner_id}/vendors/${vendor_id}`,
-    {
-      method: "DELETE"
-    }
-  )
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == "200") {
-        alert("Successfully removed vendor.");
-        window.location.reload(false);
-      } else {
-        alert("Failed to remove vendor.");
-      }
-    });
-};
-
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
   fetch(`http://localhost:3000/jobs/finish/${job_id}`, { method: "PATCH" })
@@ -151,6 +73,13 @@ const CalendarIndex = props => {
 
   const [show, setShow] = useState(true);
 
+  const [landownerState, setLandownerState] = useState({
+    vendorModal: false,
+    addVendorModal: false,
+    tenantModal: false,
+    addTenantModal: false
+  });
+
   const handleUpdateVendorRating = (vendor_id, rate, job_id) => {
     fetch(`http://localhost:3000/vendors/update_rating`, {
       method: "PATCH",
@@ -164,7 +93,6 @@ const CalendarIndex = props => {
       .then(response => response.json())
       .then(response => {
         if (response.status == 200) {
-          /* alert("Successfully updated vendor"); */
           setState({ ...state, reviewSuccess: true });
         } else {
           alert("Failed to update vendor");
@@ -196,6 +124,80 @@ const CalendarIndex = props => {
         } else if (response.status == "210") {
           alert("Already Reviewed");
           window.location.reload(false);
+        }
+      });
+  };
+
+  const handleDeleteVendor = (event, landowner_id, vendor_id) => {
+    event.preventDefault();
+    fetch(
+      `http://localhost:3000/landowner/${landowner_id}/vendors/${vendor_id}`,
+      {
+        method: "DELETE"
+      }
+    )
+      .then(response => response.json())
+      .then(response => {
+        if (response.status == "200") {
+          setLandownerState({ ...landownerState, vendorModal: true });
+        } else {
+          alert("Failed to remove vendor.");
+        }
+      });
+  };
+
+  const handleClickVendor = (event, landowner_id, vendor_id) => {
+    event.preventDefault();
+    fetch("http://localhost:3000/landowner/add_vendor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        landowner_id: landowner_id,
+        vendor_id: vendor_id
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.code == "200") {
+          setLandownerState({ ...landownerState, addVendorModal: true });
+        } else {
+          alert("Failed to add vendor (returned code 400)");
+        }
+      });
+  };
+
+  const handleDeleteTenant = (event, tenant_id) => {
+    event.preventDefault();
+    fetch(`http://localhost:3000/landowner/tenants/${tenant_id}`, {
+      method: "DELETE"
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.status == "200") {
+          setLandownerState({ ...landownerState, tenantModal: true });
+        } else {
+          alert("Failed to remove tenant.");
+        }
+      });
+  };
+
+  // POST request adds tenant to the landowner
+  const handleClickTenant = (event, landowner_id, tenant_id) => {
+    event.preventDefault();
+    fetch("http://localhost:3000/landowner/add_tenant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        landowner_id: landowner_id,
+        tenant_id: tenant_id
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.code == "200") {
+          setLandownerState({ ...landownerState, addTenantModal: true });
+        } else {
+          alert("Failed to add tenant (returned code 400)");
         }
       });
   };
@@ -562,48 +564,34 @@ const CalendarIndex = props => {
     return (
       <div className="container">
         <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2 align="center">
-          {props.user.name}'s list of calendars under email {props.user.email}
-        </h2>
-        <CardColumns>
-          {props.calendars.map(calendar => (
-            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
-              <Card border="info" style={{ width: "18rem" }}>
-                <Card.Body>
-                  <Card.Title>{calendar.summary}</Card.Title>
-                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
-                </Card.Body>
-              </Card>
-            </a>
-          ))}
-        </CardColumns>
 
         {landownerResponse.tenants.length ? (
           <div>
             <h2>Your Tenants (click to delete tenant): </h2>
             <CardColumns>
               {landownerResponse.tenants.map(tenant => (
-
-                  <Card
-                    ml-3
-                    border="primary"
-                  >
-                    <Card.Header as="h5" align="center">{tenant.name}</Card.Header>                  
-                    <Card.Body>
-                      <Card.Text>
-                        <b>Email:</b> {tenant.email}
-                        <br />
-                        <b>Address:</b> {tenant.street_address}
-                        <br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {tenant.city}, {tenant.state} {tenant.zip}
-
-                      </Card.Text>
-                    <Button variant="outline-danger" onClick={e => handleDeleteTenant(e, tenant.id)}> Remove Tenant </Button>
-
-                    </Card.Body>
-                  </Card>
-
+                <Card ml-3 border="primary">
+                  <Card.Header as="h5" align="center">
+                    {tenant.name}
+                  </Card.Header>
+                  <Card.Body>
+                    <Card.Text>
+                      <b>Email:</b> {tenant.email}
+                      <br />
+                      <b>Address:</b> {tenant.street_address}
+                      <br />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      {tenant.city}, {tenant.state} {tenant.zip}
+                    </Card.Text>
+                    <Button
+                      variant="outline-danger"
+                      onClick={e => handleDeleteTenant(e, tenant.id)}
+                    >
+                      {" "}
+                      Remove Tenant{" "}
+                    </Button>
+                  </Card.Body>
+                </Card>
               ))}
             </CardColumns>
           </div>
@@ -615,24 +603,27 @@ const CalendarIndex = props => {
             <h2>Your vendors (click to delete vendor): </h2>
             <CardColumns>
               {landownerResponse.vendors.map(vendor => (
-
-                <Card
-                    ml-2
-                    border="success"
-                  >
-                    <Card.Header as="h5">{vendor.name}</Card.Header>                  
-                    <Card.Body>
-                      <Card.Text>
-                        <b>Email: </b>{vendor.email}
-                        <br />
-                        <b>Occupation: </b>{vendor.occupation}
-                      </Card.Text>
-                    <Button variant="outline-danger" onClick={e => handleDeleteVendor(e, props.user.id, vendor.id)}> Remove Vendor </Button>
-
-                    </Card.Body>
-                  </Card>
-
-
+                <Card ml-2 border="success">
+                  <Card.Header as="h5">{vendor.name}</Card.Header>
+                  <Card.Body>
+                    <Card.Text>
+                      <b>Email: </b>
+                      {vendor.email}
+                      <br />
+                      <b>Occupation: </b>
+                      {vendor.occupation}
+                    </Card.Text>
+                    <Button
+                      variant="outline-danger"
+                      onClick={e =>
+                        handleDeleteVendor(e, props.user.id, vendor.id)
+                      }
+                    >
+                      {" "}
+                      Remove Vendor{" "}
+                    </Button>
+                  </Card.Body>
+                </Card>
               ))}
             </CardColumns>
           </div>
@@ -645,28 +636,30 @@ const CalendarIndex = props => {
           {tenantResponse
             .filter(tenant => tenant.id != 0)
             .map(tenant => (
-
-                <Card
-                    ml-2
-                    border="primary"
+              <Card ml-2 border="primary">
+                <Card.Header as="h5">{tenant.name}</Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                    <b>Email: </b>
+                    {tenant.email}
+                    <br />
+                    <b>Address: </b>
+                    {tenant.street_address}
+                    <br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {tenant.city}, {tenant.state} {tenant.zip}
+                  </Card.Text>
+                  <Button
+                    variant="outline-primary"
+                    onClick={e =>
+                      handleClickTenant(e, props.user.id, tenant.id)
+                    }
                   >
-                    <Card.Header as="h5">{tenant.name}</Card.Header>                  
-                    <Card.Body>
-                      <Card.Text>
-                        <b>Email: </b>
-                        {tenant.email}
-                        <br />
-                        <b>Address: </b>{tenant.street_address}
-                        <br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        
-                        {tenant.city}, {tenant.state} {tenant.zip}
-
-                      </Card.Text>
-                    <Button variant="outline-primary" onClick={e => handleClickTenant(e, props.user.id, tenant.id)}> Add Tenant </Button>
-
-                    </Card.Body>
-                  </Card>
-
+                    {" "}
+                    Add Tenant{" "}
+                  </Button>
+                </Card.Body>
+              </Card>
             ))}
         </CardColumns>
 
@@ -680,25 +673,89 @@ const CalendarIndex = props => {
                 ).length == 0 && vendor.id != 0
             )
             .map(vendor => (
-
-                <Card
-                    ml-2
-                    border="success"
+              <Card ml-2 border="success">
+                <Card.Header as="h5">{vendor.name}</Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                    <b>Email: </b>
+                    {vendor.email}
+                    <br />
+                    <b>Occupation: </b>
+                    {vendor.occupation}
+                  </Card.Text>
+                  <Button
+                    variant="outline-success"
+                    onClick={e =>
+                      handleClickVendor(e, props.user.id, vendor.id)
+                    }
                   >
-                    <Card.Header as="h5">{vendor.name}</Card.Header>                  
-                    <Card.Body>
-                      <Card.Text>
-                        <b>Email: </b>{vendor.email}
-                        <br />
-                        <b>Occupation: </b>{vendor.occupation}
-                      </Card.Text>
-                    <Button variant="outline-success" onClick={e => handleClickVendor(e, props.user.id, vendor.id)}> Add Vendor </Button>
-
-                    </Card.Body>
-                  </Card>
-
+                    {" "}
+                    Add Vendor{" "}
+                  </Button>
+                </Card.Body>
+              </Card>
             ))}
         </CardColumns>
+
+        <Modal show={landownerState.vendorModal}>
+          <Modal.Header>
+            <Modal.Title>Success</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>You have removed a vendor.</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => window.location.reload(false)}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={landownerState.addVendorModal}>
+          <Modal.Header>
+            <Modal.Title>Success</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>You have added a vendor.</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => window.location.reload(false)}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={landownerState.tenantModal}>
+          <Modal.Header>
+            <Modal.Title>Success</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>You have removed a tenant.</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => window.location.reload(false)}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={landownerState.addTenantModal}>
+          <Modal.Header>
+            <Modal.Title>Success</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>You have added a tenant.</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => window.location.reload(false)}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   } else if (props.user_type == "Vendor") {
