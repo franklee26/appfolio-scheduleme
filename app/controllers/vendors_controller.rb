@@ -12,7 +12,8 @@ class VendorsController < ApplicationController
         "email": v.email,
         "created_at": v.created_at,
         "updated_at": v.updated_at,
-        "landowners": v.landowners
+        "landowners": v.landowners,
+        "rating": v.rating ? v.rating : 0.0
       }
       response << vendor_obj
     end

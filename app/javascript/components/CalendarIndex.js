@@ -612,6 +612,19 @@ const CalendarIndex = props => {
                       <br />
                       <b>Occupation: </b>
                       {vendor.occupation}
+                      <br />
+                      {
+                        <StarRatings
+                          rating={parseFloat(
+                            vendor.rating ? vendor.rating.toFixed(2) : "0.0"
+                          )}
+                          starDimension="19px"
+                          starSpacing="1px"
+                          starRatedColor="gold"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      }
                     </Card.Text>
                     <Button
                       variant="outline-danger"
@@ -665,6 +678,7 @@ const CalendarIndex = props => {
 
         <h2>Select user below to add as your listed vendor.</h2>
         <CardColumns>
+          {console.log(vendorResponse)}
           {vendorResponse
             .filter(
               vendor =>
@@ -682,6 +696,17 @@ const CalendarIndex = props => {
                     <br />
                     <b>Occupation: </b>
                     {vendor.occupation}
+                    <br />
+                    {
+                      <StarRatings
+                        rating={parseFloat(vendor.rating.toFixed(2))}
+                        starDimension="19px"
+                        starSpacing="1px"
+                        starRatedColor="gold"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    }
                   </Card.Text>
                   <Button
                     variant="outline-success"
