@@ -9,7 +9,7 @@ const CalendarSubmission = props => {
     <div>
       <header class="bg-dark py-3">
         <h1 align="center" class="display-3 text-white mt-5 mb-2">
-          Select Calendar
+          Select A Calendar
         </h1>
       </header>
       <div className="container">

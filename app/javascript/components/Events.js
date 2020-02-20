@@ -11,6 +11,13 @@ export const shortFormatDate = date => {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
+    year: "numeric"
+  });
+  return theDate;
+};
+
+export const shortFormatTime = date => {
+  var theDate = new Date(Date.parse(date)).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit"
   });
@@ -128,8 +135,14 @@ const Events = props => {
     );
   }
   return (
+    <div>
+          <header class="bg-dark py-3">
+            <h1 align="center" class="display-3 text-white mt-5">
+              Pick a Date & Time
+            </h1>
+            <h5 align="center" class="display-6 text-white mb-2">This will be added to the calendar called "{calendarResponse["summary"]}"</h5>
+          </header>    
     <div className="container">
-      <h1 align="center">Selected Calendar: {calendarResponse["summary"]}</h1>
       <view align="center">
         <ProgressBar
           animated
@@ -148,47 +161,39 @@ const Events = props => {
         {tenantResponse.jobs
           .filter(job => job.status === "LANDOWNER APPROVED")
           .map(job => (
-            <a
-              href="#"
-              onClick={e =>
-                handleClickPost(
-                  e,
-                  job.start,
-                  job.end,
-                  props.calendar_id,
-                  calendarResponse["summary"],
-                  job
-                )
-              }
-            >
-              <Card
-                bg="info"
-                text="white"
-                border="info"
-                style={{ width: "21rem" }}
-              >
-                <Card.Body>
-                  <Card.Title>{job.title}</Card.Title>
-                  <Card.Text>
-                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
-                    <br />
-                    Vendor: {job.vendor_name}{" "}
-                    {
-                      <StarRatings
-                        rating={parseFloat(job.vendor_rating.toFixed(2))}
-                        starDimension="19px"
-                        starSpacing="1px"
-                        starRatedColor="gold"
-                        numberOfStars={5}
-                        name="rating"
-                      />
-                    }
-                    <br />
-                    Content: {job.content}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </a>
+                  <Card
+                    ml-3
+                    border="primary"
+                  >
+                    <Card.Header as="h6" align="center">{shortFormatDate(job.start)}</Card.Header>                  
+                    <Card.Body>
+                      <Card.Text>
+                        <b>Time: </b> {shortFormatTime(job.start)} to {shortFormatTime(job.end)}{" "}
+                        <br />
+                        <b>Vendor:</b> {job.vendor_name}                          {                      
+                              <StarRatings
+                              rating={parseFloat(job.vendor_rating.toFixed(2))}
+                              starDimension="17px"
+                              starSpacing="2px"
+                              starRatedColor="gold"
+                              numberOfStars={5}
+                              name="rating"
+                            />}{" "}
+                        <br />
+                    <Button variant="outline-success" size="sm" onClick={e =>
+                      handleClickPost(
+                        e,
+                        job.start,
+                        job.end,
+                        props.calendar_id,
+                        calendarResponse["summary"],
+                        job
+                      )
+                    }> Add To Calendar </Button>
+
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>            
           ))}
       </CardColumns>
       <Button
@@ -227,6 +232,7 @@ const Events = props => {
         </Modal.Footer>
       </Modal>
     </div>
+  </div>
   );
 };
 
