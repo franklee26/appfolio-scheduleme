@@ -73,7 +73,7 @@ const VendorDisplay = props => {
             variant="primary"
             type="submit"
             onClick={e => (window.location.href = "/vendors/search")}
-            style={{ marginTop: "0.8rem" }}
+            style={{ marginTop: "0.8rem", marginBottom: "0.8rem" }}
           >
             Back
           </Button>
