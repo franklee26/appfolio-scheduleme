@@ -1,6 +1,19 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import StarRatings from "react-star-ratings";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import Spinner from "react-bootstrap/Spinner";
+
+const renderTooltip = (props, num) => {
+  if (num > 5) {
+    return <Tooltip {...props}>Highly experienced vendor</Tooltip>;
+  } else if (num > 1) {
+    return <Tooltip {...props}>Experienced vendor</Tooltip>;
+  } else {
+    return <Tooltip {...props}>New vendor</Tooltip>;
+  }
+};
 
 class VendorSearch extends Component {
   constructor(props) {
@@ -58,7 +71,21 @@ class VendorSearch extends Component {
   render() {
     if (this.state.vendorSelected) {
       window.location.href = `/vendors/display/${this.state.selectedVendor.id}`;
-      return <div> </div>;
+      return (
+        <div>
+          <Spinner
+            variant="primary"
+            animation="border"
+            style={{
+              width: "5rem",
+              height: "5rem",
+              position: "fixed",
+              top: "50vh",
+              left: "50vw"
+            }}
+          />{" "}
+        </div>
+      );
     } else {
       return (
         <div>
@@ -111,27 +138,33 @@ class VendorSearch extends Component {
                   <h1 align="center">Search Results</h1>
                   {this.state.list.length ? (
                     this.state.list.map(vendor => (
-                      <Button
-                        variant="secondary"
-                        size="lg"
-                        block
-                        onClick={e => this.handleVendorListClick(e, vendor)}
+                      <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={e => renderTooltip(e, vendor.num)}
                       >
-                        Name: {vendor.name} Ocupation: {vendor.occupation} (
-                        {
-                          <StarRatings
-                            rating={parseFloat(
-                              vendor.rating ? vendor.rating.toFixed(2) : "0.0"
-                            )}
-                            starDimension="19px"
-                            starSpacing="1px"
-                            starRatedColor="gold"
-                            numberOfStars={5}
-                            name="rating"
-                          />
-                        }
-                        )
-                      </Button>
+                        <Button
+                          variant="secondary"
+                          size="lg"
+                          block
+                          onClick={e => this.handleVendorListClick(e, vendor)}
+                        >
+                          {vendor.name}: {vendor.occupation} (
+                          {
+                            <StarRatings
+                              rating={parseFloat(
+                                vendor.rating ? vendor.rating.toFixed(2) : "0.0"
+                              )}
+                              starDimension="19px"
+                              starSpacing="1px"
+                              starRatedColor="gold"
+                              numberOfStars={5}
+                              name="rating"
+                            />
+                          }
+                          )
+                        </Button>
+                      </OverlayTrigger>
                     ))
                   ) : (
                     <label> No results found. </label>
