@@ -133,6 +133,7 @@ end
     # now find all of the vendor's reviews
     reviewed_job_ids = @vendor.jobs.filter { |j| j.reviewed }.map { |j| j.id}
     @reviews = Review.all.filter { |r| reviewed_job_ids.include? r.job_id }
+    @review_to_tenant = @reviews.to_h { |r| [r.id, Job.find(r.job_id).tenant.name] }
   end
 
   def search

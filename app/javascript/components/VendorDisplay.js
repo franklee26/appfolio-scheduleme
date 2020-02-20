@@ -60,7 +60,7 @@ const VendorDisplay = props => {
                 <Card.Body>
                   <Card.Text>
                     <b>
-                      "{review.text}" ({shortFormatDate(review.created_at)})
+                      "{review.text}" -{props.review_to_tenant[review.id]} ({shortFormatDate(review.created_at)})
                     </b>
                   </Card.Text>
                 </Card.Body>
