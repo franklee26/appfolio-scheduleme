@@ -1,6 +1,7 @@
 require 'net/http'  # for GET request
 require 'json'
 require 'rest-client'
+require 'set'
 
 class CalendarController < ApplicationController
   skip_before_action :verify_authenticity_token
@@ -172,20 +173,8 @@ class CalendarController < ApplicationController
   end
 
   def test
-    t_access_token = retrieveAccessToken(4, "tenant")
-    tenant_calendars = get_user_calendars(t_access_token)
-    tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
-    t_freebusy_times = get_list_of_times(get_freebusy_response(t_access_token, tenant_calendar_ids)["calendars"])
-
-    v_access_token = retrieveAccessToken(1, "vendor")
-    vendor_calendars = get_user_calendars(v_access_token)
-    vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
-    v_freebusy_times = get_list_of_times(get_freebusy_response(v_access_token, vendor_calendar_ids)["calendars"])
-
-
-
-    free_times = get_shared_free_times(t_freebusy_times, v_freebusy_times)
-    add_vendor_location_to_free_times(free_times)
+    find_best_times()
+    binding.pry
   end
 
 	private
@@ -497,7 +486,7 @@ class CalendarController < ApplicationController
   end
 
   def add_vendor_location_to_free_times(free_times)
-    default_address = "18805 Nutmeg Drive, Morgan Hill, CA, 95037"
+    default_address = "895 Cochrane Rd, Morgan Hill, CA 95037"
 
     free_time_with_more_info = []
     free_times.each do |f_time|
@@ -509,30 +498,31 @@ class CalendarController < ApplicationController
       post_job_loc = default_address
       post_job_start = default_end
 
-      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]}' order by start desc limit 1;")
+      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]}' and start > '#{default_start}' order by start desc limit 1;")
       if prev_job.length == 1
         prev_job = prev_job[0]
         prev_tenant = Tenant.find(prev_job.tenant_id)        
         job_loc = address_builder(prev_tenant.street_address, prev_tenant.city, prev_tenant.state, prev_tenant.zip)
-        if job_loc != ""
-          prev_job_loc = job_loc
-        end
 
         if prev_job.end > default_start
           prev_job_end = prev_job.end
+
+          if job_loc != ""
+            prev_job_loc = job_loc
+          end
         end
       end
 
-      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]}' order by start asc limit 1;")
+      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]}' and start < '#{default_end}' order by start asc limit 1;")
       if post_job.length == 1
         post_job = post_job[0]
         post_tenant = Tenant.find(post_job.tenant_id)
         job_loc = address_builder(post_tenant.street_address, post_tenant.city, post_tenant.state, post_tenant.zip)
-        if job_loc != ""
-          post_job_loc = job_loc
-        end
         if post_job.start < default_end
           post_job_start = post_job.start
+          if job_loc != ""
+            post_job_loc = job_loc
+          end
         end
       end
 
@@ -567,14 +557,16 @@ class CalendarController < ApplicationController
   end
 
   # Pass in drive time. Numbers here are arbitrary and subject to change
-  def rate_dist(dist)
+  def rate_dist(drive_time_in_sec)
     d_rating = 50.0
-    if dist <= 30
-      d_rating += ((30.0 - dist) / 30.0) * 50.0 
-    elsif dist <= 40
-      d_rating -= ((dist-30.0) / 10.0) * 20.0
-    elsif dist < 150
-      d_rating -= 20 - ((dist / 150.0) * 30.0)
+    dt_min = drive_time_in_sec / 60.0
+
+    if dt_min <= 30
+      d_rating += ((30.0 - dt_min) / 30.0) * 50.0 
+    elsif dt_min <= 40
+      d_rating -= ((dt_min-30.0) / 10.0) * 20.0
+    elsif dt_min < 150
+      d_rating -= (20 + ((dt_min / 150.0) * 30.0))
     else 
       d_rating += 0
     end
@@ -583,30 +575,62 @@ class CalendarController < ApplicationController
 
   # passed in slot time should be total time - drive time (and maybe also break time)
   # numbers here are arbitrary and subject to change
-  def rate_slot(slot_time)
+  # Values are passed in as seconds. we'll evaluate them as minutes i guess. 
+  def rate_slot(slot_time, drive_time)
     # these average times can be based off of a larger set of times in the future
-    avg_drive_time = 20
-    avg_work_time = 20
+    avg_drive_time = 20.0
+    avg_work_time = 40.0
 
-    ideal_slot_time = avg_drive_time * 2 + avg_work_time
-    avg_left_over_time = (slot_time % ideal_slot_time) / (slot_time / ideal_slot_time) #might take in more calc on standard deviation
-
-    value = (100.0 * (ideal_slot_time - avg_left_over_time) / ideal_slot_time)
+    if slot_time < drive_time
+      value = 0
+    else
+      if slot_time < (avg_drive_time * 2 + avg_work_time) * 60.0
+        full_score = 100.0
+        total_time = (avg_drive_time * 2 + avg_work_time) * 60 - drive_time
+        open_time = (slot_time - drive_time)
+        value = 50.0 + ((total_time - open_time) / (total_time) ) * 50.0
+      else
+        value = 80.0
+      end
+    end
     value
   end
 
   # formula is barely representative of an actual idea and subject to change
-  def rate_scheduled_time(pre_dist, post_dist, pre_slot, post_slot)
-    d1_rating = rate_dist(pre_dist)
-    d2_rating = rate_dist(post_dist)
+  def rate_scheduled_time(event_start, pre_dist, post_dist, pre_slot, post_slot, sched_type)
+    # get a rating on the driving time before and after slot
+    d1_rating = rate_dist(pre_dist) / 100.0
+    d2_rating = rate_dist(post_dist) / 100.0
 
-    pre_slot_rating = rate_slot(pre_slot)
-    post_slot_rating = rate_slot(post_slot)
+    # get a rating on how tight of a schedule before and after is
+    pre_slot_rating = rate_slot(pre_slot, pre_dist) / 100.0
+    post_slot_rating = rate_slot(post_slot, post_dist) / 100.0
 
-    pre_rating = ((d1_rating + pre_slot_rating) / 2.0 ) * d1_rating * pre_slot_rating / 100.0 / 100.0
-    post_rating = ((d2_rating + post_slot_rating) / 2.0) * d2_rating * post_slot_rating / 100.0 / 100.0
+    # combine both. Ideal is short drive time and tight spot. Not ideal is long drive time and big gap. 
+    pre_rating = d1_rating * pre_slot_rating
+    post_rating = d2_rating * post_slot_rating
 
-    [d1_rating, d2_rating, pre_slot_rating, post_slot_rating, pre_rating, post_rating]
+    # Get the final rating. Will add a bonus up to ~20% if the event is scheduled closer to today
+    today_date = Time.now.localtime.beginning_of_day
+    days_ahead = (event_start - today_date) / 60.0 / 60.0 / 24.0
+    final_rating = pre_rating * post_rating
+    final_rating += (1.0 - final_rating) * ((15.0 - days_ahead) / 15.0) * 0.4
+
+    ratings = {
+      "pre_dist_rating": d1_rating, 
+      "post_dist_rating": d2_rating, 
+      "pre_slot_rating": pre_slot_rating, 
+      "post_slot_rating": post_slot_rating, 
+      "pre_rating": pre_rating, 
+      "post_rating": post_rating, 
+      "final_rating": final_rating, 
+      "pre_drive": pre_dist, 
+      "post_drive": post_dist, 
+      "pre_slot": pre_slot, 
+      "post_slot": post_slot, 
+      "sched_type": sched_type
+
+    }
   end
 
   # schedule time based on the times given
@@ -614,7 +638,15 @@ class CalendarController < ApplicationController
     total_task_time =pre_drive_time + post_drive_time + event_time
     block_time = free_block[:end] - free_block[:start]
     if total_task_time < block_time
-      [{"start": free_block[:start]+(pre_drive_time).seconds, "end": free_block[:start]+(pre_drive_time+event_time).seconds}]
+      [{
+        "start": free_block[:start]+(pre_drive_time).seconds, 
+        "end": free_block[:start]+(pre_drive_time+event_time).seconds,
+        "prev_job_end_time": free_block[:prev_job_end_time], 
+        "post_job_start_time": free_block[:post_job_start_time], 
+        "prev_job_loc": free_block[:prev_job_loc], 
+        "post_job_loc": free_block[:post_job_loc], 
+        "sched_type": "beg"
+      }]
     else
       []
     end
@@ -624,16 +656,179 @@ class CalendarController < ApplicationController
     total_task_time =pre_drive_time + post_drive_time + event_time
     block_time = free_block[:end] - free_block[:start]
     if total_task_time < block_time
-      [{"start": free_block[:end]+(post_drive_time+event_time).seconds, "end": free_block[:end]+(post_drive_time).seconds}]
+      [{
+        "start": free_block[:end]-(post_drive_time+event_time).seconds, 
+        "end": free_block[:end]-(post_drive_time).seconds, 
+        "prev_job_end_time": free_block[:prev_job_end_time], 
+        "post_job_start_time": free_block[:post_job_start_time], 
+        "prev_job_loc": free_block[:prev_job_loc], 
+        "post_job_loc": free_block[:post_job_loc], 
+        "sched_type": "end"
+      }]
     else
       []
     end
   end
 
+  # I'm spacing out the times by the average work time.
   def schedule_at_middle_of_block(free_block, pre_drive_time, post_drive_time, event_time)
     avg_drive_time = 20
-    avg_work_time = 20
+    avg_work_time = 40
 
+    work_block = ((avg_drive_time * 2 + avg_work_time) * 60).seconds
+    new_start = free_block[:start] + work_block
+
+    time_blocks = []
+    while new_start < free_block[:end]
+      new_end = new_start + (pre_drive_time + post_drive_time + event_time).seconds
+      if new_end < free_block[:end]
+        time_blocks << {
+          "start": new_start + (pre_drive_time).seconds, 
+          "end": new_start + (pre_drive_time + event_time).seconds, 
+          "prev_job_end_time": free_block[:start], 
+          "post_job_start_time": free_block[:end], 
+          "prev_job_loc": free_block[:prev_job_loc], 
+          "post_job_loc": free_block[:post_job_loc], 
+          "sched_type": "mid"
+        }
+      else
+        break
+      end
+
+      new_start += work_block
+    end
+
+    time_blocks
   end
 
+  def format_location_list(location_list)
+    result = ""
+    location_list.each do |loc, index|
+      if index != 0 
+        result += "|"
+      end
+      result += loc.sub(" ", "+")
+    end
+    result
+  end
+
+  def find_best_times()
+    tenant_id = 4
+    vendor_id = 1
+    job_time = 40 * 60
+
+    # get tenant's busy times
+    t_access_token = retrieveAccessToken(tenant_id, "tenant")
+    tenant_calendars = get_user_calendars(t_access_token)
+    tenant_calendar_ids = get_list_of_cal_ids(tenant_calendars)
+    t_freebusy_times = get_list_of_times(get_freebusy_response(t_access_token, tenant_calendar_ids)["calendars"])
+
+    # Get vendor's busy times
+    v_access_token = retrieveAccessToken(vendor_id, "vendor")
+    vendor_calendars = get_user_calendars(v_access_token)
+    vendor_calendar_ids = get_list_of_cal_ids(vendor_calendars)
+    v_freebusy_times = get_list_of_times(get_freebusy_response(v_access_token, vendor_calendar_ids)["calendars"])
+
+    # Get list of free times betweent he vendor and the tenant
+    free_times = get_shared_free_times(t_freebusy_times, v_freebusy_times)
+
+    # Add vendor's location onto the list of free times
+    free_times = add_vendor_location_to_free_times(free_times)
+
+    binding.pry
+
+    # generate origin and destination location list
+    tenant = Tenant.find(tenant_id)
+    origin = [address_builder(tenant.street_address, tenant.city, tenant.state, tenant.zip)]
+    destinations = Set.new
+    free_times.each do |ft|
+      destinations << ft[:prev_job_loc]
+      destinations << ft[:post_job_loc]
+    end
+
+    #set up destination hash to retrieve value easier
+    dest_hash = {}
+    matrix_index = 0
+    destinations.each do |d|
+      if not dest_hash.key?(d)
+        dest_hash[d] = matrix_index
+        matrix_index += 1
+      end
+    end
+
+    # split up array into groups of 24 because that is max number google api can take
+    dest_subgroup = []
+    group_index = 0
+    temp_group = []
+    destinations.each do |d|
+      if group_index == 24
+        dest_subgroup << temp_group
+        temp_group = []
+        group_index = 0
+      else
+        group_index += 1
+      end
+      temp_group << d
+    end
+    dest_subgroup << temp_group
+
+    # Use google maps matrix to get all distances.
+    dist_matrix = []
+    dest_subgroup.each do |d_sub|
+      uri = URI.parse(
+        "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial" +
+        "&origins=" + format_location_list(origin) + 
+        "&destinations=" + format_location_list(d_sub) + 
+        "&key=AIzaSyAMmQxhBdp8fLkuo_v6tCBLd7qQYItfyHo"
+      )
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      response = Net::HTTP.get(uri)
+
+      # Distance matrix. 
+      subgroup_matrix = JSON.parse response
+      binding.pry
+      dist_matrix += subgroup_matrix["rows"][0]["elements"]
+    end
+
+
+    # Get a list of job times, including their ratings. 
+    potential_job_times = []
+    free_times.each do |ft|
+      pre_drive_time = dist_matrix[dest_hash[ft[:prev_job_loc]]]["duration"]["value"]
+      post_drive_time = dist_matrix[dest_hash[ft[:prev_job_loc]]]["duration"]["value"]
+
+      potential_job_times += schedule_at_beginning_of_block(ft, pre_drive_time, post_drive_time, job_time)
+      potential_job_times += schedule_at_end_of_block(ft, pre_drive_time, post_drive_time, job_time)
+      potential_job_times += schedule_at_middle_of_block(ft, pre_drive_time, post_drive_time, job_time)
+    end
+
+    # Get rating for each potential job times
+    binding.pry
+    potential_job_times.each do |jt|
+      pre_drive_time = dist_matrix[dest_hash[jt[:prev_job_loc]]]["duration"]["value"]
+      post_drive_time = dist_matrix[dest_hash[jt[:post_job_loc]]]["duration"]["value"]
+
+      # p1 and p2 are in seconds because api call. p3 and p4 are also seconds
+      rating = rate_scheduled_time(jt[:start], pre_drive_time, post_drive_time, (jt[:start] - jt[:prev_job_end_time]), (jt[:post_job_start_time] - jt[:end]), jt[:sched_type])
+      jt[:rating] = rating
+    end
+
+    # sort jobs by their ratings. 
+    sorted_job_times = potential_job_times.sort_by { |t| t[:rating][:final_rating] }.reverse
+
+    binding.pry
+
+    # return top 10 jobs
+    best_times = []
+    sorted_job_times.each do |t, index|
+      if index == 10
+        best_times
+      else
+        best_times << t
+      end
+    end
+    best_times
+
+  end
 end
