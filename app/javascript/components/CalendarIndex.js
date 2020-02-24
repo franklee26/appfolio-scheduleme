@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import { shortFormatDate } from "./Events.js";
 import $ from "jquery";
 import StarRatings from "react-star-ratings";
+import GoogleMapReact from 'google-map-react';
 
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
@@ -80,6 +81,75 @@ const CalendarIndex = props => {
     addTenantModal: false
   });
 
+  // State values for map. 
+  // The args stores the map hash that contains the displayed google map object that you can interact with. 
+  // Direction is our directionRenderer that is used to update the map in args. 
+  const [mapState, setMapState] = useState({
+    start: { lat: 40.756795, lng: -73.954298 }, 
+    end:  { lat: 41.756795, lng: -78.954298 }, 
+    dirRenderer: null, 
+    args: null, 
+    default_center: { lat: 59.95, lng: 30.33  }, 
+    default_zoom: 11
+  });
+
+  const [routeState, setRoutes] = useState ({
+    mp1: {start: "california", end: "idaho"}
+  });
+
+  const setMap = (args) => {
+    console.log("inside set map");
+    console.log(mapState.start);
+    console.log(mapState.end);
+
+    const map = args.map;
+    const maps = args.maps;
+
+    const directionsService = new maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: mapState.start,
+        destination: mapState.end,
+        travelMode: "DRIVING"
+        // waypoints: waypoints
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          console.log("WHAT IS THE STATE INSIDE CALLBACK???");
+          console.log(mapState.start);
+          console.log(mapState.end);
+
+          if (mapState.dirRenderer != null) {
+            mapState.dirRenderer.setMap(null);
+          }
+          const directionDisplay = new maps.DirectionsRenderer();
+          directionDisplay.setDirections(result);
+          directionDisplay.setMap(map);
+
+          setMapState({ ...mapState, args: args, dirRenderer: directionDisplay});
+
+        } else {
+          console.log("Fail");
+        }
+      }
+    );
+  };
+
+  const handleClickLocation = (e) => {
+    var {id} = event.target;
+    var start2 = routeState[id].start;
+    var end2 = routeState[id].end;
+    setMapState({...mapState, start: start2, end: end2});
+
+    console.log("inside handle click");
+    console.log(mapState.start);
+    console.log(mapState.end);
+
+
+    //setMap(mapState.args);
+
+  }
+    
   const handleUpdateVendorRating = (vendor_id, rate, job_id) => {
     fetch(`http://localhost:3000/vendors/update_rating`, {
       method: "PATCH",
@@ -789,6 +859,31 @@ const CalendarIndex = props => {
         <h2 align="center">
           {props.user.name}'s list of calendars under email {props.user.email}
         </h2>
+
+        <div>
+          <div style={{height: '100vh', width: '10%', background: 'blue', display: 'inline-block'}}>
+            <div id="mp1" value="[california, idaho]" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+          </div>
+          <div style={{ height: '100vh', width: '84%', display: 'inline-block' }}>
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: 'YOUR_API_KEY_GOES_HERE' }}
+              defaultCenter= {mapState.default_center}        
+              defaultZoom= {mapState.default_zoom}
+              yesIWantToUseGoogleMapApiInternals
+              onGoogleApiLoaded={ e => setMap(e) }
+            >
+            </GoogleMapReact>
+          </div>
+        </div>
+
         <CardColumns>
           {props.calendars.map(calendar => (
             <a
