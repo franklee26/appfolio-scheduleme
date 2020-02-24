@@ -94,7 +94,13 @@ const CalendarIndex = props => {
   });
 
   const [routeState, setRoutes] = useState ({
-    mp1: {start: "california", end: "idaho"}
+    mp1: {start: "california", end: "idaho"}, 
+    mp2: {start: "idaho", end: "new york"}, 
+    mp3: {start: "new york", end: "pennsylvania"}, 
+    mp4: {start: "pennsylvania", end: "georgia"}, 
+    mp5: {start: "georgia", end: "mississippi"}, 
+    mp6: {start: "mississippi", end: "montana"}, 
+    mp7: {start: "montana", end: "Missouri"}
   });
 
   const setMap = (args) => {
@@ -126,7 +132,7 @@ const CalendarIndex = props => {
           directionDisplay.setDirections(result);
           directionDisplay.setMap(map);
 
-          setMapState({ ...mapState, args: args, dirRenderer: directionDisplay});
+          setMapState((mapState) => ({ ...mapState, args: args, dirRenderer: directionDisplay}));
 
         } else {
           console.log("Fail");
@@ -139,14 +145,13 @@ const CalendarIndex = props => {
     var {id} = event.target;
     var start2 = routeState[id].start;
     var end2 = routeState[id].end;
-    setMapState({...mapState, start: start2, end: end2});
+    setMapState((mapState) => ({...mapState, start: start2, end: end2}));
 
     console.log("inside handle click");
     console.log(mapState.start);
     console.log(mapState.end);
 
-
-    //setMap(mapState.args);
+    setMap(mapState.args);
 
   }
     
@@ -861,20 +866,18 @@ const CalendarIndex = props => {
         </h2>
 
         <div>
-          <div style={{height: '100vh', width: '10%', background: 'blue', display: 'inline-block'}}>
-            <div id="mp1" value="[california, idaho]" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
-            <div style={{width: '100%', height: '10%', background: 'yellow'}}></div>
+          <div style={{height: '100vh', width: '10%', background: 'blue', display: 'inline-block', verticalAlign: "top"}}>
+            <div id="mp1"  style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>CA->ID</div>
+            <div id="mp2" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>ID->NY</div>
+            <div id="mp3" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>NY->PA</div>
+            <div id="mp4" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>PA->GA</div>
+            <div id="mp5" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>GA->MS</div>
+            <div id="mp6" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>MS->MT</div>
+            <div id="mp7" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>MT->MO</div>
           </div>
           <div style={{ height: '100vh', width: '84%', display: 'inline-block' }}>
             <GoogleMapReact
-              bootstrapURLKeys={{ key: 'YOUR_API_KEY_GOES_HERE' }}
+              bootstrapURLKeys={{ key: 'AIzaSyDrOvbn2Aiz__RhF-RKnp8yQij1w2ojc1c' }}
               defaultCenter= {mapState.default_center}        
               defaultZoom= {mapState.default_zoom}
               yesIWantToUseGoogleMapApiInternals
