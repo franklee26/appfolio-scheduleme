@@ -16,6 +16,17 @@ export const shortFormatDate = date => {
   return theDate;
 };
 
+export const shortFormatDateAll = date => {
+  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  return theDate;
+};
+
 export const shortFormatTime = date => {
   var theDate = new Date(Date.parse(date)).toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -136,103 +147,113 @@ const Events = props => {
   }
   return (
     <div>
-          <header class="bg-dark py-3">
-            <h1 align="center" class="display-3 text-white mt-5">
-              Pick a Date & Time
-            </h1>
-            <h5 align="center" class="display-6 text-white mb-2">This will be added to the calendar called "{calendarResponse["summary"]}"</h5>
-          </header>    
-    <div className="container">
-      <view align="center">
-        <ProgressBar
-          animated
-          now={100}
-          variant="success"
-          label="Step 3/3"
-          style={{
-            height: "35px",
-            fontSize: "25px",
-            marginTop: "0.8rem",
-            marginBottom: "0.8rem"
-          }}
-        />
-      </view>
-      <CardColumns>
-        {tenantResponse.jobs
-          .filter(job => job.status === "LANDOWNER APPROVED")
-          .map(job => (
-                  <Card
-                    ml-3
-                    border="primary"
-                  >
-                    <Card.Header as="h6" align="center">{shortFormatDate(job.start)}</Card.Header>                  
-                    <Card.Body>
-                      <Card.Text>
-                        <b>Time: </b> {shortFormatTime(job.start)} to {shortFormatTime(job.end)}{" "}
-                        <br />
-                        <b>Vendor:</b> {job.vendor_name}                          {                      
-                              <StarRatings
-                              rating={parseFloat(job.vendor_rating.toFixed(2))}
-                              starDimension="17px"
-                              starSpacing="2px"
-                              starRatedColor="gold"
-                              numberOfStars={5}
-                              name="rating"
-                            />}{" "}
-                        <br />
-                    <Button variant="outline-success" size="sm" onClick={e =>
-                      handleClickPost(
-                        e,
-                        job.start,
-                        job.end,
-                        props.calendar_id,
-                        calendarResponse["summary"],
-                        job
-                      )
-                    }> Add To Calendar </Button>
+      <header class="bg-dark py-3">
+        <h1 align="center" class="display-3 text-white mt-5">
+          Pick a Date & Time
+        </h1>
+        <h5 align="center" class="display-6 text-white mb-2">
+          This will be added to the calendar called "
+          {calendarResponse["summary"]}"
+        </h5>
+      </header>
+      <div className="container">
+        <view align="center">
+          <ProgressBar
+            animated
+            now={100}
+            variant="success"
+            label="Step 3/3"
+            style={{
+              height: "35px",
+              fontSize: "25px",
+              marginTop: "0.8rem",
+              marginBottom: "0.8rem"
+            }}
+          />
+        </view>
+        <CardColumns>
+          {tenantResponse.jobs
+            .filter(job => job.status === "LANDOWNER APPROVED")
+            .map(job => (
+              <Card ml-3 border="primary">
+                <Card.Header as="h6" align="center">
+                  {shortFormatDate(job.start)}
+                </Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                    <b>Time: </b> {shortFormatTime(job.start)} to{" "}
+                    {shortFormatTime(job.end)} <br />
+                    <b>Vendor:</b> {job.vendor_name}{" "}
+                    {
+                      <StarRatings
+                        rating={parseFloat(job.vendor_rating.toFixed(2))}
+                        starDimension="17px"
+                        starSpacing="2px"
+                        starRatedColor="gold"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    }{" "}
+                    <br />
+                    <Button
+                      variant="outline-success"
+                      size="sm"
+                      onClick={e =>
+                        handleClickPost(
+                          e,
+                          job.start,
+                          job.end,
+                          props.calendar_id,
+                          calendarResponse["summary"],
+                          job
+                        )
+                      }
+                    >
+                      {" "}
+                      Add To Calendar{" "}
+                    </Button>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+        </CardColumns>
+        <Button
+          variant="primary"
+          size="lg"
+          style={{ marginRight: "0.8rem", marginTop: "0.8rem" }}
+          href="http://localhost:3000/calendar/calendar_submission"
+        >
+          Back
+        </Button>
 
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>            
-          ))}
-      </CardColumns>
-      <Button
-        variant="primary"
-        size="lg"
-        style={{ marginRight: "0.8rem", marginTop: "0.8rem" }}
-        href="http://localhost:3000/calendar/calendar_submission"
-      >
-        Back
-      </Button>
+        <Button
+          variant="primary"
+          size="lg"
+          style={{ marginTop: "0.8rem" }}
+          href="http://localhost:3000/calendar"
+        >
+          Home
+        </Button>
 
-      <Button
-        variant="primary"
-        size="lg"
-        style={{ marginTop: "0.8rem" }}
-        href="http://localhost:3000/calendar"
-      >
-        Home
-      </Button>
-
-      <Modal show={show}>
-        <Modal.Header>
-          <Modal.Title>Successfully submitted job!</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Your job is scheduled! The job event has been added to your calendar
-          as a confirmation.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={e => (window.location.href = "/calendar")}
-          >
-            Done
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <Modal show={show}>
+          <Modal.Header>
+            <Modal.Title>Successfully submitted job!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Your job is scheduled! The job event has been added to your calendar
+            as a confirmation.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => (window.location.href = "/calendar")}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
     </div>
-  </div>
   );
 };
 

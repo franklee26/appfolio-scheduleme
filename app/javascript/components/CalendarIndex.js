@@ -5,16 +5,16 @@ import Form from "react-bootstrap/Form";
 import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
-import { shortFormatDate } from "./Events.js";
+import { shortFormatDateAll } from "./Events.js";
 import $ from "jquery";
 import StarRatings from "react-star-ratings";
-import { compose, withProps } from "recompose";
-import {
+const { compose, withProps, lifecycle } = require("recompose");
+const {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  Marker
-} from "react-google-maps";
+  DirectionsRenderer
+} = require("react-google-maps");
 
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
@@ -92,20 +92,46 @@ const CalendarIndex = props => {
       googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${props.GOOGLE_MAPS_KEY}&v=3.exp&libraries=geometry,drawing,places`,
       loadingElement: <div style={{ height: `100%` }} />,
       containerElement: (
-        <div style={{ height: `750px`, marginBottom: "2.0rem" }} />
+        <div
+          style={{
+            height: `700px`,
+            marginBottom: "2.0rem",
+            marginTop: "1.0rem"
+          }}
+        />
       ),
       mapElement: <div style={{ height: `100%` }} />
     }),
     withScriptjs,
-    withGoogleMap
+    withGoogleMap,
+    lifecycle({
+      componentDidMount() {
+        const DirectionsService = new google.maps.DirectionsService();
+
+        DirectionsService.route(
+          {
+            origin: "1100 Anacapa St, Santa Barbara, CA 93101",
+            destination: "6511 Sabado Tarde Rd",
+            travelMode: google.maps.TravelMode.DRIVING
+          },
+          (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+              this.setState({
+                directions: result
+              });
+            } else {
+              console.error(`error fetching directions ${result}`);
+            }
+          }
+        );
+      }
+    })
   )(props => (
     <GoogleMap
-      defaultZoom={12}
-      defaultCenter={{ lat: 34.413341, lng: -119.855609 }}
+      defaultZoom={7}
+      defaultCenter={new google.maps.LatLng(41.85073, -87.65126)}
     >
-      {props.isMarkerShown && (
-        <Marker position={{ lat: 34.413341, lng: -119.855609 }} />
-      )}
+      {props.directions && <DirectionsRenderer directions={props.directions} />}
     </GoogleMap>
   ));
 
@@ -453,8 +479,8 @@ const CalendarIndex = props => {
                 <Card.Header>{job.title}</Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    Scheduled for {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)} assigned to {job.vendor_name}
+                    Scheduled for {shortFormatDateAll(job.start)} to{" "}
+                    {shortFormatDateAll(job.end)} assigned to {job.vendor_name}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
                 </Card.Body>
@@ -476,7 +502,8 @@ const CalendarIndex = props => {
                 <Card.Body>
                   <Card.Title>
                     Completed by {job.vendor_name} from{" "}
-                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
+                    {shortFormatDateAll(job.start)} to{" "}
+                    {shortFormatDateAll(job.end)}
                   </Card.Title>
                   <Card.Text>Description: {job.content}</Card.Text>
                   {job.reviewed ? (
@@ -866,8 +893,9 @@ const CalendarIndex = props => {
                   <Card.Body>
                     <Card.Title>Requested by {job.tenant_name}</Card.Title>
                     <Card.Text>
-                      {job.content} scheduled from {shortFormatDate(job.start)}{" "}
-                      to {shortFormatDate(job.end)}
+                      {job.content} scheduled from{" "}
+                      {shortFormatDateAll(job.start)} to{" "}
+                      {shortFormatDateAll(job.end)}
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -889,13 +917,15 @@ const CalendarIndex = props => {
                 <Card.Body>
                   <Card.Title>
                     Completed for {job.tenant_name} from{" "}
-                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
+                    {shortFormatDateAll(job.start)} to{" "}
+                    {shortFormatDateAll(job.end)}
                   </Card.Title>
                   <Card.Text>{job.content}</Card.Text>
                 </Card.Body>
               </Card>
             ))}
         </CardColumns>
+        <h2 style={{ marginTop: "0.8rem" }}>Route to tenant: Frank Lee</h2>
         <VendorMap isMarkerShown />
       </div>
     );
