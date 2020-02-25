@@ -91,7 +91,7 @@ const JobNew = props => {
     <div>
       <header className="bg-dark py-3">
         <h1 align="center" className="display-3 text-white mt-5 mb-2">
-          Submit A New Job
+          Submit a new Job
         </h1>
       </header>
       <div className="container">
