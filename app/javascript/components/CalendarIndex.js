@@ -413,8 +413,14 @@ const CalendarIndex = props => {
     );
   } else if (props.user_type == "Tenant") {
     return (
-      <div className="container">
-        <h1 align="center">{props.user_type} Calendar Page</h1>
+      <div>
+            <header class="bg-dark py-1">
+            <h1 align="center" class="display-1 text-white mt-5 mb-2">{props.user_type} Calendar Page</h1>
+                      <p align="center" class="lead text-light">
+                      View your scheduled and completed jobs, or submit a new job request here!                  
+                      </p>
+            </header>  
+      <div className="container">      
         {tenantResponse.has_approved_job ? (
           !show ? (
             <Button
@@ -615,6 +621,7 @@ const CalendarIndex = props => {
           </Modal.Footer>
         </Modal>
       </div>
+    </div>
     );
   } else if (props.user_type == "Landowner") {
     return (
