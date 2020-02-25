@@ -954,7 +954,7 @@ const CalendarIndex = props => {
           >
             <GoogleMapReact
               bootstrapURLKeys={{
-                key: "AIzaSyAkNvNNoXSy9g38sTLGERFuX-xLfMGsnD0"
+                key: ""
               }}
               defaultCenter={mapState.default_center}
               defaultZoom={mapState.default_zoom}
