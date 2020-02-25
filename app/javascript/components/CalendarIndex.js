@@ -8,6 +8,13 @@ import Modal from "react-bootstrap/Modal";
 import { shortFormatDate } from "./Events.js";
 import $ from "jquery";
 import StarRatings from "react-star-ratings";
+import { compose, withProps } from "recompose";
+import {
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
+  Marker
+} from "react-google-maps";
 
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
@@ -79,6 +86,28 @@ const CalendarIndex = props => {
     tenantModal: false,
     addTenantModal: false
   });
+
+  const VendorMap = compose(
+    withProps({
+      googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${props.GOOGLE_MAPS_KEY}&v=3.exp&libraries=geometry,drawing,places`,
+      loadingElement: <div style={{ height: `100%` }} />,
+      containerElement: (
+        <div style={{ height: `750px`, marginBottom: "2.0rem" }} />
+      ),
+      mapElement: <div style={{ height: `100%` }} />
+    }),
+    withScriptjs,
+    withGoogleMap
+  )(props => (
+    <GoogleMap
+      defaultZoom={12}
+      defaultCenter={{ lat: 34.413341, lng: -119.855609 }}
+    >
+      {props.isMarkerShown && (
+        <Marker position={{ lat: 34.413341, lng: -119.855609 }} />
+      )}
+    </GoogleMap>
+  ));
 
   const handleUpdateVendorRating = (vendor_id, rate, job_id) => {
     fetch(`http://localhost:3000/vendors/update_rating`, {
@@ -805,7 +834,6 @@ const CalendarIndex = props => {
             </a>
           ))}
         </CardColumns>
-
         {vendorResponse.landowners.length ? (
           <h2>Your assigned landowners: </h2>
         ) : (
@@ -868,6 +896,7 @@ const CalendarIndex = props => {
               </Card>
             ))}
         </CardColumns>
+        <VendorMap isMarkerShown />
       </div>
     );
   }
