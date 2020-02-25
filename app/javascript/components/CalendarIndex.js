@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import { shortFormatDate } from "./Events.js";
 import $ from "jquery";
 import StarRatings from "react-star-ratings";
-import GoogleMapReact from 'google-map-react';
+import GoogleMapReact from "google-map-react";
 
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
@@ -81,29 +81,50 @@ const CalendarIndex = props => {
     addTenantModal: false
   });
 
-  // State values for map. 
-  // The args stores the map hash that contains the displayed google map object that you can interact with. 
-  // Direction is our directionRenderer that is used to update the map in args. 
+  // State values for map.
+  // The args stores the map hash that contains the displayed google map object that you can interact with.
+  // Direction is our directionRenderer that is used to update the map in args.
   const [mapState, setMapState] = useState({
-    start: { lat: 40.756795, lng: -73.954298 }, 
-    end:  { lat: 41.756795, lng: -78.954298 }, 
-    dirRenderer: null, 
-    args: null, 
-    default_center: { lat: 59.95, lng: 30.33  }, 
-    default_zoom: 11
+    start: { lat: 34.424, lng: -119.702 },
+    end: { lat: 34.41, lng: -119.854 },
+    dirRenderer: null,
+    args: null,
+    default_center: { lat: 59.95, lng: 30.33 },
+    default_zoom: 20
   });
 
-  const [routeState, setRoutes] = useState ({
-    mp1: {start: "6560 Pardall Rd, Isla Vista, CA 93117", end: " 173 N Fairview Ave, Goleta, CA 93117"}, 
-    mp2: {start: " 173 N Fairview Ave, Goleta, CA 93117", end: "6558 Pardall Rd, Goleta, CA 93117"}, 
-    mp3: {start: "6558 Pardall Rd, Goleta, CA 93117", end: "Storke Rd, Santa Barbara, CA 93106"}, 
-    mp4: {start: "Storke Rd, Santa Barbara, CA 93106", end: "Anacapa Hall, Isla Vista, CA 93117"}, 
-    mp5: {start: "Anacapa Hall, Isla Vista, CA 93117", end: "2618 De La Vina St, Santa Barbara, CA 93105"}, 
-    mp6: {start: "2618 De La Vina St, Santa Barbara, CA 93105", end: "888 Embarcadero del Norte #C, Isla Vista, CA 93117"}, 
-    mp7: {start: "888 Embarcadero del Norte #C, Isla Vista, CA 93117", end: "6560 Pardall Rd, Isla Vista, CA 93117"}
+  const [routeState, setRoutes] = useState({
+    mp1: {
+      start: "6560 Pardall Rd, Isla Vista, CA 93117",
+      end: " 173 N Fairview Ave, Goleta, CA 93117"
+    },
+    mp2: {
+      start: " 173 N Fairview Ave, Goleta, CA 93117",
+      end: "6558 Pardall Rd, Goleta, CA 93117"
+    },
+    mp3: {
+      start: "6558 Pardall Rd, Goleta, CA 93117",
+      end: "Storke Rd, Santa Barbara, CA 93106"
+    },
+    mp4: {
+      start: "Storke Rd, Santa Barbara, CA 93106",
+      end: "Anacapa Hall, Isla Vista, CA 93117"
+    },
+    mp5: {
+      start: "Anacapa Hall, Isla Vista, CA 93117",
+      end: "2618 De La Vina St, Santa Barbara, CA 93105"
+    },
+    mp6: {
+      start: "2618 De La Vina St, Santa Barbara, CA 93105",
+      end: "888 Embarcadero del Norte #C, Isla Vista, CA 93117"
+    },
+    mp7: {
+      start: "888 Embarcadero del Norte #C, Isla Vista, CA 93117",
+      end: "6560 Pardall Rd, Isla Vista, CA 93117"
+    }
   });
 
-  const setMap = (args) => {
+  const setMap = args => {
     console.log("inside set map");
     console.log(mapState.start);
     console.log(mapState.end);
@@ -133,8 +154,11 @@ const CalendarIndex = props => {
           directionDisplay.setDirections(result);
           directionDisplay.setMap(map);
 
-          setMapState((mapState) => ({ ...mapState, args: args, dirRenderer: directionDisplay}));
-
+          setMapState(mapState => ({
+            ...mapState,
+            args: args,
+            dirRenderer: directionDisplay
+          }));
         } else {
           console.log("Fail");
         }
@@ -142,11 +166,11 @@ const CalendarIndex = props => {
     );
   };
 
-  const handleClickLocation = (e) => {
-    var {id} = event.target;
+  const handleClickLocation = e => {
+    var { id } = event.target;
     var start2 = routeState[id].start;
     var end2 = routeState[id].end;
-    setMapState((mapState) => ({...mapState, start: start2, end: end2}));
+    setMapState(mapState => ({ ...mapState, start: start2, end: end2 }));
 
     console.log("inside handle click");
     console.log(mapState.start);
@@ -154,9 +178,8 @@ const CalendarIndex = props => {
     console.log(mapState.args);
 
     setMap(mapState.args);
+  };
 
-  }
-    
   const handleUpdateVendorRating = (vendor_id, rate, job_id) => {
     fetch(`http://localhost:3000/vendors/update_rating`, {
       method: "PATCH",
@@ -868,24 +891,76 @@ const CalendarIndex = props => {
         </h2>
 
         <div>
-          <div style={{height: '100vh', width: '10%', display: 'inline-block', verticalAlign: "top"}}>
-            <div id="mp1"  style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 1</div>
-            <div id="mp2" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 2</div>
-            <div id="mp3" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 3</div>
-            <div id="mp4" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 4</div>
-            <div id="mp5" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 5</div>
-            <div id="mp6" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 6</div>
-            <div id="mp7" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 7</div>
-          </div>
-          <div style={{ height: '100vh', width: '84%', display: 'inline-block' }}>
-            <GoogleMapReact
-              bootstrapURLKeys={{ key: 'YOUR_API_KEY_HERE' }}
-              defaultCenter= {mapState.default_center}        
-              defaultZoom= {mapState.default_zoom}
-              yesIWantToUseGoogleMapApiInternals
-              onGoogleApiLoaded={ e => setMap(e) }
+          <div
+            style={{
+              height: "100vh",
+              width: "10%",
+              display: "inline-block",
+              verticalAlign: "top"
+            }}
+          >
+            <div
+              id="mp1"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
             >
-            </GoogleMapReact>
+              Location 1
+            </div>
+            <div
+              id="mp2"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
+            >
+              Location 2
+            </div>
+            <div
+              id="mp3"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
+            >
+              Location 3
+            </div>
+            <div
+              id="mp4"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
+            >
+              Location 4
+            </div>
+            <div
+              id="mp5"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
+            >
+              Location 5
+            </div>
+            <div
+              id="mp6"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
+            >
+              Location 6
+            </div>
+            <div
+              id="mp7"
+              style={{ width: "100%", height: "10%", borderStyle: "solid" }}
+              onClick={e => handleClickLocation(e)}
+            >
+              Location 7
+            </div>
+          </div>
+          <div
+            style={{ height: "100vh", width: "84%", display: "inline-block" }}
+          >
+            <GoogleMapReact
+              bootstrapURLKeys={{
+                key: "AIzaSyAkNvNNoXSy9g38sTLGERFuX-xLfMGsnD0"
+              }}
+              defaultCenter={mapState.default_center}
+              defaultZoom={mapState.default_zoom}
+              yesIWantToUseGoogleMapApiInternals
+              onGoogleApiLoaded={e => setMap(e)}
+            ></GoogleMapReact>
           </div>
         </div>
 
