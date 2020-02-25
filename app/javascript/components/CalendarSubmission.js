@@ -9,8 +9,10 @@ const CalendarSubmission = props => {
     <div>
       <header class="bg-dark py-3">
         <h1 align="center" class="display-3 text-white mt-5 mb-2">
-          Select A Calendar
+          Select a Calendar
         </h1>
+      <h5 align="center" class="display-6 text-white mb-2">The job request will be added to the Google Calendar that you select.</h5>
+
       </header>
       <div className="container">
         <view align="center">
