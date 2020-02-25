@@ -94,19 +94,20 @@ const CalendarIndex = props => {
   });
 
   const [routeState, setRoutes] = useState ({
-    mp1: {start: "california", end: "idaho"}, 
-    mp2: {start: "idaho", end: "new york"}, 
-    mp3: {start: "new york", end: "pennsylvania"}, 
-    mp4: {start: "pennsylvania", end: "georgia"}, 
-    mp5: {start: "georgia", end: "mississippi"}, 
-    mp6: {start: "mississippi", end: "montana"}, 
-    mp7: {start: "montana", end: "Missouri"}
+    mp1: {start: "6560 Pardall Rd, Isla Vista, CA 93117", end: " 173 N Fairview Ave, Goleta, CA 93117"}, 
+    mp2: {start: " 173 N Fairview Ave, Goleta, CA 93117", end: "6558 Pardall Rd, Goleta, CA 93117"}, 
+    mp3: {start: "6558 Pardall Rd, Goleta, CA 93117", end: "Storke Rd, Santa Barbara, CA 93106"}, 
+    mp4: {start: "Storke Rd, Santa Barbara, CA 93106", end: "Anacapa Hall, Isla Vista, CA 93117"}, 
+    mp5: {start: "Anacapa Hall, Isla Vista, CA 93117", end: "2618 De La Vina St, Santa Barbara, CA 93105"}, 
+    mp6: {start: "2618 De La Vina St, Santa Barbara, CA 93105", end: "888 Embarcadero del Norte #C, Isla Vista, CA 93117"}, 
+    mp7: {start: "888 Embarcadero del Norte #C, Isla Vista, CA 93117", end: "6560 Pardall Rd, Isla Vista, CA 93117"}
   });
 
   const setMap = (args) => {
     console.log("inside set map");
     console.log(mapState.start);
     console.log(mapState.end);
+    console.log(mapState.dirRenderer);
 
     const map = args.map;
     const maps = args.maps;
@@ -150,6 +151,7 @@ const CalendarIndex = props => {
     console.log("inside handle click");
     console.log(mapState.start);
     console.log(mapState.end);
+    console.log(mapState.args);
 
     setMap(mapState.args);
 
@@ -866,18 +868,18 @@ const CalendarIndex = props => {
         </h2>
 
         <div>
-          <div style={{height: '100vh', width: '10%', background: 'blue', display: 'inline-block', verticalAlign: "top"}}>
-            <div id="mp1"  style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>CA->ID</div>
-            <div id="mp2" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>ID->NY</div>
-            <div id="mp3" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>NY->PA</div>
-            <div id="mp4" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>PA->GA</div>
-            <div id="mp5" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>GA->MS</div>
-            <div id="mp6" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>MS->MT</div>
-            <div id="mp7" style={{width: '100%', height: '10%', background: 'yellow'}} onClick = {e => handleClickLocation(e)}>MT->MO</div>
+          <div style={{height: '100vh', width: '10%', display: 'inline-block', verticalAlign: "top"}}>
+            <div id="mp1"  style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 1</div>
+            <div id="mp2" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 2</div>
+            <div id="mp3" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 3</div>
+            <div id="mp4" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 4</div>
+            <div id="mp5" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 5</div>
+            <div id="mp6" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 6</div>
+            <div id="mp7" style={{width: '100%', height: '10%', borderStyle: 'solid'}} onClick = {e => handleClickLocation(e)}>Location 7</div>
           </div>
           <div style={{ height: '100vh', width: '84%', display: 'inline-block' }}>
             <GoogleMapReact
-              bootstrapURLKeys={{ key: 'AIzaSyDrOvbn2Aiz__RhF-RKnp8yQij1w2ojc1c' }}
+              bootstrapURLKeys={{ key: 'YOUR_API_KEY_HERE' }}
               defaultCenter= {mapState.default_center}        
               defaultZoom= {mapState.default_zoom}
               yesIWantToUseGoogleMapApiInternals
