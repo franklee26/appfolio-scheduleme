@@ -108,7 +108,8 @@ end
         vendor_id: j.vendor_id,
         start: j.start,
         end: j.end,
-        tenant_name: j.tenant.name
+        tenant_name: j.tenant.name,
+        address: j.tenant.street_address
       }
       vendor_jobs << job_obj
     end
