@@ -36,37 +36,36 @@ const VendorDisplay = props => {
           </h1>
         </header>
       </div>
-      <div className="container">
-        <div>
+      <div className="container" style={{ width: 650}}>
+        <div align="center" className="mb-5">
           {props.reviews.length ? <h2>Reviews</h2> : ""}
-          <CardColumns>
             {props.reviews.map(review => (
-              <Card ml-2 border="success">
-                <Card.Header as="h5">
+              <div align="left">
+              <Card mb-2 border="success" style={{ width: 650 }}>
+                <Card.Header>
                   {" "}
                   {
                     <StarRatings
                       rating={parseFloat(
                         review.rating ? review.rating.toFixed(2) : 0.0
                       )}
-                      starDimension="22px"
+                      starDimension="25px"
                       starSpacing="1px"
                       starRatedColor="gold"
                       numberOfStars={5}
                       name="rating"
                     />
                   }
+                <br/>
+                <small className="text-muted">Reviewed by {props.review_to_tenant[review.id]} on {shortFormatDate(review.created_at)}</small>
                 </Card.Header>
                 <Card.Body>
-                  <Card.Text>
-                    <b>
-                      "{review.text}" -{props.review_to_tenant[review.id]} ({shortFormatDate(review.created_at)})
-                    </b>
-                  </Card.Text>
+                      {review.text}
                 </Card.Body>
               </Card>
+              <br/>
+              </div>
             ))}
-          </CardColumns>
         </div>
         <div>
           <Button
