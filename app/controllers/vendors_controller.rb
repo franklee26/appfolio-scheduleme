@@ -114,6 +114,8 @@ end
       vendor_jobs << job_obj
     end
 
+    vendor_jobs = vendor_jobs.sort_by { |j1| j1[:start] }
+
     response = {
       "id": vendor.id,
       "name": vendor.name,

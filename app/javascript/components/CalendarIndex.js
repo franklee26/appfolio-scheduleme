@@ -141,7 +141,9 @@ const CalendarIndex = props => {
         const DirectionsService = new google.maps.DirectionsService();
         DirectionsService.route(
           {
-            origin: "1100 Anacapa St, Santa Barbara, CA 93101",
+            origin: (mapState.job_index > 0) ? vendorResponse.jobs.filter(job => job.status == "COMPLETE")[
+              mapState.job_index - 1
+            ].address : "1100 Anacapa St, Santa Barbara, CA 93101",
             destination:
               mapState.job_index != null
                 ? vendorResponse.jobs.filter(job => job.status == "COMPLETE")[
@@ -455,6 +457,26 @@ const CalendarIndex = props => {
   } else if (props.user_type == "Vendor" && mapState.loading_maps) {
     return <div>Loading maps...</div>;
   } else if (props.user_type == "Tenant") {
+    if (!tenantResponse.street_address) {
+      return (
+        <Modal show={1}>
+        <Modal.Header>
+          <Modal.Title>Profile incomplete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          You must have a street address to continue
+        </Modal.Body>
+        <Modal.Footer>
+        <Button
+                variant="primary"
+                onClick={e => window.location.href = "http://localhost:3000/sessions/profile"}
+              >
+                Continue
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      )
+    }
     return (
       <div>
         <header class="bg-dark py-1">
@@ -899,6 +921,7 @@ const CalendarIndex = props => {
       </div>
     );
   } else if (props.user_type == "Vendor") {
+    var filtered = vendorResponse.jobs.filter(job => job.status == "COMPLETE");
     return (
       <div>
         <header class="bg-dark py-1">
@@ -957,9 +980,9 @@ const CalendarIndex = props => {
                     text="dark"
                     style={{ width: "18rem" }}
                   >
-                    <Card.Header>{job.title}</Card.Header>
+                    <Card.Header>{job.title} {mapState.job_index != null && filtered[mapState.job_index].content === job.content ? " 🕔" : ""}</Card.Header>
                     <Card.Body>
-                      <Card.Title>Requested by {job.tenant_name}</Card.Title>
+                      <Card.Title>Requested by {job.tenant_name} </Card.Title>
                       <Card.Text>
                         {job.content} scheduled from{" "}
                         {shortFormatDateAll(job.start)} to{" "}
@@ -987,25 +1010,23 @@ const CalendarIndex = props => {
           >
             Next
           </Button>
-          {vendorResponse.jobs.filter(job => job.status == "COMPLETE")
+          {filtered
             .length ? (
             <div>
               <h2 style={{ marginTop: "0.8rem" }}>
-                Route to{" "}
+              {
+                  filtered[
+                    mapState.job_index
+                  ].title
+                }: {mapState.job_index == 0 ? props.user.name : filtered[mapState.job_index-1].tenant_name} ➡️{" "}
                 {
-                  vendorResponse.jobs.filter(job => job.status == "COMPLETE")[
+                  filtered[
                     mapState.job_index
                   ].tenant_name
                 }{" "}
-                -{" "}
+                (To {" "}
                 {
-                  vendorResponse.jobs.filter(job => job.status == "COMPLETE")[
-                    mapState.job_index
-                  ].title
-                }
-                (
-                {
-                  vendorResponse.jobs.filter(job => job.status == "COMPLETE")[
+                  filtered[
                     mapState.job_index
                   ].address
                 }
