@@ -35,6 +35,13 @@ export const shortFormatTime = date => {
   return theDate;
 };
 
+export const dayExporter = date => {
+  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
+    day: "numeric",
+  });
+  return theDate;
+};
+
 const Events = props => {
   const [state, setState] = useState({
     error: null,
