@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'tenants/no_landowner', to: 'tenants#no_landowner'
   get 'tenants/get_freebusy/:id', to: 'tenants#get_freebusy'
   patch 'tenants/update_tenant', to: 'tenants#update_tenant'
+  patch 'tenants/upload', to: 'tenants#save_to_s3'
 
   # home page
   root 'homepage#index'

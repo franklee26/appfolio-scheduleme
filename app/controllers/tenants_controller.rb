@@ -1,5 +1,5 @@
 class TenantsController < ApplicationController 
-  protect_from_forgery :except => [:update_tenant]
+  protect_from_forgery :except => [:update_tenant, :save_to_s3]
 
   # Returns json of all the fields or every tenant
   def index
@@ -13,6 +13,25 @@ class TenantsController < ApplicationController
   def get_freebusy
     tenant = Tenant.find(params[:id])
     render json: tenant.freebusies, status: :ok
+  end
+
+  def save_to_s3(image_location, folder_name,user_id)
+    service = AWS::S3.new(:access_key_id => ACCESS_KEY_ID,
+                          :secret_access_key => SECRET_ACCESS_KEY)
+    bucket_name = "scheduleme"
+    puts(ACCESS_KEY_ID)
+    if(service.buckets.include?(bucket_name))
+      bucket = service.buckets[bucket_name]
+    else
+      bucket = service.buckets.create(bucket_name)
+    end
+    bucket.acl = :public_read
+    key = folder_name.to_s + "/" + File.basename(image_location)
+    s3_file = service.buckets[bucket_name].objects[key].write(:file => image_location)
+    s3_file.acl = :public_read
+    user = User.where(id: user_id).first
+    user.image = s3_file.public_url.to_s
+    user.save
   end
 
   # GET /tenants/1

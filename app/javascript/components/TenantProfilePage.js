@@ -69,6 +69,9 @@ class TenantProfilePage extends Component {
     return (
       <div>
         <h1>Your Profile</h1>
+
+        <img src = "https://scheduleme.s3-us-west-1.amazonaws.com/missing_300x300.png"/>
+
         <form onSubmit={this.handleSubmit}>
           <div>
             <label>Name</label>
