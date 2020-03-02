@@ -63,6 +63,9 @@ GEM
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
     childprocess (3.0.0)
+    climate_control (0.2.0)
+    cocaine (0.5.8)
+      climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -123,6 +126,7 @@ GEM
     mime-types (3.3)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.1009)
+    mimemagic (0.3.0)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.0)
@@ -133,6 +137,12 @@ GEM
     nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
     os (1.0.1)
+    paperclip (4.3.7)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
+      cocaine (~> 0.5.5)
+      mime-types
+      mimemagic (= 0.3.0)
     pg (1.1.4)
     popper_js (1.14.5)
     pry (0.12.2)
@@ -269,6 +279,7 @@ DEPENDENCIES
   google-api-client
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
+  paperclip (~> 4.2)
   pg
   pry (~> 0.12.2)
   puma (~> 3.12)
