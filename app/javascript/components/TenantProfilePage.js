@@ -1,4 +1,16 @@
 import React, { Component } from "react";
+import S3FileUpload from 'react-s3';
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Image from "react-bootstrap/Image";
+import aws from "./AwsKeys";
+ 
+const config = {
+    bucketName: 'scheduleme',
+    region: 'us-west-1',
+    accessKeyId: aws.accessKeyId,
+    secretAccessKey: aws.secretAccessKey
+}
 
 class TenantProfilePage extends Component {
   constructor(props) {
@@ -12,7 +24,8 @@ class TenantProfilePage extends Component {
       city: "",
       zip: "",
       state: "",
-      changed: false
+      changed: false,
+      profile_pic:""
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -28,7 +41,8 @@ class TenantProfilePage extends Component {
         street_address: data.street_address,
         city: data.city,
         zip: data.zip,
-        state: data.state
+        state: data.state,
+        profile_pic: data.profile_pic
       })});
   }
 
@@ -44,10 +58,12 @@ class TenantProfilePage extends Component {
         street_address: this.state.street_address, 
         city: this.state.city, 
         zip: this.state.zip, 
-        state: this.state.state
+        state: this.state.state,
+        profile_pic: this.state.profile_pic
       })
     }).then((response) => {return response.json()}).then((data) => {
       if (data.code == 200){
+        window.location.reload(true);
         alert("Successfully Saved Shanges.")
       }
       else {
@@ -59,73 +75,101 @@ class TenantProfilePage extends Component {
   }
 
   handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value,
-      changed: true
-    });
+    console.log(e);
+    console.log(this.state);
+    if (e.target.name == "profile_pic"){
+      S3FileUpload
+      .uploadFile(e.target.files[0], config)
+      .then(data => this.setState({
+        ["profile_pic"]: data.location,
+        changed: true
+      })
+      )
+      .catch(err => console.error(err))
+    } else {
+      this.setState({
+        [e.target.name]: e.target.value,
+        changed: true
+      });
+    }
   }
 
   render() {
     return (
       <div>
         <h1>Your Profile</h1>
+        <Image src={this.state.profile_pic}  width="400" height="400" style={{border:'1px solid #595757'}} rounded />
 
-        <img src = "https://scheduleme.s3-us-west-1.amazonaws.com/missing_300x300.png"/>
+        <Form onSubmit={this.handleSubmit}>
+          <Form.Group controlId="fileUpload">
+            <Form.Label>Upload New Profile Picture</Form.Label>
+            <Form.Control 
+            type="file" 
+            name="profile_pic"
+            onChange={this.handleChange}/>
+          </Form.Group>
 
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label>Name</label>
-            <input
-              value={this.state.name}
-              name="name"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          
-          <div>
-            <label>Landlord ID</label>
-            <input
-              value={this.state.landowner_id}
-              name="landowner_id"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            <label>Street Address</label>
-            <input
-              value={this.state.street_address}
-              name="street_address"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            <label>City</label>
-            <input
-              value={this.state.city}
-              name="city"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            <label>State</label>
-            <input
-              value={this.state.state}
-              name="state"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            <label>Zip Code</label>
-            <input
-              value={this.state.zip}
-              name="zip"
-              onChange={e => this.handleChange(e)}
-            />
-          </div>
-          <div>
-            {this.state.changed && <button onSubmit={e => this.handleSubmit(e)}>Save</button>}
-          </div>
-        </form>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control 
+            type="text" 
+            name="name"
+            value={this.state.name}
+            onChange={this.handleChange}/>
+          </Form.Group>
+
+          <Form.Group controlId="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control 
+            type="text" 
+            name="email"
+            value={this.state.email}
+            onChange={this.handleChange}/>
+          </Form.Group>
+
+          <Form.Group controlId="street">
+            <Form.Label>Street Address</Form.Label>
+            <Form.Control 
+            type="text" 
+            name="street"
+            value={this.state.street}
+            onChange={this.handleChange}/>
+          </Form.Group>
+
+          <Form.Group controlId="city">
+            <Form.Label>City</Form.Label>
+            <Form.Control 
+            type="text" 
+            name="city"
+            value={this.state.city}
+            onChange={this.handleChange}/>
+          </Form.Group>
+
+          <Form.Group controlId="state">
+            <Form.Label>State</Form.Label>
+            <Form.Control 
+            type="text" 
+            name="state"
+            value={this.state.email}
+            onChange={this.handleChange}/>
+          </Form.Group>
+
+          <Form.Group controlId="zip">
+            <Form.Label>Zip Code</Form.Label>
+            <Form.Control 
+            type="text" 
+            name="zip"
+            value={this.state.zip}
+            onChange={this.handleChange}/>
+          </Form.Group>
+
+          {this.state.changed && <Button 
+          variant="primary" 
+          type="submit"
+          onSubmit={e => this.handleSubmit(e)}>
+            Save
+          </Button>}
+        </Form>
       </div>
     );
   }
