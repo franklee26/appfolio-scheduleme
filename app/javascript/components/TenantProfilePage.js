@@ -48,7 +48,7 @@ class TenantProfilePage extends Component {
       })
     }).then((response) => {return response.json()}).then((data) => {
       if (data.code == 200){
-        alert("Successfully Saved Shanges.")
+        alert("Successfully Saved Changes.")
       }
       else {
         alert("Failed To Save Changes.")

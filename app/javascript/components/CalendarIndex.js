@@ -5,43 +5,23 @@ import Form from "react-bootstrap/Form";
 import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
-import { shortFormatDate } from "./Events.js";
+import { shortFormatDateAll } from "./Events.js";
 import $ from "jquery";
+import {
+  LandownerRemoveVendor,
+  LandownerAddVendor,
+  LandownerRemoveTenant,
+  LandownerAddTenant,
+  TenantReviewSuccess,
+  TenantStreetAddress
+} from "./CalendarModals";
 import StarRatings from "react-star-ratings";
-
-const handleCompleteJob = (event, job_id) => {
-  event.preventDefault();
-  fetch(`http://localhost:3000/jobs/finish/${job_id}`, { method: "PATCH" })
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == 200) {
-        alert("Successfully marked job as complete.");
-        window.location.reload(false);
-      } else {
-        alert("Failed to mark job as complete.");
-      }
-    });
-};
-
-const handleAddCalendar = (event, id, calendar_id) => {
-  event.preventDefault();
-  fetch(`http://localhost:3000/calendar/add_default`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      vendor_id: id,
-      calendar_id: calendar_id
-    })
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == 200) {
-        alert("Successfully marked calendar as default.");
-      } else {
-        alert("Failed to mark calendar as default.");
-      }
-    });
-};
+import {
+  Switch,
+  Route,
+  MemoryRouter
+} from "react-router-dom";
+import VendorCalendar from "./VendorCalendar.js";
 
 /*
 isLoaded: mounting landowner response
@@ -78,6 +58,12 @@ const CalendarIndex = props => {
     addVendorModal: false,
     tenantModal: false,
     addTenantModal: false
+  });
+
+  const [mapState, setMapState] = useState({
+    start_home: true,
+    loading_maps: true,
+    job_index: null
   });
 
   const handleUpdateVendorRating = (vendor_id, rate, job_id) => {
@@ -314,6 +300,11 @@ const CalendarIndex = props => {
             vendorResponse: res,
             isLoaded: true
           })),
+            setMapState(prevState => ({
+              ...prevState,
+              job_index: res.jobs.length ? 0 : null,
+              loading_maps: false
+            })),
             error => {
               setState(prevState => ({
                 ...prevState,
@@ -356,216 +347,219 @@ const CalendarIndex = props => {
         <h1>Finishing last retrieves...</h1>
       </div>
     );
+  } else if (props.user_type == "Vendor" && mapState.loading_maps) {
+    return <div>Loading maps...</div>;
   } else if (props.user_type == "Tenant") {
+    if (!tenantResponse.street_address) {
+      return (
+        <TenantStreetAddress/>
+      );
+    }
     return (
       <div>
-            <header class="bg-dark py-1">
-            <h1 align="center" class="display-1 text-white mt-5 mb-2">{props.user_type} Calendar Page</h1>
-                      <p align="center" class="lead text-light">
-                      View your scheduled and completed jobs, or submit a new job request here!                  
-                      </p>
-            </header>  
-      <div className="container">      
-        {tenantResponse.has_approved_job ? (
-          !show ? (
-            <Button
-              size="lg"
-              variant="warning"
-              onClick={() => setShow(true)}
-              block
-            >
-              ⚠ Alert: You have jobs ready to be scheduled!
-            </Button>
-          ) : (
-            <Alert show={show} variant="warning">
-              <Alert.Heading>
-                You have jobs ready to be scheduled!
-              </Alert.Heading>
-              <p>
-                Your job request was matched with your landowner's vendors. We
-                found several times for you to schedule your job; don't worry,
-                we made sure these times do not conflict with your schedule.
-                Click one of your calendars to schedule and we'll take care of
-                everything else.
-              </p>
-              <hr />
-              <div className="d-flex justify-content-end">
-                <Button
-                  variant="outline-dark"
-                  style={{ marginRight: "0.8rem" }}
-                  onClick={() =>
-                    (window.location.href = "/calendar/calendar_submission")
-                  }
-                >
-                  Continue
-                </Button>
-                <Button onClick={() => setShow(false)} variant="outline-dark">
-                  Hide
-                </Button>
-              </div>
-            </Alert>
-          )
-        ) : null}
-
-        <Button
-          variant="primary"
-          href="http://localhost:3000/jobs/new"
-          size="lg"
-          block
-        >
-          Click here to submit a new job
-        </Button>
-
-        <h2>Scheduled jobs: </h2>
-        <CardColumns>
-          {tenantResponse.jobs
-            .filter(job => job.status == "COMPLETE")
-            .map(job => (
-              <Card
-                bg="warning"
-                text="dark"
-                border="warning"
-                style={{ width: "18rem" }}
+        <header class="bg-dark py-1">
+          <h1 align="center" class="display-1 text-white mt-5 mb-2">
+            {props.user_type} Homepage
+          </h1>
+          <p align="center" class="lead text-light">
+            View your scheduled and completed jobs, or submit a new job request
+            here!
+          </p>
+        </header>
+        <div className="container">
+          {tenantResponse.has_approved_job ? (
+            !show ? (
+              <Button
+                size="lg"
+                variant="warning"
+                onClick={() => setShow(true)}
+                style={{ marginTop: "0.8rem" }}
+                block
               >
-                <Card.Header>{job.title}</Card.Header>
-                <Card.Body>
-                  <Card.Title>
-                    Scheduled for {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)} assigned to {job.vendor_name}
-                  </Card.Title>
-                  <Card.Text>Description: {job.content}</Card.Text>
-                </Card.Body>
-              </Card>
-            ))}
-        </CardColumns>
-        <h2>Completed jobs: </h2>
-        <CardColumns>
-          {tenantResponse.jobs
-            .filter(job => job.status == "VENDOR COMPLETE")
-            .map(job => (
-              <Card
-                bg="success"
-                text="white"
-                border="success"
-                style={{ width: "18rem" }}
+                ⚠ Alert: You have jobs ready to be scheduled!
+              </Button>
+            ) : (
+              <Alert
+                show={show}
+                variant="warning"
+                style={{ marginTop: "0.8rem" }}
               >
-                <Card.Header>{job.title}</Card.Header>
-                <Card.Body>
-                  <Card.Title>
-                    Completed by {job.vendor_name} from{" "}
-                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
-                  </Card.Title>
-                  <Card.Text>Description: {job.content}</Card.Text>
-                  {job.reviewed ? (
-                    <Button variant="primary" disabled>
-                      Reviewed
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="primary"
-                      onClick={() =>
-                        SETSTATE({
-                          showM: true,
-                          TITLE: job.title,
-                          JID: job.id,
-                          VID: job.vendor_id
-                        })
-                      }
-                    >
-                      Review
-                    </Button>
-                  )}
-
-                  <Modal
-                    show={showM}
-                    onHide={e => SETSTATE({ ...STATE, showM: false })}
+                <Alert.Heading>
+                  You have jobs ready to be scheduled!
+                </Alert.Heading>
+                <p>
+                  Your job request was matched with your landowner's vendors. We
+                  found several times for you to schedule your job; don't worry,
+                  we made sure these times do not conflict with your schedule.
+                  Click one of your calendars to schedule and we'll take care of
+                  everything else.
+                </p>
+                <hr />
+                <div className="d-flex justify-content-end">
+                  <Button
+                    variant="outline-dark"
+                    style={{ marginRight: "0.8rem" }}
+                    onClick={() =>
+                      (window.location.href = "/calendar/calendar_submission")
+                    }
                   >
-                    <Modal.Header closeButton>
-                      <Modal.Title>{TITLE}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group controlId="starRating">
-                          <Form.Label style={{ marginRight: "1.0rem" }}>
-                            Rate
-                          </Form.Label>
-                          <StarRatings
-                            rating={parseFloat(rate)}
-                            starRatedColor="gold"
-                            starHoverColor="gold"
-                            starSpacing="2px"
-                            changeRating={(rating, name) =>
-                              SetState({ ...State, rate: rating })
-                            }
-                            numberOfStars={5}
-                            name="rating"
-                          />
-                        </Form.Group>
+                    Continue
+                  </Button>
+                  <Button onClick={() => setShow(false)} variant="outline-dark">
+                    Hide
+                  </Button>
+                </div>
+              </Alert>
+            )
+          ) : null}
 
-                        <Form.Group controlId="exampleForm.ControlTextarea1">
-                          <Form.Label>Description</Form.Label>
-                          <Form.Control
-                            as="textarea"
-                            rows="6"
-                            placeholder="Review Description"
-                            onChange={event =>
-                              SetState({ ...State, text: event.target.value })
-                            }
-                          />
-                        </Form.Group>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="danger"
-                        onClick={e => SETSTATE({ ...STATE, showM: false })}
-                      >
-                        Exit
+          <Button
+            variant="primary"
+            href="http://localhost:3000/jobs/new"
+            size="lg"
+            style={{ marginTop: "0.8rem" }}
+            block
+          >
+            Click here to submit a new job
+          </Button>
+
+          <h2>Scheduled jobs: </h2>
+          <CardColumns>
+            {tenantResponse.jobs
+              .filter(job => job.status == "COMPLETE")
+              .map(job => (
+                <Card
+                  bg="warning"
+                  text="dark"
+                  border="warning"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Header>{job.title}</Card.Header>
+                  <Card.Body>
+                    <Card.Title>
+                      Scheduled for {shortFormatDateAll(job.start)} to{" "}
+                      {shortFormatDateAll(job.end)} assigned to{" "}
+                      {job.vendor_name}
+                    </Card.Title>
+                    <Card.Text>Description: {job.content}</Card.Text>
+                  </Card.Body>
+                </Card>
+              ))}
+          </CardColumns>
+          <h2>Completed jobs: </h2>
+          <CardColumns>
+            {tenantResponse.jobs
+              .filter(job => job.status == "VENDOR COMPLETE")
+              .map(job => (
+                <Card
+                  bg="success"
+                  text="white"
+                  border="success"
+                  style={{ width: "18rem" }}
+                >
+                  <Card.Header>{job.title}</Card.Header>
+                  <Card.Body>
+                    <Card.Title>
+                      Completed by {job.vendor_name} from{" "}
+                      {shortFormatDateAll(job.start)} to{" "}
+                      {shortFormatDateAll(job.end)}
+                    </Card.Title>
+                    <Card.Text>Description: {job.content}</Card.Text>
+                    {job.reviewed ? (
+                      <Button variant="primary" disabled>
+                        Reviewed
                       </Button>
+                    ) : (
                       <Button
                         variant="primary"
-                        onClick={event => {
-                          SETSTATE({ ...STATE, showM: false });
-                          handleJobReview(event, JID, text, rate, VID);
-                        }}
+                        onClick={() =>
+                          SETSTATE({
+                            showM: true,
+                            TITLE: job.title,
+                            JID: job.id,
+                            VID: job.vendor_id
+                          })
+                        }
                       >
-                        Submit
+                        Review
                       </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </Card.Body>
-              </Card>
-            ))}
-        </CardColumns>
-        {props.user.landowner_id == 0 ? (
-          <h2>
-            You do not have a landowner yet! Your landowner will assign you.
-          </h2>
-        ) : (
-          <h2>
-            {" "}
-            Your assigned landowner is {landownerResponse.name} with email{" "}
-            {landownerResponse.email}{" "}
-          </h2>
-        )}
-        <Modal show={reviewSuccess}>
-          <Modal.Header>
-            <Modal.Title>Successfully submitted review for job!</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            We recorded your review and rating for the completed job.
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={e => window.location.reload(false)}
-            >
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
+                    )}
+
+                    <Modal
+                      show={showM}
+                      onHide={e => SETSTATE({ ...STATE, showM: false })}
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title>{TITLE}</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Form>
+                          <Form.Group controlId="starRating">
+                            <Form.Label style={{ marginRight: "1.0rem" }}>
+                              Rate
+                            </Form.Label>
+                            <StarRatings
+                              rating={parseFloat(rate)}
+                              starRatedColor="gold"
+                              starHoverColor="gold"
+                              starSpacing="2px"
+                              changeRating={(rating, name) =>
+                                SetState({ ...State, rate: rating })
+                              }
+                              numberOfStars={5}
+                              name="rating"
+                            />
+                          </Form.Group>
+
+                          <Form.Group controlId="exampleForm.ControlTextarea1">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows="6"
+                              placeholder="Review Description"
+                              onChange={event =>
+                                SetState({ ...State, text: event.target.value })
+                              }
+                            />
+                          </Form.Group>
+                        </Form>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button
+                          variant="danger"
+                          onClick={e => SETSTATE({ ...STATE, showM: false })}
+                        >
+                          Exit
+                        </Button>
+                        <Button
+                          variant="primary"
+                          onClick={event => {
+                            SETSTATE({ ...STATE, showM: false });
+                            handleJobReview(event, JID, text, rate, VID);
+                          }}
+                        >
+                          Submit
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </Card.Body>
+                </Card>
+              ))}
+          </CardColumns>
+          {props.user.landowner_id == 0 ? (
+            <h2>
+              You do not have a landowner yet! Your landowner will assign you.
+            </h2>
+          ) : (
+            <h2>
+              {" "}
+              Your assigned landowner is {landownerResponse.name} with email{" "}
+              {landownerResponse.email}{" "}
+            </h2>
+          )}
+          <TenantReviewSuccess show={reviewSuccess} />
+        </div>
       </div>
-    </div>
     );
   } else if (props.user_type == "Landowner") {
     return (
@@ -728,153 +722,30 @@ const CalendarIndex = props => {
             ))}
         </CardColumns>
 
-        <Modal show={landownerState.vendorModal}>
-          <Modal.Header>
-            <Modal.Title>Success</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>You have removed a vendor.</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={e => window.location.reload(false)}
-            >
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal show={landownerState.addVendorModal}>
-          <Modal.Header>
-            <Modal.Title>Success</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>You have added a vendor.</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={e => window.location.reload(false)}
-            >
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal show={landownerState.tenantModal}>
-          <Modal.Header>
-            <Modal.Title>Success</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>You have removed a tenant.</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={e => window.location.reload(false)}
-            >
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal show={landownerState.addTenantModal}>
-          <Modal.Header>
-            <Modal.Title>Success</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>You have added a tenant.</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={e => window.location.reload(false)}
-            >
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <LandownerRemoveVendor show={landownerState.vendorModal} />
+        <LandownerAddVendor show={landownerState.addVendorModal} />
+        <LandownerRemoveTenant show={landownerState.tenantModal} />
+        <LandownerAddTenant show={landownerState.addTenantModal} />
       </div>
     );
   } else if (props.user_type == "Vendor") {
     return (
-      <div className="container">
-        <h1 align="center">{props.user_type} Calendar Page</h1>
-        <h2 align="center">
-          {props.user.name}'s list of calendars under email {props.user.email}
-        </h2>
-        <CardColumns>
-          {props.calendars.map(calendar => (
-            <a
-              style={{ cursor: "pointer" }}
-              href="#"
-              onClick={e => handleAddCalendar(e, props.user.id, calendar.id)}
-            >
-              <Card border="info" style={{ width: "18rem" }}>
-                <Card.Body>
-                  <Card.Title>{calendar.summary}</Card.Title>
-                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
-                </Card.Body>
-              </Card>
-            </a>
-          ))}
-        </CardColumns>
-
-        {vendorResponse.landowners.length ? (
-          <h2>Your assigned landowners: </h2>
-        ) : (
-          <h2>You do not have any assigned landowners. </h2>
-        )}
-        <ul>
-          {vendorResponse.landowners.map(landowner => (
-            <li key={landowner.id}>
-              {landowner.name} available at {landowner.email}
-            </li>
-          ))}
-        </ul>
-        <h2>Your assigned jobs (click to mark as complete): </h2>
-        <CardColumns>
-          {vendorResponse.jobs
-            .filter(job => job.status == "COMPLETE")
-            .map(job => (
-              <a
-                style={{ cursor: "pointer" }}
-                href="#"
-                onClick={e => handleCompleteJob(e, job.id)}
-              >
-                <Card
-                  border="warning"
-                  bg="warning"
-                  text="dark"
-                  style={{ width: "18rem" }}
-                >
-                  <Card.Header>{job.title}</Card.Header>
-                  <Card.Body>
-                    <Card.Title>Requested by {job.tenant_name}</Card.Title>
-                    <Card.Text>
-                      {job.content} scheduled from {shortFormatDate(job.start)}{" "}
-                      to {shortFormatDate(job.end)}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
-            ))}
-        </CardColumns>
-        <h2>Your completed jobs: </h2>
-        <CardColumns>
-          {vendorResponse.jobs
-            .filter(job => job.status == "VENDOR COMPLETE")
-            .map(job => (
-              <Card
-                border="success"
-                bg="success"
-                text="white"
-                style={{ width: "18rem" }}
-              >
-                <Card.Header>{job.title} (DONE)</Card.Header>
-                <Card.Body>
-                  <Card.Title>
-                    Completed for {job.tenant_name} from{" "}
-                    {shortFormatDate(job.start)} to {shortFormatDate(job.end)}
-                  </Card.Title>
-                  <Card.Text>{job.content}</Card.Text>
-                </Card.Body>
-              </Card>
-            ))}
-        </CardColumns>
+      <div>
+        <MemoryRouter initialEntries={["/vendors"]} initialIndex={0}>
+          <Switch>
+            <Route path="/vendors">
+              <VendorCalendar
+                state={state}
+                user_type={props.user_type}
+                user={props.user}
+                vendorResponse={vendorResponse}
+                calendars={props.calendars}
+                GOOGLE_MAPS_KEY={props.GOOGLE_MAPS_KEY}
+                job_index={mapState.job_index}
+              />
+            </Route>
+          </Switch>
+        </MemoryRouter>
       </div>
     );
   }
