@@ -51,6 +51,7 @@ class TenantsController < ApplicationController
       "city": @tenant.city,
       "state": @tenant.state,
       "zip": @tenant.zip,
+      "profile_pic": @tenant.profile_pic,
       "jobs": tenant_jobs,
       "has_approved_job": (@tenant.jobs.map { |j| j.status }.include? 'LANDOWNER APPROVED')
     }
@@ -85,16 +86,33 @@ class TenantsController < ApplicationController
     city = body["city"]
     zip = body["zip"]
     state = body["state"]
+    profile = body["profile_pic"]
     response = {}
     @tenant = Tenant.find_by(id: tenant_id)
-    if Tenant.find_by(id: tenant_id) && (Landowner.find_by(id: landowner_id)||landowner_id == 0) && name.class == String && email.class == String && street_address.class == String && city.class == String && zip.class == String && state.class == String
+    if Tenant.find_by(id: tenant_id) && (Landowner.find_by(id: landowner_id)||landowner_id == 0)
       @tenant.update_attribute(:landowner_id, landowner_id)
-      @tenant.update_attribute(:name, name)
-      @tenant.update_attribute(:email, email)
-      @tenant.update_attribute(:street_address, street_address)
-      @tenant.update_attribute(:city, city)
-      @tenant.update_attribute(:zip, zip)
-      @tenant.update_attribute(:state, state)
+      if name.class == String 
+        @tenant.update_attribute(:name, name)
+      end
+      if email.class == String 
+        @tenant.update_attribute(:email, email)
+      end
+      if street_address.class == String
+        @tenant.update_attribute(:street_address, street_address)
+      end
+      if city.class == String 
+        @tenant.update_attribute(:city, city)
+      end
+      if zip.class == String
+        @tenant.update_attribute(:zip, zip)
+      end
+      if state.class == String
+        @tenant.update_attribute(:state, state)
+      end
+      puts(profile)
+      if profile.class == String
+        @tenant.update_attribute(:profile_pic, profile)
+      end
       response = {
         code: 200,
         tenant_id: tenant_id,
@@ -104,7 +122,8 @@ class TenantsController < ApplicationController
         street_address: street_address,
         city: city,
         zip: zip,
-        state: state
+        state: state,
+        profile_pic: profile
       }
     else
       response = {
