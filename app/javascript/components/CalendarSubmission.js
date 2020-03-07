@@ -5,13 +5,14 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button";
 
 const CalendarSubmission = props => {
+  console.log(props.calendar);
   return (
     <div>
-      <header class="bg-dark py-3">
-        <h1 align="center" class="display-3 text-white mt-5 mb-2">
+      <header className="bg-dark py-3">
+        <h1 align="center" className="display-3 text-white mt-5 mb-2">
           Select a Calendar
         </h1>
-      <h5 align="center" class="display-6 text-white mb-2">The job request will be added to the Google Calendar that you select.</h5>
+      <h5 align="center" className="display-6 text-white mb-2">The job request will be added to the Google Calendar that you select.</h5>
 
       </header>
       <div className="container">

@@ -155,7 +155,7 @@ const Events = props => {
             marginTop: "0.8rem",
             marginBottom: "0.8rem"
           }}
-        />
+        /> 
       </view>
       <CardColumns>
         {tenantResponse.jobs
