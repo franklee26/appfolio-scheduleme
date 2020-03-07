@@ -99,7 +99,7 @@ const JobNew = props => {
           animated
           now={33}
           variant="success"
-          label="Step 1/3"
+          label="Step 1/4"
           style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
         />
         <Form id="jobForm" action={props.form_path} method="post">

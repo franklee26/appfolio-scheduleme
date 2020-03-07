@@ -24,6 +24,15 @@ class CalendarController < ApplicationController
     @calendars = all_calendars.filter { |c| c.summary != "Holidays in United States" && c.summary != @user.email && c.summary != "Contacts" }
   end
 
+  def vendor_selection
+    access_token = retrieveAccessToken(session[:user_id], session[:user_type])
+    @user = find_user(session[:user_id], session[:user_type])
+    all_calendars = get_user_calendars(access_token)
+    @calendars = all_calendars.filter { |c| c.summary != "Holidays in United States" && c.summary != @user.email && c.summary != "Contacts" }
+    @calendar_id = params[:calendar_id]
+    @vendors = Vendor.find_by_sql("select * from vendors where id in (select distinct vendor_id from jobs where status='LANDOWNER APPROVED' and tenant_id=#{@user.id})")
+  end
+
   # returns this response: https://developers.google.com/calendar/v3/reference/calendars#resource
   def get
 
@@ -124,6 +133,7 @@ class CalendarController < ApplicationController
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
     @calendar_id = params[:calendar_id]
+    @vendor_id = params[:vendor_id]
     events_temp = []
     if params[:calendar_id] != "en.usa" && params[:calendar_id] != "addressbook"
       events_temp = service.list_events(params[:calendar_id]).items
@@ -796,7 +806,7 @@ class CalendarController < ApplicationController
     times_in_day
   end
 
-  def pick_top_n_times_2(potential_job_times, n)
+  def pick_top_n_times(potential_job_times, n)
 
     top_n_times = []
 
@@ -828,44 +838,6 @@ class CalendarController < ApplicationController
     top_n_times
   end
 
-  # n_mid is number of jobs that are scheduled in middle of gap. Makes alg look nicer
-  # n_adj is the ones scheduled adjacent to other jobs. More optimal, but only looks nice when 
-  # we already have a lot of jobs scheduled. (with fewer jobs, theres less to schedule)
-  def pick_top_n_times(potential_job_times, n_mid, n_adj)
-    mid_job = []
-    adj_job = []
-    # split jobs by their scheduled type
-    potential_job_times.each do |job|
-      if job[:sched_type] == "mid"
-        mid_job << job
-      else
-        adj_job << job
-      end
-    end
-
-    final_jobs = []
-
-    adj_job.each do |job|
-      if final_jobs.length == n_mid
-        break
-      end
-      if not does_time_conflict(final_jobs, job)
-        final_jobs << job
-      end
-    end
-
-    mid_job.each do |job|
-      if final_jobs.length == (n_mid + n_adj)
-        break
-      end
-      if not does_time_conflict(final_jobs, job)
-        final_jobs << job
-      end
-    end
-
-    final_jobs
-  end
-
   def add_vendor_to_times(job_times, vendor_id)
     vendor_info = Vendor.find(vendor_id)
     job_times.each do |job|
@@ -878,15 +850,13 @@ class CalendarController < ApplicationController
     tenant = Tenant.find_by(id: tenant_id)
     vendors = landowner.vendors
 
-    all_jobs = []
+    best_times = []
     vendors.each do |v|
-      all_jobs += sorted_vendor_times(tenant_id, v.id)
+      vendor_times = sorted_vendor_times(tenant_id, v.id)
+      vendor_times_sorted = vendor_times.sort_by { |t| t[:rating][:final_rating] }.reverse # JUST IN CASE, too lazy to test without
+      best_times += pick_top_n_times(vendor_times_sorted, 10)
     end
 
-    all_jobs = all_jobs.sort_by { |t| t[:rating][:final_rating] }.reverse
-
-    #best_times = pick_top_n_times(all_jobs, 5, 5)
-    best_times = pick_top_n_times_2(all_jobs, 10)
     best_times = best_times.sort_by {|t| t[:start]}
     best_times 
   end
@@ -989,12 +959,6 @@ class CalendarController < ApplicationController
 
     # sort jobs by their ratings. 
     sorted_job_times = potential_job_times.sort_by { |t| t[:rating][:final_rating] }.reverse
-
-    # Need to return sorted_job_times instead of find_best_times
-    # best_times = pick_top_n_times(sorted_job_times, 5, 5)
-    # best_times = best_times.sort_by {|t| t[:start]}
-    # binding.pry
-    # best_times 
 
     add_vendor_to_times(sorted_job_times, vendor_id)
 

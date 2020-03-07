@@ -4,7 +4,6 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
-import StarRatings from "react-star-ratings";
 
 // date formatter helper
 export const shortFormatDate = date => {
@@ -134,6 +133,7 @@ const Events = props => {
       </div>
     );
   }
+  console.log(props.vendor_id);
   return (
     <div>
           <header class="bg-dark py-3">
@@ -148,7 +148,7 @@ const Events = props => {
           animated
           now={100}
           variant="success"
-          label="Step 3/3"
+          label="Step 4/4"
           style={{
             height: "35px",
             fontSize: "25px",
@@ -159,7 +159,7 @@ const Events = props => {
       </view>
       <CardColumns>
         {tenantResponse.jobs
-          .filter(job => job.status === "LANDOWNER APPROVED")
+          .filter(job => job.status === "LANDOWNER APPROVED" && job.vendor_id == props.vendor_id) 
           .map(job => (
                   <Card
                     ml-3
@@ -169,17 +169,7 @@ const Events = props => {
                     <Card.Body>
                       <Card.Text>
                         <b>Time: </b> {shortFormatTime(job.start)} to {shortFormatTime(job.end)}{" "}
-                        <br />
-                        <b>Vendor:</b> {job.vendor_name}                          {                      
-                              <StarRatings
-                              rating={parseFloat(job.vendor_rating.toFixed(2))}
-                              starDimension="17px"
-                              starSpacing="2px"
-                              starRatedColor="gold"
-                              numberOfStars={5}
-                              name="rating"
-                            />}{" "}
-                        <br />
+                        <br /><br />
                     <Button variant="outline-success" size="sm" onClick={e =>
                       handleClickPost(
                         e,

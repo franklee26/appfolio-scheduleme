@@ -21,7 +21,7 @@ const CalendarSubmission = props => {
             animated
             now={66}
             variant="success"
-            label="Step 2/3"
+            label="Step 2/4"
             style={{
               height: "35px",
               fontSize: "25px",
@@ -32,7 +32,7 @@ const CalendarSubmission = props => {
         </view>
         <CardColumns>
           {props.calendars.map(calendar => (
-            <a style={{ cursor: "pointer" }} href={`/calendar/${calendar.id}`}>
+            <a style={{ cursor: "pointer" }} href={`/calendar/vendor_selection/${calendar.id}`}>
               <Card border="info" style={{ width: "18rem" }}>
                 <Card.Body>
                   <Card.Title>{calendar.summary}</Card.Title>
