@@ -12,6 +12,7 @@ class CalendarController < ApplicationController
     calendar_ids = get_list_of_cal_ids(@calendars) #prob not needed anymore
 
     @user = find_user(session[:user_id], session[:user_type])
+    @GOOGLE_MAPS_KEY = ENV["google_maps_key"]
   end
 
   def user_selection
