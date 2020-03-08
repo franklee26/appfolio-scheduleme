@@ -205,22 +205,3 @@ class VendorSearch extends Component {
 }
 
 export default VendorSearch;
-/*<Button
-  variant="secondary"
-  size="lg"
-  block
-  onClick={e => this.handleVendorListClick(e, vendor)}
->
-  {vendor.name}: {vendor.occupation} (
-  {
-    <StarRatings
-      rating={parseFloat(vendor.rating ? vendor.rating.toFixed(2) : "0.0")}
-      starDimension="19px"
-      starSpacing="1px"
-      starRatedColor="gold"
-      numberOfStars={5}
-      name="rating"
-    />
-  }
-  )
-</Button>;*/
