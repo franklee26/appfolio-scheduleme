@@ -166,9 +166,7 @@ const Events = props => {
       <div className="container">
         <view align="center">
           <ProgressBar
-            animated
             now={100}
-            variant="success"
             label="Step 4/4"
             style={{
               height: "35px",
