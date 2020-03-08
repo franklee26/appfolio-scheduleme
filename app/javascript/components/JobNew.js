@@ -97,7 +97,6 @@ const JobNew = props => {
       <div className="container">
         <ProgressBar
           now={25}
-          variant="success"
           label="Step 1/4"
           style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
         />

@@ -22,7 +22,6 @@ console.log(props.calendar_id);
         <view align="center">
           <ProgressBar
             now={75}
-            variant="success"
             label="Step 3/4"
             style={{
               height: "35px",

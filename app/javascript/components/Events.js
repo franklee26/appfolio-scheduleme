@@ -167,7 +167,6 @@ const Events = props => {
         <view align="center">
           <ProgressBar
             now={100}
-            variant="success"
             label="Step 4/4"
             style={{
               height: "35px",
