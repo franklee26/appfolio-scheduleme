@@ -16,12 +16,12 @@ class LandownerLandingPage extends Component {
     return (
       <div>
         <h1>Welcome {this.props.name}</h1>
-          <div>
-            <VendorSearch/>
-          </div>
+        <div>
+          <VendorSearch />
+        </div>
       </div>
     );
   }
 }
 
-export default LandownerLandingPage
+export default LandownerLandingPage;
