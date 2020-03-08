@@ -66,9 +66,9 @@ class CustomNavbar extends React.Component {
 
   render() {
     return (
-      <Navbar bg="light" expand="lg">
+      <Navbar bg="light" expand="lg" style={{ margin: 0, padding: 0 }}>
         <Navbar.Brand href="/">
-          <Image src="https://i.imgur.com/C8rMjOj.png" width="50" height="50"/>
+          <Image src="https://i.imgur.com/C8rMjOj.png" width="50" height="50" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -85,12 +85,13 @@ class CustomNavbar extends React.Component {
           )}
           {this.state.logged_in && (
             <NavDropdown
+              style={{ margin: 0, padding: 0 }}
               title={
                 <Image
                   src={this.state.profile_pic}
                   width="40"
                   height="40"
-                  style={{ border: "1px solid #595757"}}
+                  style={{ border: "1px solid #595757" }}
                   roundedCircle
                 />
               }
