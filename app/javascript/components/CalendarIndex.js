@@ -6,8 +6,10 @@ import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
 import { shortFormatDate } from "./Events.js";
+import { shortFormatTime } from "./Events.js";
 import $ from "jquery";
 import StarRatings from "react-star-ratings";
+import Table from 'react-bootstrap/Table'
 
 const handleCompleteJob = (event, job_id) => {
   event.preventDefault();
@@ -422,22 +424,49 @@ const CalendarIndex = props => {
             .filter(job => job.status == "COMPLETE")
             .map(job => (
               <Card
-                bg="warning"
-                text="dark"
-                border="warning"
-                style={{ width: "18rem" }}
+                border="primary"
+                style={{ width: "20rem" }}
               >
                 <Card.Header>{job.title}</Card.Header>
                 <Card.Body>
-                  <Card.Title>
-                    Scheduled for {shortFormatDate(job.start)} to{" "}
-                    {shortFormatDate(job.end)} assigned to {job.vendor_name}
-                  </Card.Title>
-                  <Card.Text>Description: {job.content}</Card.Text>
+                  Date: {shortFormatDate(job.start)}
+                  <br/>
+                  Time: {shortFormatTime(job.start)} - {shortFormatTime(job.end)}{" "}
+                  <br/>
+                  Vendor: {job.vendor_name}
+                  <br/>
+                  Description: {job.content}
+                  <br/>
+
                 </Card.Body>
               </Card>
             ))}
         </CardColumns>
+<Table striped bordered hover class="table bg-info">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Job Title</th>
+      <th>Vendor</th>
+      <th >Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  {tenantResponse.jobs
+    .filter(job => job.status == "COMPLETE")
+    .map(job => (
+    <tr>
+      <td>{shortFormatDate(job.start)}</td>
+      <td>{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>
+      <td>{job.title}</td>
+      <td>{job.vendor_name}</td>
+      <td>{job.content}</td>
+    </tr>
+
+      ))}
+  </tbody>
+</Table>        
         <h2>Completed jobs: </h2>
         <CardColumns>
           {tenantResponse.jobs
