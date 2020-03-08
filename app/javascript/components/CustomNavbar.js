@@ -68,7 +68,7 @@ class CustomNavbar extends React.Component {
     return (
       <Navbar bg="light" expand="lg" style={{ margin: 0, padding: 0 }}>
         <Navbar.Brand href="/">
-          <Image src="https://i.imgur.com/C8rMjOj.png" width="50" height="50" />
+          <Image src="https://i.imgur.com/C8rMjOj.png" width="56" height="56" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
