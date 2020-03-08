@@ -91,8 +91,7 @@ class VendorSearch extends Component {
           </div>
           <br></br>
           <div className="container">
-            {//this part is still in progress will make separate pr for it later}
-            <Form onSubmit={this.handleSubmit} align="center">
+            <Form>
               <Form.Group controlId="name">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
@@ -120,15 +119,15 @@ class VendorSearch extends Component {
                   onChange={e => this.handleChange(e)}
                 />
               </Form.Group>
-              <Form.Group>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  onSubmit={e => this.handleSubmit(e)}
-                >
-                  Search
-                </Button>
-              </Form.Group>
+            </Form>
+            <Form align="center" onSubmit={this.handleSubmit}>
+              <Button
+                variant="primary"
+                type="submit"
+                onSubmit={e => this.handleSubmit(e)}
+              >
+                Search
+              </Button>
             </Form>
             <div>
               {
