@@ -37,14 +37,42 @@ def update_vendor
   email = body["email"]
   vendor_id = body["vendor_id"]
   occupation = body["occupation"]
+  street_address = body["street_address"]
+  city = body["city"]
   zip = body["zip"]
+  state = body["state"]
+  profile = body["profile_pic"]
+  phone_number = body["phone_number"]
   response = {}
   @vendor = Vendor.find_by(id: vendor_id)
-  if Vendor.find_by(id: vendor_id) && name.class == String && email.class == String && occupation.class == String && zip.class == String 
-    @vendor.update_attribute(:name, name)
-    @vendor.update_attribute(:email, email)
-    @vendor.update_attribute(:occupation, occupation)
-    @vendor.update_attribute(:zip, zip)
+  if Vendor.find_by(id: vendor_id) 
+    if name.class == String 
+      @vendor.update_attribute(:name, name)
+    end
+    if email.class == String 
+      @vendor.update_attribute(:email, email)
+    end
+    if occupation.class == String
+      @vendor.update_attribute(:occupation, occupation)
+    end
+    if phone_number.class == String
+      @vendor.update_attribute(:phone_number, phone_number)
+    end
+    if street_address.class == String
+      @vendor.update_attribute(:street_address, street_address)
+    end
+    if city.class == String 
+      @vendor.update_attribute(:city, city)
+    end
+    if zip.class == String
+      @vendor.update_attribute(:zip, zip)
+    end
+    if state.class == String
+      @vendor.update_attribute(:state, state)
+    end
+    if profile.class == String
+      @vendor.update_attribute(:profile_pic, profile)
+    end
     response = {
       code: 200,
       name: name,
@@ -89,7 +117,7 @@ def update_rating
   end
 end
 
-  # GET /vendor/1
+  # GET /vendors/1
   # Returns a json containing all the fields for the vendor
   def show
     vendor = Vendor.find(params[:id])
@@ -125,7 +153,12 @@ end
       "updated_at": vendor.updated_at,
       "landowners": vendor.landowners,
       "jobs": vendor_jobs,
-      "zip": vendor.zip
+      "street_address": vendor.street_address,
+      "city": vendor.city,
+      "zip": vendor.zip,
+      "state": vendor.state,
+      "profile_pic": vendor.profile_pic,
+      "phone_number": vendor.phone_number
     }
     render json: response, status: :ok
   end
