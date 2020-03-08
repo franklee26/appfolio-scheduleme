@@ -21,8 +21,7 @@ console.log(props.calendar_id);
       <div className="container">
         <view align="center">
           <ProgressBar
-            animated
-            now={66}
+            now={75}
             variant="success"
             label="Step 3/4"
             style={{

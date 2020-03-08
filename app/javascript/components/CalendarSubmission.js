@@ -18,8 +18,7 @@ const CalendarSubmission = props => {
       <div className="container">
         <view align="center">
           <ProgressBar
-            animated
-            now={66}
+            now={50}
             variant="success"
             label="Step 2/4"
             style={{

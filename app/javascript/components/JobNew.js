@@ -96,8 +96,7 @@ const JobNew = props => {
       </header>
       <div className="container">
         <ProgressBar
-          animated
-          now={33}
+          now={25}
           variant="success"
           label="Step 1/4"
           style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
