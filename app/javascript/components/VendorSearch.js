@@ -91,6 +91,7 @@ class VendorSearch extends Component {
           </div>
           <br></br>
           <div className="container">
+            {//this part is still in progress will make separate pr for it later}
             <Form onSubmit={this.handleSubmit} align="center">
               <Form.Group controlId="name">
                 <Form.Label>Name</Form.Label>

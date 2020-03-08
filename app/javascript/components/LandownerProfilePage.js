@@ -98,7 +98,6 @@ class LandownerProfilePage extends Component {
           rounded
         />
 
-        {//this part is still in progress will make separate pr for it later}
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="fileUpload">
             <Form.Control
