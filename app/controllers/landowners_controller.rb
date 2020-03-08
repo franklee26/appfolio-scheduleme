@@ -31,7 +31,9 @@ class LandownersController < ApplicationController
       "created_at": landowner.created_at,
       "updated_at": landowner.updated_at,
       "tenants": tenants,
-      "vendors": landowner.vendors
+      "vendors": landowner.vendors,
+      "profile_pic": landowner.profile_pic,
+      "phone_number": landowner.phone_number
     }
     render json: response, status: :ok
   end
@@ -50,16 +52,29 @@ def update_landowner
   name = body["name"]
   email = body["email"]
   landowner_id = body["landowner_id"]
+  profile = body["profile_pic"]
+  phone_number = body["phone_number"]
   response = {}
   @landowner = Landowner.find_by(id: landowner_id)
-  if Landowner.find_by(id: landowner_id) && name.class == String && email.class == String
-    @landowner.update_attribute(:name, name)
-    @landowner.update_attribute(:email, email)
+  if Landowner.find_by(id: landowner_id)
+    if name.class == String
+      @landowner.update_attribute(:name, name)
+    end 
+    if email.class == String
+      @landowner.update_attribute(:email, email)
+    end
+    if profile.class == String
+      @landowner.update_attribute(:profile_pic, profile)
+    end
+    if phone_number.class == String
+      @landowner.update_attribute(:phone_number, phone_number)
+    end
     response = {
       code: 200,
       name: name,
       email: email,
       landowner_id: landowner_id,
+      profile_pic: profile
     }
   else
     response = {
