@@ -216,18 +216,6 @@ const Events = props => {
     <tr>
       <td align="center">{shortFormatDate(job.start)}</td>
       <td align="center">{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>
-      <td align="center">{job.vendor_name}</td>
-      <td align="center">{" "}
-                    {
-                      <StarRatings
-                        rating={parseFloat(job.vendor_rating.toFixed(2))}
-                        starDimension="17px"
-                        starSpacing="2px"
-                        starRatedColor="gold"
-                        numberOfStars={5}
-                        name="rating"
-                      />
-                    }{" "}</td>
       <td align="center">                    <Button
                       variant="outline-primary"
                       size="sm"
