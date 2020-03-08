@@ -99,7 +99,7 @@ const JobNew = props => {
           animated
           now={33}
           variant="success"
-          label="Step 0/4"
+          label="Step 1/4"
           style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
         />
         <Form id="jobForm" action={props.form_path} method="post">
@@ -195,7 +195,7 @@ const JobNew = props => {
             <Modal.Title>Successfully submitted job request!</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            We found free times for this job. Click continue to finalise your
+            We found free times for this job. Click continue to finalize your
             submission.
           </Modal.Body>
           <Modal.Footer>

@@ -169,7 +169,7 @@ const Events = props => {
             animated
             now={100}
             variant="success"
-            label="Step 3/4"
+            label="Step 4/4"
             style={{
               height: "35px",
               fontSize: "25px",
