@@ -67,8 +67,8 @@ class CustomNavbar extends React.Component {
   render() {
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="https://www.appfolio.com/">
-          Appfolio Home
+        <Navbar.Brand href="/">
+          <Image src="https://i.imgur.com/C8rMjOj.png" width="50" height="50"/>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -88,9 +88,9 @@ class CustomNavbar extends React.Component {
               title={
                 <Image
                   src={this.state.profile_pic}
-                  width="50"
-                  height="50"
-                  style={{ border: "1px solid #595757" }}
+                  width="40"
+                  height="40"
+                  style={{ border: "1px solid #595757"}}
                   roundedCircle
                 />
               }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
+import Tabs from "react-bootstrap/Tabs";
+import Tab from "react-bootstrap/Tab";
 import { shortFormatDateAll, dayExporter } from "./Events.js";
 const { compose, withProps, lifecycle } = require("recompose");
 const {
@@ -153,126 +155,135 @@ const VendorCalendar = props => {
         </p>
       </header>{" "}
       <div className="container">
-        <h2 align="center">
-          {props.user.name}'s list of calendars under email {props.user.email}
-        </h2>
-        <CardColumns>
-          {props.calendars.map(calendar => (
-            <a
-              style={{ cursor: "pointer" }}
-              href="#"
-              onClick={e => handleAddCalendar(e, props.user.id, calendar.id)}
+        <Tabs defaultActiveKey="Upcoming" style={{ marginTop: "0.8rem" }}>
+          <Tab eventKey="Upcoming" title="Upcoming">
+            <CardColumns style={{ marginTop: "0.8rem" }}>
+              {props.vendorResponse.jobs
+                .filter(job => job.status == "COMPLETE")
+                .map(job => (
+                  <a
+                    style={{ cursor: "pointer" }}
+                    href="#"
+                    onClick={e => handleCompleteJob(e, job.id)}
+                  >
+                    <Card
+                      border="warning"
+                      bg="warning"
+                      text="dark"
+                      style={{ width: "18rem" }}
+                    >
+                      <Card.Header>
+                        {job.title}{" "}
+                        {mapState.job_index != null &&
+                        filtered[mapState.job_index].content === job.content
+                          ? " 🕔"
+                          : ""}
+                      </Card.Header>
+                      <Card.Body>
+                        <Card.Title>Requested by {job.tenant_name} </Card.Title>
+                        <Card.Text>
+                          {job.content} scheduled from{" "}
+                          {shortFormatDateAll(job.start)} to{" "}
+                          {shortFormatDateAll(job.end)}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </a>
+                ))}
+            </CardColumns>
+            <Button
+              size="lg"
+              variant="info"
+              onClick={() => handleMapBackCycle()}
+              style={{ marginTop: "0.8rem" }}
             >
-              <Card border="info" style={{ width: "18rem" }}>
-                <Card.Body>
-                  <Card.Title>{calendar.summary}</Card.Title>
-                  <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
-                </Card.Body>
-              </Card>
-            </a>
-          ))}
-        </CardColumns>
-        {props.vendorResponse.landowners.length ? (
-          <h2>Your assigned landowners: </h2>
-        ) : (
-          <h2>You do not have any assigned landowners. </h2>
-        )}
-        <ul>
-          {props.vendorResponse.landowners.map(landowner => (
-            <li key={landowner.id}>
-              {landowner.name} available at {landowner.email}
-            </li>
-          ))}
-        </ul>
-        <h2>Your assigned jobs (click to mark as complete): </h2>
-        <CardColumns>
-          {props.vendorResponse.jobs
-            .filter(job => job.status == "COMPLETE")
-            .map(job => (
-              <a
-                style={{ cursor: "pointer" }}
-                href="#"
-                onClick={e => handleCompleteJob(e, job.id)}
-              >
-                <Card
-                  border="warning"
-                  bg="warning"
-                  text="dark"
-                  style={{ width: "18rem" }}
-                >
-                  <Card.Header>
-                    {job.title}{" "}
-                    {mapState.job_index != null &&
-                    filtered[mapState.job_index].content === job.content
-                      ? " 🕔"
-                      : ""}
-                  </Card.Header>
-                  <Card.Body>
-                    <Card.Title>Requested by {job.tenant_name} </Card.Title>
-                    <Card.Text>
-                      {job.content} scheduled from{" "}
-                      {shortFormatDateAll(job.start)} to{" "}
-                      {shortFormatDateAll(job.end)}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
-            ))}
-        </CardColumns>
-        <Button
-          size="lg"
-          variant="info"
-          onClick={() => handleMapBackCycle()}
-          style={{ marginTop: "0.8rem" }}
-        >
-          Back
-        </Button>
-        <Button
-          size="lg"
-          variant="info"
-          onClick={() => handleMapCycle()}
-          style={{ marginTop: "0.8rem", marginLeft: "0.8rem" }}
-        >
-          Next
-        </Button>
-        {filtered.length ? (
-          <div>
-            <h2 style={{ marginTop: "0.8rem" }}>
-              {filtered[mapState.job_index].title}:{" "}
-              {mapState.job_index == 0
-                ? props.user.name
-                : filtered[mapState.job_index - 1].tenant_name}{" "}
-              ➡️ {filtered[mapState.job_index].tenant_name} (To{" "}
-              {filtered[mapState.job_index].address})
+              Back
+            </Button>
+            <Button
+              size="lg"
+              variant="info"
+              onClick={() => handleMapCycle()}
+              style={{ marginTop: "0.8rem", marginLeft: "0.8rem" }}
+            >
+              Next
+            </Button>
+            {filtered.length ? (
+              <div>
+                <h2 style={{ marginTop: "0.8rem" }}>
+                  {filtered[mapState.job_index].title}:{" "}
+                  {mapState.job_index == 0
+                    ? props.user.name
+                    : filtered[mapState.job_index - 1].tenant_name}{" "}
+                  ➡️ {filtered[mapState.job_index].tenant_name} (To{" "}
+                  {filtered[mapState.job_index].address})
+                </h2>
+                <VendorMap isMarkerShown />
+              </div>
+            ) : (
+              ""
+            )}
+          </Tab>
+          <Tab eventKey="Completed" title="Completed">
+            <CardColumns style={{ marginTop: "0.8rem" }}>
+              {props.vendorResponse.jobs
+                .filter(job => job.status == "VENDOR COMPLETE")
+                .map(job => (
+                  <Card
+                    border="success"
+                    bg="success"
+                    text="white"
+                    style={{ width: "18rem" }}
+                  >
+                    <Card.Header>{job.title} (DONE)</Card.Header>
+                    <Card.Body>
+                      <Card.Title>
+                        Completed for {job.tenant_name} from{" "}
+                        {shortFormatDateAll(job.start)} to{" "}
+                        {shortFormatDateAll(job.end)}
+                      </Card.Title>
+                      <Card.Text>{job.content}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
+            </CardColumns>
+          </Tab>
+          <Tab eventKey="Profile" title="Profile">
+            <h2 align="center">
+              {props.user.name}'s list of calendars under email{" "}
+              {props.user.email}
             </h2>
-            <VendorMap isMarkerShown />
-          </div>
-        ) : (
-          ""
-        )}
-        <h2>Your completed jobs: </h2>
-        <CardColumns>
-          {props.vendorResponse.jobs
-            .filter(job => job.status == "VENDOR COMPLETE")
-            .map(job => (
-              <Card
-                border="success"
-                bg="success"
-                text="white"
-                style={{ width: "18rem" }}
-              >
-                <Card.Header>{job.title} (DONE)</Card.Header>
-                <Card.Body>
-                  <Card.Title>
-                    Completed for {job.tenant_name} from{" "}
-                    {shortFormatDateAll(job.start)} to{" "}
-                    {shortFormatDateAll(job.end)}
-                  </Card.Title>
-                  <Card.Text>{job.content}</Card.Text>
-                </Card.Body>
-              </Card>
-            ))}
-        </CardColumns>
+            <CardColumns>
+              {props.calendars.map(calendar => (
+                <a
+                  style={{ cursor: "pointer" }}
+                  href="#"
+                  onClick={e =>
+                    handleAddCalendar(e, props.user.id, calendar.id)
+                  }
+                >
+                  <Card border="info" style={{ width: "18rem" }}>
+                    <Card.Body>
+                      <Card.Title>{calendar.summary}</Card.Title>
+                      <Card.Text>Timezone: {calendar.time_zone}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </a>
+              ))}
+            </CardColumns>
+            {props.vendorResponse.landowners.length ? (
+              <h2>Your assigned landowners: </h2>
+            ) : (
+              <h2>You do not have any assigned landowners. </h2>
+            )}
+            <ul>
+              {props.vendorResponse.landowners.map(landowner => (
+                <li key={landowner.id}>
+                  {landowner.name} available at {landowner.email}
+                </li>
+              ))}
+            </ul>
+          </Tab>
+        </Tabs>
       </div>
     </div>
   );
