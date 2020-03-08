@@ -20,7 +20,8 @@ Rails.application.routes.draw do
   get 'calendar/login', to: 'calendar#user_selection'
   get 'calendar/callback', to: 'calendar#callback'
   get 'calendar/calendar_submission', to: 'calendar#calendar_submission'
-  get 'calendar/:calendar_id', to: 'calendar#events', calendar_id: /[^\/]+/
+  get 'calendar/vendor_selection/:calendar_id', to: 'calendar#vendor_selection', calendar_id: /[^\/]+/
+  get 'calendar/events/:calendar_id/:vendor_id', to: 'calendar#events', calendar_id: /[^\/]+/, vendor_id: /[^\/]+/
   get 'calendar/:calendar_id/response', to: 'calendar#get', calendar_id: /[^\/]+/
   post 'calendar/:calendar_id/:start/:end', to: 'calendar#post', calendar_id: /[^\/]+/, start: /[^\/]+/, end: /[^\/]+/
   get 'calendar/schedule/:landowner_id/:tenant_id', to: 'calendar#schedule'
