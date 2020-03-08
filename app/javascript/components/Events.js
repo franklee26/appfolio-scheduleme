@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
 import StarRatings from "react-star-ratings";
+import Table from 'react-bootstrap/Table'
 
 // date formatter helper
 export const shortFormatDate = date => {
@@ -162,7 +163,7 @@ const Events = props => {
           This will be added to the calendar called "
           {calendarResponse["summary"]}"
         </h5>
-      </header>
+      </header>  
       <div className="container">
         <view align="center">
           <ProgressBar
@@ -178,19 +179,45 @@ const Events = props => {
             }}
           />
         </view>
-        <CardColumns>
-          {tenantResponse.jobs
-            .filter(job => job.status === "LANDOWNER APPROVED")
-            .map(job => (
-              <Card ml-3 border="primary">
-                <Card.Header as="h6" align="center">
-                  {shortFormatDate(job.start)}
-                </Card.Header>
-                <Card.Body>
-                  <Card.Text>
-                    <b>Time: </b> {shortFormatTime(job.start)} to{" "}
-                    {shortFormatTime(job.end)} <br />
-                    <b>Vendor:</b> {job.vendor_name}{" "}
+        </div>
+<div className="container w-50 mb-4">
+<Card border="info">
+  <Card.Header as="h6" align="center"> { tenantResponse.jobs[0].title } </Card.Header>
+  <Card.Body>
+    <Card.Text>
+      <b>Vendor: </b> {tenantResponse.jobs[0].vendor_name} <br/>
+      {" "}
+                    {
+                      <StarRatings
+                        rating={parseFloat(tenantResponse.jobs[0].vendor_rating.toFixed(2))}
+                        starDimension="17px"
+                        starSpacing="2px"
+                        starRatedColor="gold"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    }{" "}
+      <br/>
+      <b>Description: </b> {tenantResponse.jobs[0].content}
+    </Card.Text>
+  </Card.Body>
+</Card>   
+</div>
+<div className="container w-75"> 
+<Table hover size="sm" class="table bg-info">
+  <thead>
+    <tr>
+    </tr>
+  </thead>
+  <tbody>
+  {tenantResponse.jobs
+              .filter(job => job.status === "LANDOWNER APPROVED")
+              .map(job => (
+    <tr>
+      <td align="center">{shortFormatDate(job.start)}</td>
+      <td align="center">{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>
+      <td align="center">{job.vendor_name}</td>
+      <td align="center">{" "}
                     {
                       <StarRatings
                         rating={parseFloat(job.vendor_rating.toFixed(2))}
@@ -200,10 +227,9 @@ const Events = props => {
                         numberOfStars={5}
                         name="rating"
                       />
-                    }{" "}
-                    <br />
-                    <Button
-                      variant="outline-success"
+                    }{" "}</td>
+      <td align="center">                    <Button
+                      variant="outline-primary"
                       size="sm"
                       onClick={e =>
                         handleClickPost(
@@ -218,12 +244,13 @@ const Events = props => {
                     >
                       {" "}
                       Add To Calendar{" "}
-                    </Button>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            ))}
-        </CardColumns>
+                    </Button></td>
+
+    </tr>
+
+      ))}
+  </tbody>
+</Table>            
         <Button
           variant="primary"
           size="lg"

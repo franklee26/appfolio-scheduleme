@@ -40,6 +40,7 @@ class TenantsController < ApplicationController
       }
       tenant_jobs << job_obj
     end
+
     response = {
       "id": @tenant.id,
       "name": @tenant.name,
