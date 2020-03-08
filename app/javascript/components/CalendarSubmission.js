@@ -21,7 +21,7 @@ const CalendarSubmission = props => {
             animated
             now={66}
             variant="success"
-            label="Step 2/4"
+            label="Step 1/4"
             style={{
               height: "35px",
               fontSize: "25px",

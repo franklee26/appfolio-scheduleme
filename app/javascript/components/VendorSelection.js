@@ -24,7 +24,7 @@ console.log(props.calendar_id);
             animated
             now={66}
             variant="success"
-            label="Step 3/4"
+            label="Step 2/4"
             style={{
               height: "35px",
               fontSize: "25px",
