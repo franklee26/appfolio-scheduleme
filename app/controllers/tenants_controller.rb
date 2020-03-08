@@ -55,6 +55,7 @@ class TenantsController < ApplicationController
       "state": @tenant.state,
       "zip": @tenant.zip,
       "profile_pic": @tenant.profile_pic,
+      "phone_number": @tenant.phone_number,
       "jobs": tenant_jobs,
       "has_approved_job": (@tenant.jobs.map { |j| j.status }.include? 'LANDOWNER APPROVED')
     }
@@ -90,6 +91,7 @@ class TenantsController < ApplicationController
     zip = body["zip"]
     state = body["state"]
     profile = body["profile_pic"]
+    phone_number = body["phone_number"]
     response = {}
     @tenant = Tenant.find_by(id: tenant_id)
     if Tenant.find_by(id: tenant_id) && (Landowner.find_by(id: landowner_id)||landowner_id == 0)
@@ -99,6 +101,9 @@ class TenantsController < ApplicationController
       end
       if email.class == String 
         @tenant.update_attribute(:email, email)
+      end
+      if phone_number.class == String 
+        @tenant.update_attribute(:phone_number, phone_number)
       end
       if street_address.class == String
         @tenant.update_attribute(:street_address, street_address)
@@ -112,7 +117,6 @@ class TenantsController < ApplicationController
       if state.class == String
         @tenant.update_attribute(:state, state)
       end
-      puts(profile)
       if profile.class == String
         @tenant.update_attribute(:profile_pic, profile)
       end

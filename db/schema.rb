@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200303075127) do
+ActiveRecord::Schema.define(version: 20200308003708) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20200303075127) do
     t.string "auth_token"
     t.string "refresh_token"
     t.string "phone_number"
+    t.string "profile_pic", default: "https://scheduleme.s3-us-west-1.amazonaws.com/missing_300x300.png"
   end
 
   create_table "landowners_vendors", id: false, force: :cascade do |t|
@@ -87,6 +88,10 @@ ActiveRecord::Schema.define(version: 20200303075127) do
     t.string "calendar_id"
     t.integer "num"
     t.float "rating"
+    t.string "profile_pic", default: "https://scheduleme.s3-us-west-1.amazonaws.com/missing_300x300.png"
+    t.string "street_address"
+    t.string "city"
+    t.string "state"
   end
 
   add_foreign_key "jobs", "tenants"

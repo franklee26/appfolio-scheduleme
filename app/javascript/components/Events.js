@@ -153,6 +153,7 @@ const Events = props => {
       </div>
     );
   }
+  console.log(props.vendor_id);
   return (
     <div>
       <header class="bg-dark py-3">
@@ -170,7 +171,7 @@ const Events = props => {
             animated
             now={100}
             variant="success"
-            label="Step 3/3"
+            label="Step 4/4"
             style={{
               height: "35px",
               fontSize: "25px",
@@ -211,7 +212,7 @@ const Events = props => {
   </thead>
   <tbody>
   {tenantResponse.jobs
-              .filter(job => job.status === "LANDOWNER APPROVED")
+              .filter(job => job.status === "LANDOWNER APPROVED" && props.vendor_id == job.vendor_id)
               .map(job => (
     <tr>
       <td align="center">{shortFormatDate(job.start)}</td>
