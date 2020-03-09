@@ -417,19 +417,18 @@ const CalendarIndex = props => {
                 )
               ) : null}
 
-              <Jumbotron style={{ marginTop: "0.8rem" }}>
-                <h1>Start your job request here </h1>
+              <Jumbotron style={{ marginTop: "0.4rem" }}>
+                <h1>Need To Submit A Maintanence Request?</h1>
                 <p>
-                  Need to schedule a new job request? Click the button below to
-                  start and finish in just four easy steps.{" "}
+                Schedule a job now to get matched to a vendor!
                 </p>
                 <Button
                   variant="primary"
                   href="http://localhost:3000/jobs/new"
                   size="lg"
-                  style={{ marginTop: "0.8rem" }}
+                  style={{ marginTop: "0.4rem" }}
                 >
-                  Begin new job request
+                  Click Here
                 </Button>
               </Jumbotron>
 
