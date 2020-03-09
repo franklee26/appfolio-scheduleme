@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
+import CardDeck from "react-bootstrap/CardDeck";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
 import { shortFormatDateAll, dayExporter } from "./Events.js";
 const { compose, withProps, lifecycle } = require("recompose");
 const {
@@ -154,10 +158,20 @@ const VendorCalendar = props => {
           View your assigned and completed jobs
         </p>
       </header>{" "}
-      <div className="container">
+      <Container>
         <Tabs defaultActiveKey="Upcoming" style={{ marginTop: "0.8rem" }}>
           <Tab eventKey="Upcoming" title="Upcoming">
-            <CardColumns style={{ marginTop: "0.8rem" }}>
+            <Row>
+            <Col md = "auto">
+              <Button size = "lg"
+              variant = "info"
+              style = {
+                {
+                  marginTop: "0.8rem",
+                  marginBottom: "0.8rem",
+                  marginLeft: "0.8rem"
+                }}> Complete All</Button>
+            <CardDeck style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
               {props.vendorResponse.jobs
                 .filter(job => job.status == "COMPLETE")
                 .map(job => (
@@ -170,7 +184,13 @@ const VendorCalendar = props => {
                       border="warning"
                       bg="warning"
                       text="dark"
-                      style={{ width: "18rem" }}
+                      style = {
+                        {
+                          width: "18rem",
+                          display: "flex",
+                          marginTop: "10px"
+                        }
+                      }
                     >
                       <Card.Header>
                         {job.title}{" "}
@@ -190,7 +210,9 @@ const VendorCalendar = props => {
                     </Card>
                   </a>
                 ))}
-            </CardColumns>
+            </CardDeck>
+            </Col>
+            <Col>
             <Button
               size="lg"
               variant="info"
@@ -222,6 +244,8 @@ const VendorCalendar = props => {
             ) : (
               ""
             )}
+            </Col>
+            </Row>
           </Tab>
           <Tab eventKey="Completed" title="Completed">
             <CardColumns style={{ marginTop: "0.8rem" }}>
@@ -284,7 +308,7 @@ const VendorCalendar = props => {
             </ul>
           </Tab>
         </Tabs>
-      </div>
+      </Container>
     </div>
   );
 };
