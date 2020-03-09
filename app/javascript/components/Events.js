@@ -50,6 +50,7 @@ const Events = props => {
     isLoaded2: false,
     calendarResponse: null,
     tenantResponse: null,
+    new_jobs: null, 
     show: false
   });
 
@@ -119,9 +120,11 @@ const Events = props => {
       })
       .then(res => res.json())
       .then(res => {
+        var new_jobs = res.jobs.filter(job => job.status === "LANDOWNER APPROVED" && props.vendor_info.id == job.vendor_id);
         setState(prevState => ({
           ...prevState,
           tenantResponse: res,
+          new_jobs: new_jobs,
           isLoaded2: true
         }));
       });
@@ -132,6 +135,7 @@ const Events = props => {
     isLoaded,
     calendarResponse,
     tenantResponse,
+    new_jobs, 
     isLoaded2,
     show
   } = state;
@@ -183,7 +187,7 @@ const Events = props => {
         </div>
 <div className="container w-50 mb-4">
 <Card border="info">
-  <Card.Header as="h6" align="center"> { tenantResponse.jobs[0].title } </Card.Header>
+  <Card.Header as="h6" align="center"> { new_jobs[0].title } </Card.Header>
   <Card.Body>
     <Card.Text>
       <b>Vendor: </b> {props.vendor_info.name} <br/>
@@ -199,10 +203,11 @@ const Events = props => {
                       />
                     }{" "}
       <br/>
-      <b>Description: </b> {tenantResponse.jobs[0].content}
+      <b>Description: </b> {new_jobs[0].content}
     </Card.Text>
   </Card.Body>
-</Card>   
+</Card> 
+
 </div>
 <div className="container w-75"> 
 <Table hover size="sm" class="table bg-info">
@@ -211,9 +216,7 @@ const Events = props => {
     </tr>
   </thead>
   <tbody>
-  {tenantResponse.jobs
-              .filter(job => job.status === "LANDOWNER APPROVED" && props.vendor_info.id == job.vendor_id)
-              .map(job => (
+  {new_jobs.map(job => (
     <tr>
       <td align="center">{shortFormatDate(job.start)}</td>
       <td align="center">{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>

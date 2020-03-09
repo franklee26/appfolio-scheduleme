@@ -135,6 +135,7 @@ class CalendarController < ApplicationController
     service.authorization = client
     @calendar_id = params[:calendar_id]
     @vendor_info = Vendor.find(params[:vendor_id])
+    @vendor_info.rating = (@vendor_info.rating == nil ? 0 : @vendor_info.rating)
     events_temp = []
     if params[:calendar_id] != "en.usa" && params[:calendar_id] != "addressbook"
       events_temp = service.list_events(params[:calendar_id]).items
