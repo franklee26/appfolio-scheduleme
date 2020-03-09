@@ -7,8 +7,6 @@ import StarRatings from "react-star-ratings";
 
 
 const VendorSelection = props => {
-console.log((props.vendors)[0]);
-console.log(props.calendar_id);
   return (
     <div>
       <header className="bg-dark py-3">
@@ -21,8 +19,8 @@ console.log(props.calendar_id);
       <div className="container">
         <view align="center">
           <ProgressBar
-            now={75}
-            label="Step 3/4"
+            now={50}
+            label="Step 2/4"
             style={{
               height: "35px",
               fontSize: "25px",
@@ -35,7 +33,7 @@ console.log(props.calendar_id);
           {props.vendors.map( function(vendor) {
           	const vendor_rating = vendor.rating? vendor.rating : 0;
           	return (
-            <a key={vendor.id} style={{ cursor: "pointer" }} href={`/calendar/events/${props.calendar_id}/${vendor.id}`}>
+            <a key={vendor.id} style={{ cursor: "pointer" }} href={`/calendar/events/${vendor.id}`}>
               <Card border="info" style={{ width: "18rem" }}>
                 <Card.Body>
                   <Card.Title>{vendor.name}</Card.Title>

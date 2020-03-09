@@ -400,7 +400,7 @@ const CalendarIndex = props => {
                         style={{ marginRight: "0.8rem" }}
                         onClick={() =>
                           (window.location.href =
-                            "/calendar/calendar_submission")
+                            "/calendar/vendor_selection")
                         }
                       >
                         Continue

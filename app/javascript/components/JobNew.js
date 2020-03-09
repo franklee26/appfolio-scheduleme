@@ -200,7 +200,7 @@ const JobNew = props => {
             <Button
               variant="primary"
               onClick={e =>
-                (window.location.href = "/calendar/calendar_submission")
+                (window.location.href = "/calendar/vendor_selection")
               }
             >
               Continue
