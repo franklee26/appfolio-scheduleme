@@ -51,6 +51,27 @@ const handleCompleteJob = (event, job_id) => {
     });
 };
 
+const handleCompleteAllJobs = (event, id) => {
+  event.preventDefault();
+  fetch(`http://localhost:3000/jobs/finishAll`, {
+      method: "PATCH",
+      headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            vendor_id: id,
+    })})
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == 200) {
+        alert("Successfully marked all jobs as complete.");
+        window.location.reload(false);
+      } else {
+        alert("Failed to mark all jobs as complete.");
+      }
+    });
+};
+
 const VendorCalendar = props => {
   var filtered = props.vendorResponse.jobs.filter(
     job => job.status == "COMPLETE"
@@ -164,6 +185,10 @@ const VendorCalendar = props => {
             <Row>
             <Col md = "auto">
               <Button size = "lg"
+              onClick = {
+                e =>
+                handleCompleteAllJobs(e, props.user.id)
+              }
               variant = "info"
               style = {
                 {
