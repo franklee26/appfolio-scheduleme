@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Jumbotron from "react-bootstrap/Jumbotron";
-import { shortFormatDateAll } from "./Events.js";
+import { shortFormatDateAll, shortFormatDate, shortFormatTime } from "./Events.js";
 import $ from "jquery";
 import {
   LandownerRemoveVendor,
@@ -443,20 +443,21 @@ const CalendarIndex = props => {
                   .filter(job => job.status == "COMPLETE")
                   .map(job => (
                     <Card
-                      bg="warning"
                       text="dark"
-                      border="warning"
-                      style={{ width: "18rem" }}
+                      border="primary"
+                      style={{ width: "20rem" }}
                     >
-                      <Card.Header>{job.title}</Card.Header>
-                      <Card.Body>
-                        <Card.Title>
-                          Scheduled for {shortFormatDateAll(job.start)} to{" "}
-                          {shortFormatDateAll(job.end)} assigned to{" "}
-                          {job.vendor_name}
-                        </Card.Title>
-                        <Card.Text>Description: {job.content}</Card.Text>
-                      </Card.Body>
+                <Card.Header>{job.title}</Card.Header>
+                <Card.Body>             
+                  <b>Vendor: </b>{job.vendor_name}
+                  <br/>                
+                  <b>Date: </b>{shortFormatDate(job.start)}
+                  <br/>
+                  <b>Time: </b>{shortFormatTime(job.start)} - {shortFormatTime(job.end)}{" "}
+                  <br/>
+                  <b>Description: </b> {job.content}
+                  <br/>                     
+                </Card.Body>
                     </Card>
                   ))}
               </CardColumns>
