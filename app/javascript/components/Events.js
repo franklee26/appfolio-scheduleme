@@ -186,11 +186,11 @@ const Events = props => {
   <Card.Header as="h6" align="center"> { tenantResponse.jobs[0].title } </Card.Header>
   <Card.Body>
     <Card.Text>
-      <b>Vendor: </b> {tenantResponse.jobs[0].vendor_name} <br/>
+      <b>Vendor: </b> {props.vendor_info.name} <br/>
       {" "}
                     {
                       <StarRatings
-                        rating={parseFloat(tenantResponse.jobs[0].vendor_rating.toFixed(2))}
+                        rating={parseFloat(props.vendor_info.rating.toFixed(2))}
                         starDimension="17px"
                         starSpacing="2px"
                         starRatedColor="gold"
@@ -212,7 +212,7 @@ const Events = props => {
   </thead>
   <tbody>
   {tenantResponse.jobs
-              .filter(job => job.status === "LANDOWNER APPROVED" && props.vendor_id == job.vendor_id)
+              .filter(job => job.status === "LANDOWNER APPROVED" && props.vendor_info.id == job.vendor_id)
               .map(job => (
     <tr>
       <td align="center">{shortFormatDate(job.start)}</td>

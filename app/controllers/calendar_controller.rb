@@ -134,7 +134,7 @@ class CalendarController < ApplicationController
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
     @calendar_id = params[:calendar_id]
-    @vendor_id = params[:vendor_id]
+    @vendor_info = Vendor.find(params[:vendor_id])
     events_temp = []
     if params[:calendar_id] != "en.usa" && params[:calendar_id] != "addressbook"
       events_temp = service.list_events(params[:calendar_id]).items
