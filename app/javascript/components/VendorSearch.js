@@ -6,6 +6,18 @@ import Tooltip from "react-bootstrap/Tooltip";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+
+const occupations = [
+  "Electrician",
+  "Plumber",
+  "Carpenter",
+  "Gardener",
+  "Household Cleaning",
+  "Internet and Cable"
+];
 
 class VendorSearch extends Component {
   constructor(props) {
@@ -15,7 +27,7 @@ class VendorSearch extends Component {
         return vendor.name != "DEFAULT";
       }),
       name: "",
-      occupation: "",
+      occupation: "---",
       zip: "",
       vendorSelected: false,
       selectedVendor: null
@@ -32,6 +44,9 @@ class VendorSearch extends Component {
     vendors = vendors.filter(vendor => {
       let occupationCheck =
         this.state.occupation.length == 0 ||
+        this.state.occupation == "---" ||
+        (this.state.occupation == "Other" &&
+          !occupations.includes(vendor.occupation)) ||
         this.state.occupation.toUpperCase() ==
           (vendor.occupation ? vendor.occupation.toUpperCase() : "n/a");
       let nameCheck =
@@ -48,6 +63,7 @@ class VendorSearch extends Component {
   }
 
   handleChange(e) {
+    console.log(e.target.value);
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -90,114 +106,133 @@ class VendorSearch extends Component {
             </header>
           </div>
           <br></br>
-          <div className="container">
-            <Form>
-              <Form.Group controlId="name">
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={this.state.name}
-                  name="name"
-                  onChange={e => this.handleChange(e)}
-                />
-              </Form.Group>
-              <Form.Group controlId="occupation">
-                <Form.Label>Occupation</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={this.state.occupation}
-                  name="occupation"
-                  onChange={e => this.handleChange(e)}
-                />
-              </Form.Group>
-              <Form.Group controlId="zip">
-                <Form.Label>Zip</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={this.state.zip}
-                  name="zip"
-                  onChange={e => this.handleChange(e)}
-                />
-              </Form.Group>
-            </Form>
-            <Form align="center" onSubmit={this.handleSubmit}>
-              <Button
-                variant="primary"
-                type="submit"
-                onSubmit={e => this.handleSubmit(e)}
-              >
-                Search
-              </Button>
-            </Form>
-            <div>
-              {
-                <div>
-                  <h1 align="center">Search Results</h1>
-                  {this.state.list.length ? (
-                    this.state.list.map(vendor => (
-                      <div className="container w-75">
-                        <OverlayTrigger
-                          placement="right"
-                          delay={{ show: 250, hide: 400 }}
-                          width="500"
-                          overlay={
-                            <Tooltip>Click For More Information</Tooltip>
-                          }
-                        >
-                          <div
-                            style={{ cursor: "pointer" }}
-                            class="card flex-row flex-wrap"
-                            onClick={e => this.handleVendorListClick(e, vendor)}
-                          >
-                            <div class="card-header border-0">
-                              <Image
-                                src={vendor.profile_pic}
-                                width="150"
-                                height="150"
-                                style={{ border: "1px solid #595757" }}
-                                rounded
-                              />
-                            </div>
-                            <div class="card-block px-2" width="600">
-                              <h4 class="card-title">
-                                {vendor.name}:{" "}
-                                {vendor.occupation ? vendor.occupation : "None"}
-                                <br></br>
-                                <StarRatings
-                                  rating={parseFloat(
-                                    vendor.rating
-                                      ? vendor.rating.toFixed(2)
-                                      : "0.0"
-                                  )}
-                                  starDimension="19px"
-                                  starSpacing="1px"
-                                  starRatedColor="gold"
-                                  numberOfStars={5}
-                                  name="rating"
-                                />
-                              </h4>
-                              <p class="card-text">
-                                <b>Phone</b>: {vendor.phone_number}
-                                <br></br>
-                                <b>Email</b>: {vendor.email}
-                                <br></br>
-                                <b>Address</b>: {vendor.street_address},{" "}
-                                {vendor.city}, {vendor.state}, {vendor.zip}
-                              </p>
-                            </div>
-                            <div class="w-100"></div>
+          <Container width="auto">
+            <Row>
+              <Col md="auto" style={{ marginRight: "50px" }}>
+                <Form>
+                  <Form.Group controlId="name">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={this.state.name}
+                      name="name"
+                      onChange={e => this.handleChange(e)}
+                    />
+                  </Form.Group>
+                  <Form.Group controlId="occupation">
+                    <Form.Label>Occupation</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="occupation"
+                      onChange={e => this.handleChange(e)}
+                    >
+                      <option>---</option>
+                      <option>Electrician</option>
+                      <option>Plumber</option>
+                      <option>Carpenter</option>
+                      <option>Gardener</option>
+                      <option>Household Cleaning</option>
+                      <option>Internet and Cable</option>
+                      <option>Other</option>
+                    </Form.Control>
+                  </Form.Group>
+                  <Form.Group controlId="zip">
+                    <Form.Label>Zip</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={this.state.zip}
+                      name="zip"
+                      onChange={e => this.handleChange(e)}
+                    />
+                  </Form.Group>
+                </Form>
+                <Form align="center" onSubmit={this.handleSubmit}>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    onSubmit={e => this.handleSubmit(e)}
+                    size="lg"
+                  >
+                    Filter
+                  </Button>
+                </Form>
+              </Col>
+              <Col style={{ borderLeft: "1px solid #bab5b5" }}>
+                <div style={{ marginLeft: "35px" }}>
+                  {
+                    <div>
+                      <h1 align="center">Vendors</h1>
+                      {this.state.list.length ? (
+                        this.state.list.map(vendor => (
+                          <div className="container">
+                            <OverlayTrigger
+                              placement="right"
+                              delay={{ show: 250, hide: 400 }}
+                              width="500"
+                              overlay={
+                                <Tooltip>Click For More Information</Tooltip>
+                              }
+                            >
+                              <div
+                                style={{ cursor: "pointer" }}
+                                class="card flex-row flex-wrap"
+                                onClick={e =>
+                                  this.handleVendorListClick(e, vendor)
+                                }
+                              >
+                                <div class="card-header border-0">
+                                  <Image
+                                    src={vendor.profile_pic}
+                                    width="150"
+                                    height="150"
+                                    style={{ border: "1px solid #595757" }}
+                                    rounded
+                                  />
+                                </div>
+                                <div class="card-block px-2" width="600">
+                                  <h4 class="card-title">
+                                    {vendor.name}:{" "}
+                                    {vendor.occupation
+                                      ? vendor.occupation
+                                      : "None"}
+                                    <br></br>
+                                    <StarRatings
+                                      rating={parseFloat(
+                                        vendor.rating
+                                          ? vendor.rating.toFixed(2)
+                                          : "0.0"
+                                      )}
+                                      starDimension="19px"
+                                      starSpacing="1px"
+                                      starRatedColor="gold"
+                                      numberOfStars={5}
+                                      name="rating"
+                                    />
+                                  </h4>
+                                  <p class="card-text">
+                                    <b>Phone</b>: {vendor.phone_number}
+                                    <br></br>
+                                    <b>Email</b>: {vendor.email}
+                                    <br></br>
+                                    <b>Address</b>: {vendor.street_address},{" "}
+                                    {vendor.city}, {vendor.state}, {vendor.zip}
+                                  </p>
+                                </div>
+                                <div class="w-100"></div>
+                              </div>
+                            </OverlayTrigger>
+                            <br></br>
                           </div>
-                        </OverlayTrigger>
-                        <br></br>
-                      </div>
-                    ))
-                  ) : (
-                    <label> No results found. </label>
-                  )}
+                        ))
+                      ) : (
+                        <label> No results found. </label>
+                      )}
+                    </div>
+                  }
                 </div>
-              }
-            </div>
-          </div>
+              </Col>
+            </Row>
+          </Container>
         </div>
       );
     }
