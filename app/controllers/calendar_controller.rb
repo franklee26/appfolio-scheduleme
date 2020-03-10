@@ -517,7 +517,7 @@ class CalendarController < ApplicationController
       day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
       day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
 
-      busy_today = combined_busy.map{|t| t if t["start"] > day_start && t["end"] < day_end}.compact
+      busy_today = combined_busy.map{|t| t if t["start"] >= day_start && t["end"] <= day_end}.compact
 
       cur_start = day_start
 
@@ -527,7 +527,7 @@ class CalendarController < ApplicationController
 
       busy_today.each_with_index do |b_time, index|
         if index == 0
-          if b_time["start"] >= day_start
+          if b_time["start"] > day_start
             free_times << {"start": day_start, "end": b_time["start"]}
           end
           if busy_today.length == 1
@@ -562,7 +562,7 @@ class CalendarController < ApplicationController
       post_job_loc = default_address
       post_job_start = default_end
 
-      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]+(8).hours}' and start > '#{default_start+(8).hours}' order by start desc limit 1;")
+      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]+(7).hours}' and start > '#{default_start+(7).hours}' order by start desc limit 1;")
       if prev_job.length == 1
         prev_job = prev_job[0]
         prev_tenant = Tenant.find(prev_job.tenant_id)        
@@ -577,7 +577,7 @@ class CalendarController < ApplicationController
         end
       end
 
-      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]+(8).hours}' and start < '#{default_end+(8).hours}' order by start asc limit 1;")
+      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]+(7).hours}' and start < '#{default_end+(7).hours}' order by start asc limit 1;")
       if post_job.length == 1
         post_job = post_job[0]
         post_tenant = Tenant.find(post_job.tenant_id)
