@@ -11,9 +11,9 @@ const VendorSelection = props => {
     <div>
       <header className="bg-dark py-3">
         <h1 align="center" className="display-3 text-white mt-5 mb-2">
-          Select a Calendar
+          Select a Vendor
         </h1>
-      <h5 align="center" className="display-6 text-white mb-2">The job request will be added to the Google Calendar that you select.</h5>
+      <h5 align="center" className="display-6 text-white mb-2">We will find times from the vendor you select.</h5>
 
       </header>
       <div className="container">
