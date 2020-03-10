@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
@@ -54,75 +55,15 @@ const Events = props => {
   const [state, setState] = useState({
     error: null,
     isLoaded: false,
-    isLoaded2: false,
-    calendarResponse: null,
     tenantResponse: null,
     new_jobs: null, 
     show: false
   });
 
-  // handle click and post request
-  const handleClickPost = (
-    event,
-    startTime,
-    endTime,
-    calendarId,
-    calendarName,
-    job
-  ) => {
-    event.preventDefault();
-    fetch(
-      `http://localhost:3000/calendar/${calendarId}/${startTime}/${endTime}`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          job_id: job.id
-        })
-      }
-    )
-      .then(res => res.json())
-      .then(
-        res => {
-          setState({ ...state, show: true });
-        },
-        error => {
-          alert(`Failed to add event to calendar with error ${error}`);
-        }
-      )
-      .then(res =>
-        fetch("http://localhost:3000/jobs/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            job: job
-          })
-        })
-      );
-  };
 
   // fetches calendar information, but this maybe overkill since all we want is the name...
   useEffect(() => {
-    fetch(`http://localhost:3000/calendar/${props.calendar_id}/response`, {
-      method: "GET"
-    })
-      .then(res => res.json())
-      .then(
-        result => {
-          setState(prevState => ({
-            ...prevState,
-            isLoaded: true,
-            calendarResponse: result
-          }));
-        },
-        error => {
-          setState(prevState => ({
-            ...prevState,
-            isLoaded: true,
-            error: error
-          }));
-        }
-      )
-      .then(res => fetch(`http://localhost:3000/tenants/${props.id}`), {
+    fetch(`http://localhost:3000/tenants/${props.id}`, {
         method: "GET"
       })
       .then(res => res.json())
@@ -131,8 +72,8 @@ const Events = props => {
         setState(prevState => ({
           ...prevState,
           tenantResponse: res,
-          new_jobs: new_jobs,
-          isLoaded2: true
+          isLoaded: true,
+          new_jobs: new_jobs
         }));
       });
   }, []);
@@ -140,47 +81,31 @@ const Events = props => {
   const {
     error,
     isLoaded,
-    calendarResponse,
     tenantResponse,
-    new_jobs, 
-    isLoaded2,
+    new_jobs,
     show
   } = state;
   if (error) {
     return <div>Error in mount: {error.message}</div>;
-  } else if (!isLoaded || !isLoaded2) {
+  } else if (!isLoaded) {
     return (
       <div>
         <h1>Loading and scheduling times...</h1>
       </div>
     );
-  } else if (calendarResponse["error"]) {
-    return (
-      <div>
-        <h1>
-          Error code {calendarResponse["error"]["code"]} in API call:{" "}
-          {calendarResponse["error"]["message"]}
-        </h1>
-      </div>
-    );
   }
-  console.log(props.vendor_id);
   return (
     <div>
       <header class="bg-dark py-3">
         <h1 align="center" class="display-3 text-white mt-5">
           Pick a Date & Time
         </h1>
-        <h5 align="center" class="display-6 text-white mb-2">
-          This will be added to the calendar called "
-          {calendarResponse["summary"]}"
-        </h5>
       </header>  
       <div className="container">
         <view align="center">
           <ProgressBar
-            now={100}
-            label="Step 4/4"
+            now={75}
+            label="Step 3/4"
             style={{
               height: "35px",
               fontSize: "25px",
@@ -233,16 +158,7 @@ const Events = props => {
       <td align="center">                    <Button
                       variant="outline-primary"
                       size="sm"
-                      onClick={e =>
-                        handleClickPost(
-                          e,
-                          job.start,
-                          job.end,
-                          props.calendar_id,
-                          calendarResponse["summary"],
-                          job
-                        )
-                      }
+                      href={`/calendar/calendar_submission/${job.id}`}
                     >
                       {" "}
                       Add To Calendar{" "}
@@ -257,7 +173,7 @@ const Events = props => {
           variant="primary"
           size="lg"
           style={{ marginRight: "0.8rem", marginTop: "0.8rem" }}
-          href="http://localhost:3000/calendar/calendar_submission"
+          href="http://localhost:3000/calendar/vendor_selection"
         >
           Back
         </Button>

@@ -23,14 +23,12 @@ class CalendarController < ApplicationController
     @user = find_user(session[:user_id], session[:user_type])
     all_calendars = get_user_calendars(access_token)
     @calendars = all_calendars.filter { |c| c.summary != "Holidays in United States" && c.summary != @user.email && c.summary != "Contacts" }
+    @job_id = params[:job_id]
   end
 
   def vendor_selection
     access_token = retrieveAccessToken(session[:user_id], session[:user_type])
     @user = find_user(session[:user_id], session[:user_type])
-    all_calendars = get_user_calendars(access_token)
-    @calendars = all_calendars.filter { |c| c.summary != "Holidays in United States" && c.summary != @user.email && c.summary != "Contacts" }
-    @calendar_id = params[:calendar_id]
     @vendors = Vendor.find_by_sql("select * from vendors where id in (select distinct vendor_id from jobs where status='LANDOWNER APPROVED' and tenant_id=#{@user.id})")
   end
 
@@ -55,9 +53,9 @@ class CalendarController < ApplicationController
   end
 
   def post
-    # Get user's access token
-    body = JSON(request.body.read)
-    job_id = body["job_id"]
+    # Find job, tenant_id, vendor_id, vendor_calendar_id
+    # Get tenant's access token and set up uri to tenant's calendar
+    job_id = params["job_id"]
     job = Job.find(job_id)
     tenant_id = job.tenant_id
     vendor_id = job.vendor_id
@@ -67,6 +65,7 @@ class CalendarController < ApplicationController
       return
     end
 
+    # Get tenant's access token and set up uri to tenant's calendar
     access_token = retrieveAccessToken(tenant_id, "tenant")
     # post to selected calendar
     uri = URI.parse(
@@ -75,14 +74,16 @@ class CalendarController < ApplicationController
       access_token
     )
 
+    # Set up more calendar options like color and time zone/ 
+    # Then add event to tenant's calendar
     header = {'Content-Type': 'application/json'}
     request_body = {
       "start": {
-        "dateTime": params[:start],
+        "dateTime": job.start,
         "timeZone": "America/Los_Angeles"
       },
       "end": {
-        "dateTime": params[:end],
+        "dateTime": job.end,
         "timeZone": "America/Los_Angeles"
       },
       "summary": "scheduleMe_appt_TENANT",
@@ -95,8 +96,8 @@ class CalendarController < ApplicationController
     request.body = request_body.to_json
     response = http.request(request).body
 
+    # get vendor's acess token and also add event to vendor's calendar as well
     access_token = retrieveAccessToken(vendor_id, "vendor")
-
     uri = URI.parse(
       "https://www.googleapis.com/calendar/v3/calendars/" + 
       vendor_calendar_id+"/events?alt=json&access_token=" + 
@@ -106,11 +107,11 @@ class CalendarController < ApplicationController
     header = {'Content-Type': 'application/json'}
     request_body = {
       "start": {
-        "dateTime": params[:start],
+        "dateTime": job.start,
         "timeZone": "America/Los_Angeles"
       },
       "end": {
-        "dateTime": params[:end],
+        "dateTime": job.end,
         "timeZone": "America/Los_Angeles"
       },
       "summary": "scheduleMe_appt_VENDOR",
@@ -136,18 +137,8 @@ class CalendarController < ApplicationController
     @calendar_id = params[:calendar_id]
     @vendor_info = Vendor.find(params[:vendor_id])
     @vendor_info.rating = (@vendor_info.rating == nil ? 0 : @vendor_info.rating)
-    events_temp = []
-    if params[:calendar_id] != "en.usa" && params[:calendar_id] != "addressbook"
-      events_temp = service.list_events(params[:calendar_id]).items
-    end
-    @events = []
+
     @id = session[:user_id]
-    # I should do some filtering
-    events_temp.each do |event|
-      if not event.end.date_time < (Time.now.localtime.beginning_of_day - 7.days)
-        @events << event
-      end
-    end
 
     # this is kinda stupid, I don't really know another way lmao
     calendars = service.list_calendar_lists.items
