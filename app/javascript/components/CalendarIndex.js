@@ -8,7 +8,11 @@ import Modal from "react-bootstrap/Modal";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Jumbotron from "react-bootstrap/Jumbotron";
-import { shortFormatDateAll, shortFormatDate, shortFormatTime } from "./Events.js";
+import {
+  shortFormatDateAll,
+  shortFormatDate,
+  shortFormatTime
+} from "./Events.js";
 import $ from "jquery";
 import {
   LandownerRemoveVendor,
@@ -21,7 +25,7 @@ import {
 import StarRatings from "react-star-ratings";
 import { Switch, Route, MemoryRouter } from "react-router-dom";
 import VendorCalendar from "./VendorCalendar.js";
-import Table from 'react-bootstrap/Table'
+import Table from "react-bootstrap/Table";
 
 /*
 isLoaded: mounting landowner response
@@ -419,9 +423,7 @@ const CalendarIndex = props => {
 
               <Jumbotron style={{ marginTop: "0.4rem" }}>
                 <h1>Need To Submit A Maintanence Request?</h1>
-                <p>
-                Schedule a job now to get matched to a vendor!
-                </p>
+                <p>Schedule a job now to get matched to a vendor!</p>
                 <Button
                   variant="primary"
                   href="http://localhost:3000/jobs/new"
@@ -447,17 +449,20 @@ const CalendarIndex = props => {
                       border="primary"
                       style={{ width: "20rem" }}
                     >
-                <Card.Header>{job.title}</Card.Header>
-                <Card.Body>             
-                  <b>Vendor: </b>{job.vendor_name}
-                  <br/>                
-                  <b>Date: </b>{shortFormatDate(job.start)}
-                  <br/>
-                  <b>Time: </b>{shortFormatTime(job.start)} - {shortFormatTime(job.end)}{" "}
-                  <br/>
-                  <b>Description: </b> {job.content}
-                  <br/>                     
-                </Card.Body>
+                      <Card.Header>{job.title}</Card.Header>
+                      <Card.Body>
+                        <b>Vendor: </b>
+                        {job.vendor_name}
+                        <br />
+                        <b>Date: </b>
+                        {shortFormatDate(job.start)}
+                        <br />
+                        <b>Time: </b>
+                        {shortFormatTime(job.start)} -{" "}
+                        {shortFormatTime(job.end)} <br />
+                        <b>Description: </b> {job.content}
+                        <br />
+                      </Card.Body>
                     </Card>
                   ))}
               </CardColumns>
@@ -467,20 +472,20 @@ const CalendarIndex = props => {
                 {tenantResponse.jobs
                   .filter(job => job.status == "VENDOR COMPLETE")
                   .map(job => (
-                    <Card
-                      border="success"
-                      style={{ width: "20rem" }}
-                    >
+                    <Card border="success" style={{ width: "20rem" }}>
                       <Card.Header>{job.title}</Card.Header>
                       <Card.Body>
-                  <b>Vendor: </b>{job.vendor_name}
-                  <br/>                
-                  <b>Date: </b>{shortFormatDate(job.start)}
-                  <br/>
-                  <b>Time: </b>{shortFormatTime(job.start)} - {shortFormatTime(job.end)}{" "}
-                  <br/>
-                  <b>Description: </b> {job.content}
-                  <br/>          
+                        <b>Vendor: </b>
+                        {job.vendor_name}
+                        <br />
+                        <b>Date: </b>
+                        {shortFormatDate(job.start)}
+                        <br />
+                        <b>Time: </b>
+                        {shortFormatTime(job.start)} -{" "}
+                        {shortFormatTime(job.end)} <br />
+                        <b>Description: </b> {job.content}
+                        <br />
                         {job.reviewed ? (
                           <Button variant="primary" disabled>
                             Reviewed
@@ -500,7 +505,6 @@ const CalendarIndex = props => {
                             Review
                           </Button>
                         )}
-
                         <Modal
                           show={showM}
                           onHide={e => SETSTATE({ ...STATE, showM: false })}
@@ -567,96 +571,49 @@ const CalendarIndex = props => {
                     </Card>
                   ))}
               </CardColumns>
-<Table hover size="sm" class="table bg-info">
-  <thead>
-    <tr>
-      <th>Job Title</th>    
-      <th>Date</th>
-      <th>Time</th>
-      <th>Completed By</th>  
-      <th>Rating</th>
-      <th>Description</th>  
-
-    </tr>
-  </thead>
-  <tbody>
-  {tenantResponse.jobs
-              .filter(job => job.status === "VENDOR COMPLETE")
-              .map(job => (
-    <tr>
-      <td>{job.title}</td>    
-      <td>{shortFormatDate(job.start)}</td>
-      <td>{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>
-      <td>{job.vendor_name}</td>
-      <td>                        <Modal
-                          show={showM}
-                          onHide={e => SETSTATE({ ...STATE, showM: false })}
-                        >
-                          <Modal.Header closeButton>
-                            <Modal.Title>{TITLE}</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <Form>
-                              <Form.Group controlId="starRating">
-                                <Form.Label style={{ marginRight: "1.0rem" }}>
-                                  Rate
-                                </Form.Label>
-                                <StarRatings
-                                  rating={parseFloat(rate)}
-                                  starRatedColor="gold"
-                                  starHoverColor="gold"
-                                  starSpacing="2px"
-                                  changeRating={(rating, name) =>
-                                    SetState({ ...State, rate: rating })
-                                  }
-                                  numberOfStars={5}
-                                  name="rating"
-                                />
-                              </Form.Group>
-
-                              <Form.Group controlId="exampleForm.ControlTextarea1">
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                  as="textarea"
-                                  rows="6"
-                                  placeholder="Review Description"
-                                  onChange={event =>
-                                    SetState({
-                                      ...State,
-                                      text: event.target.value
-                                    })
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button
-                              variant="danger"
-                              onClick={e =>
-                                SETSTATE({ ...STATE, showM: false })
-                              }
-                            >
-                              Exit
-                            </Button>
-                            <Button
-                              variant="primary"
-                              onClick={event => {
-                                SETSTATE({ ...STATE, showM: false });
-                                handleJobReview(event, JID, text, rate, VID);
-                              }}
-                            >
-                              Submit
-                            </Button>
-                          </Modal.Footer>
-                        </Modal></td>
-      <td>{job.content}</td>
-
-    </tr>
-
-      ))}
-  </tbody>
-</Table>                
+              <Table hover size="sm" class="table bg-info">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Completed By</th>
+                    <th>Rating</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tenantResponse.jobs
+                    .filter(job => job.status === "VENDOR COMPLETE")
+                    .map(job => (
+                      <tr>
+                        {console.log(job)}
+                        <td>{job.title}</td>
+                        <td>{shortFormatDate(job.start)}</td>
+                        <td>
+                          {shortFormatTime(job.start)} -{" "}
+                          {shortFormatTime(job.end)}
+                        </td>
+                        <td>{job.vendor_name}</td>
+                        <td>
+                          {job.reviewed ? (
+                            <StarRatings
+                              rating={parseFloat(job.vendor_rating.toFixed(2))}
+                              starDimension="17px"
+                              starSpacing="2px"
+                              starRatedColor="gold"
+                              numberOfStars={5}
+                              name="rating"
+                            />
+                          ) : (
+                            <Button>Review</Button>
+                          )}
+                        </td>
+                        <td>{job.content}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </Table>
             </Tab>
             <Tab eventKey="Profile" title="Profile">
               {props.user.landowner_id == 0 ? (
@@ -868,3 +825,65 @@ const CalendarIndex = props => {
 };
 
 export default CalendarIndex;
+/*<Modal
+                            show={showM}
+                            onHide={e => SETSTATE({ ...STATE, showM: false })}
+                          >
+                            <Modal.Header closeButton>
+                              <Modal.Title>{TITLE}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                              <Form>
+                                <Form.Group controlId="starRating">
+                                  <Form.Label style={{ marginRight: "1.0rem" }}>
+                                    Rate
+                                  </Form.Label>
+                                  <StarRatings
+                                    rating={parseFloat(rate)}
+                                    starRatedColor="gold"
+                                    starHoverColor="gold"
+                                    starSpacing="2px"
+                                    changeRating={(rating, name) =>
+                                      SetState({ ...State, rate: rating })
+                                    }
+                                    numberOfStars={5}
+                                    name="rating"
+                                  />
+                                </Form.Group>
+
+                                <Form.Group controlId="exampleForm.ControlTextarea1">
+                                  <Form.Label>Description</Form.Label>
+                                  <Form.Control
+                                    as="textarea"
+                                    rows="6"
+                                    placeholder="Review Description"
+                                    onChange={event =>
+                                      SetState({
+                                        ...State,
+                                        text: event.target.value
+                                      })
+                                    }
+                                  />
+                                </Form.Group>
+                              </Form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                              <Button
+                                variant="danger"
+                                onClick={e =>
+                                  SETSTATE({ ...STATE, showM: false })
+                                }
+                              >
+                                Exit
+                              </Button>
+                              <Button
+                                variant="primary"
+                                onClick={event => {
+                                  SETSTATE({ ...STATE, showM: false });
+                                  handleJobReview(event, JID, text, rate, VID);
+                                }}
+                              >
+                                Submit
+                              </Button>
+                            </Modal.Footer>
+                          </Modal>*/
