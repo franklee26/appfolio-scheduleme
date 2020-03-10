@@ -11,7 +11,6 @@ import Row from "react-bootstrap/Row";
 import ListGroup from "react-bootstrap/ListGroup";
 
 const VendorDisplay = props => {
-  console.log(props);
   return (
     <div>
       <div>
