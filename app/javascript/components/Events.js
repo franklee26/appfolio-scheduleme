@@ -43,6 +43,13 @@ export const dayExporter = date => {
   return theDate;
 };
 
+export const getWeekdayFromDate = date => {
+  var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
+    weekday: "long"
+  });
+  return theDate;
+};
+
 const Events = props => {
   const [state, setState] = useState({
     error: null,
@@ -207,16 +214,21 @@ const Events = props => {
 </Card> 
 
 </div>
-<div className="container w-75"> 
+<div className="container w-50"> 
 <Table hover size="sm" class="table bg-info">
   <thead>
     <tr>
+    <th class="text-center">Date</th>
+    <th class="text-center">Day</th>
+    <th class="text-center">Time</th>
+    <th class="text-center"></th>
     </tr>
   </thead>
   <tbody>
   {new_jobs.map(job => (
     <tr>
       <td align="center">{shortFormatDate(job.start)}</td>
+      <td align="center">{getWeekdayFromDate(job.start)}</td>
       <td align="center">{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>
       <td align="center">                    <Button
                       variant="outline-primary"
