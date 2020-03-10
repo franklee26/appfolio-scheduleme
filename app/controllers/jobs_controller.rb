@@ -38,14 +38,17 @@ class JobsController < ApplicationController
 
   def complete
     body = JSON(request.body.read)
-    
-    job_id = body["job"]["id"]
-    job_content = body["job"]["content"]
-    job_tenant_id = body["job"]["tenant_id"]
-    # first make this job done!
+
+    # Get job
+    job_id = body["job_id"]
     job = Job.find(job_id)
+    job_content = job.content
+    job_tenant_id = job.tenant_id
+
+    # first make this job done!
     job.status = "COMPLETE"
     job.save!
+    
     # now delete all the jobs
     to_delete_ids = Job.all.select{ 
       |j| (j.status == "LANDOWNER APPROVED" || 

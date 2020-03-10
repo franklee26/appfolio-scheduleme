@@ -96,9 +96,7 @@ const JobNew = props => {
       </header>
       <div className="container">
         <ProgressBar
-          animated
-          now={33}
-          variant="success"
+          now={25}
           label="Step 1/4"
           style={{ height: "35px", fontSize: "25px", marginTop: "0.8rem" }}
         />
@@ -202,7 +200,7 @@ const JobNew = props => {
             <Button
               variant="primary"
               onClick={e =>
-                (window.location.href = "/calendar/calendar_submission")
+                (window.location.href = "/calendar/vendor_selection")
               }
             >
               Continue
