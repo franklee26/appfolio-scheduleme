@@ -523,7 +523,7 @@ class CalendarController < ApplicationController
       day_start = (Time.now.localtime.beginning_of_day + day.days) + (9).hours
       day_end = (Time.now.localtime.beginning_of_day + day.days) + (17).hours
 
-      busy_today = combined_busy.map{|t| t if t["start"] > day_start && t["end"] < day_end}.compact
+      busy_today = combined_busy.map{|t| t if t["start"] >= day_start && t["end"] <= day_end}.compact
 
       cur_start = day_start
 
@@ -533,7 +533,7 @@ class CalendarController < ApplicationController
 
       busy_today.each_with_index do |b_time, index|
         if index == 0
-          if b_time["start"] >= day_start
+          if b_time["start"] > day_start
             free_times << {"start": day_start, "end": b_time["start"]}
           end
           if busy_today.length == 1
