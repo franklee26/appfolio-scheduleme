@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
@@ -6,7 +5,11 @@ import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
 import StarRatings from "react-star-ratings";
-import Table from 'react-bootstrap/Table'
+import Table from "react-bootstrap/Table";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Image from "react-bootstrap/Image";
 
 // date formatter helper
 export const shortFormatDate = date => {
@@ -39,7 +42,7 @@ export const shortFormatTime = date => {
 
 export const dayExporter = date => {
   var theDate = new Date(Date.parse(date)).toLocaleDateString("en-US", {
-    day: "numeric",
+    day: "numeric"
   });
   return theDate;
 };
@@ -56,19 +59,22 @@ const Events = props => {
     error: null,
     isLoaded: false,
     tenantResponse: null,
-    new_jobs: null, 
+    new_jobs: null,
     show: false
   });
-
 
   // fetches calendar information, but this maybe overkill since all we want is the name...
   useEffect(() => {
     fetch(`http://localhost:3000/tenants/${props.id}`, {
-        method: "GET"
-      })
+      method: "GET"
+    })
       .then(res => res.json())
       .then(res => {
-        var new_jobs = res.jobs.filter(job => job.status === "LANDOWNER APPROVED" && props.vendor_info.id == job.vendor_id);
+        var new_jobs = res.jobs.filter(
+          job =>
+            job.status === "LANDOWNER APPROVED" &&
+            props.vendor_info.id == job.vendor_id
+        );
         setState(prevState => ({
           ...prevState,
           tenantResponse: res,
@@ -78,13 +84,7 @@ const Events = props => {
       });
   }, []);
 
-  const {
-    error,
-    isLoaded,
-    tenantResponse,
-    new_jobs,
-    show
-  } = state;
+  const { error, isLoaded, tenantResponse, new_jobs, show } = state;
   if (error) {
     return <div>Error in mount: {error.message}</div>;
   } else if (!isLoaded) {
@@ -100,7 +100,7 @@ const Events = props => {
         <h1 align="center" class="display-3 text-white mt-5">
           Pick a Date & Time
         </h1>
-      </header>  
+      </header>
       <div className="container">
         <view align="center">
           <ProgressBar
@@ -114,14 +114,28 @@ const Events = props => {
             }}
           />
         </view>
-        </div>
-<div className="container w-50 mb-4">
-<Card border="info">
-  <Card.Header as="h6" align="center"> { new_jobs[0].title } </Card.Header>
-  <Card.Body>
-    <Card.Text>
-      <b>Vendor: </b> {props.vendor_info.name} <br/>
-      {" "}
+      </div>
+      <div className="container w-50 mb-4">
+        <Card border="info">
+          <Card.Header as="h6" align="center">
+            {" "}
+            {new_jobs[0].title}{" "}
+          </Card.Header>
+          <Card.Body>
+            <Container>
+              <Row>
+                <Col md="auto">
+                  <Image
+                    src={props.vendor_info.profile_pic}
+                    width="150"
+                    height="150"
+                    style={{ border: "1px solid #595757" }}
+                    rounded
+                  />
+                </Col>
+                <Col>
+                  <Card.Text>
+                    <b>Vendor: </b> {props.vendor_info.name} <br />{" "}
                     {
                       <StarRatings
                         rating={parseFloat(props.vendor_info.rating.toFixed(2))}
@@ -132,43 +146,48 @@ const Events = props => {
                         name="rating"
                       />
                     }{" "}
-      <br/>
-      <b>Description: </b> {new_jobs[0].content}
-    </Card.Text>
-  </Card.Body>
-</Card> 
-
-</div>
-<div className="container w-50"> 
-<Table hover size="sm" class="table bg-info">
-  <thead>
-    <tr>
-    <th class="text-center">Date</th>
-    <th class="text-center">Day</th>
-    <th class="text-center">Time</th>
-    <th class="text-center"></th>
-    </tr>
-  </thead>
-  <tbody>
-  {new_jobs.map(job => (
-    <tr>
-      <td align="center">{shortFormatDate(job.start)}</td>
-      <td align="center">{getWeekdayFromDate(job.start)}</td>
-      <td align="center">{shortFormatTime(job.start)} - {shortFormatTime(job.end)}</td>
-      <td align="center">                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      href={`/calendar/calendar_submission/${job.id}`}
-                    >
-                      {" "}
-                      Select{" "}
-                    </Button></td>
-
-    </tr>
-
-      ))}
-  </tbody>
-</Table>            
+                    <br />
+                    <b>Description: </b> {new_jobs[0].content}
+                  </Card.Text>
+                </Col>
+              </Row>
+            </Container>
+          </Card.Body>
+        </Card>
+      </div>
+      <div className="container w-50">
+        <Table hover size="sm" class="table bg-info">
+          <thead>
+            <tr>
+              <th class="text-center">Date</th>
+              <th class="text-center">Day</th>
+              <th class="text-center">Time</th>
+              <th class="text-center"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {new_jobs.map(job => (
+              <tr>
+                <td align="center">{shortFormatDate(job.start)}</td>
+                <td align="center">{getWeekdayFromDate(job.start)}</td>
+                <td align="center">
+                  {shortFormatTime(job.start)} - {shortFormatTime(job.end)}
+                </td>
+                <td align="center">
+                  {" "}
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    href={`/calendar/calendar_submission/${job.id}`}
+                  >
+                    {" "}
+                    Select{" "}
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
         <Button
           variant="primary"
           style={{ marginRight: "0.8rem", marginTop: "0.8rem" }}
