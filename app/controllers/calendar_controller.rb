@@ -139,12 +139,6 @@ class CalendarController < ApplicationController
     @vendor_info.rating = (@vendor_info.rating == nil ? 0 : @vendor_info.rating)
 
     @id = session[:user_id]
-    # # I should do some filtering
-    # events_temp.each do |event|
-    #   if not event.end.date_time < (Time.now.localtime.beginning_of_day - 7.days)
-    #     @events << event
-    #   end
-    # end
 
     # this is kinda stupid, I don't really know another way lmao
     calendars = service.list_calendar_lists.items

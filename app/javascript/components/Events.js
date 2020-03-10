@@ -47,7 +47,6 @@ const Events = props => {
   const [state, setState] = useState({
     error: null,
     isLoaded: false,
-    calendarResponse: null,
     tenantResponse: null,
     new_jobs: null, 
     show: false
@@ -65,6 +64,7 @@ const Events = props => {
         setState(prevState => ({
           ...prevState,
           tenantResponse: res,
+          isLoaded: true,
           new_jobs: new_jobs
         }));
       });
@@ -73,7 +73,6 @@ const Events = props => {
   const {
     error,
     isLoaded,
-    calendarResponse,
     tenantResponse,
     new_jobs,
     show
@@ -93,10 +92,6 @@ const Events = props => {
         <h1 align="center" class="display-3 text-white mt-5">
           Pick a Date & Time
         </h1>
-        <h5 align="center" class="display-6 text-white mb-2">
-          This will be added to the calendar called "
-          {calendarResponse["summary"]}"
-        </h5>
       </header>  
       <div className="container">
         <view align="center">
