@@ -53,6 +53,7 @@ const VendorSelection = props => {
             </a>
           )})}
         </CardColumns>
+        <Button style={{ marginRight: "0.8rem" }} href="/jobs/new">Back</Button>        
         <Button href="/calendar">Home</Button>
       </div>
     </div>

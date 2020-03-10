@@ -171,7 +171,6 @@ const Events = props => {
 </Table>            
         <Button
           variant="primary"
-          size="lg"
           style={{ marginRight: "0.8rem", marginTop: "0.8rem" }}
           href="http://localhost:3000/calendar/vendor_selection"
         >
@@ -180,7 +179,6 @@ const Events = props => {
 
         <Button
           variant="primary"
-          size="lg"
           style={{ marginTop: "0.8rem" }}
           href="http://localhost:3000/calendar"
         >
