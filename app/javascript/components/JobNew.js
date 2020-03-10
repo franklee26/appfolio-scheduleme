@@ -91,7 +91,7 @@ const JobNew = props => {
     <div>
       <header className="bg-dark py-3">
         <h1 align="center" className="display-3 text-white mt-5 mb-2">
-          Submit a new Job
+          Submit a Job
         </h1>
       </header>
       <div className="container">
@@ -159,14 +159,14 @@ const JobNew = props => {
             />
           </Form.Group>
           <div className="actions">
-              <Button
-                variant="primary"
-                type="submit"
-                href={"http://localhost:3000/calendar"}
-                style={{ marginRight: "0.8rem" }}
-              >
-                Back
-              </Button>          
+            <Button
+              variant="primary"
+              type="submit"
+              href={"http://localhost:3000/calendar"}
+              style={{ marginRight: "0.8rem" }}
+            >
+              Back
+            </Button>
             {state.loading ? (
               <Button
                 variant="primary"
@@ -191,7 +191,6 @@ const JobNew = props => {
                 Submit
               </Button>
             )}
-
           </div>
         </Form>
 
