@@ -8,7 +8,7 @@ import Tab from "react-bootstrap/Tab";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import { shortFormatDateAll, dayExporter } from "./Events.js";
+import { shortFormatDateAll, dayExporter,shortFormatDate } from "./Events.js";
 const { compose, withProps, lifecycle } = require("recompose");
 const {
   withScriptjs,
@@ -71,10 +71,18 @@ const handleCompleteAllJobs = (event, id) => {
       }
     });
 };
+export const istoday = date => {
+  var today = new Date();
+  var jobdate = new Date(date);
+  if(today.getFullYear() === jobdate.getFullYear() && today.getDay() === jobdate.getDay() && today.getMonth() === jobdate.getMonth()){
+    return true;
+  }
+  return false;
+};
 
 const VendorCalendar = props => {
   var filtered = props.vendorResponse.jobs.filter(
-    job => job.status == "COMPLETE"
+    job => (job.status == "COMPLETE" && istoday(job.start))
   );
   const [mapState, setMapState] = useState({
     start_home: true,
@@ -96,7 +104,7 @@ const VendorCalendar = props => {
   const handleMapCycle = () => {
     // check current index and see if I can cycle
     const jobs = props.state.vendorResponse.jobs.filter(
-      job => job.status == "COMPLETE"
+      job => (job.status == "COMPLETE" && istoday(job.start))
     );
     if (mapState.job_index >= jobs.length - 1) {
       alert("Error: Can't cycle");
@@ -137,13 +145,13 @@ const VendorCalendar = props => {
             origin:
               mapState.job_index > 0
                 ? props.vendorResponse.jobs.filter(
-                    job => job.status == "COMPLETE"
+                    job => (job.status == "COMPLETE" && istoday(job.start))
                   )[mapState.job_index - 1].address
                 : "1100 Anacapa St, Santa Barbara, CA 93101",
             destination:
               mapState.job_index != null
                 ? props.vendorResponse.jobs.filter(
-                    job => job.status == "COMPLETE"
+                    job => (job.status == "COMPLETE" && istoday(job.start))
                   )[mapState.job_index].address
                 : "1100 Anacapa St, Santa Barbara, CA 93101",
             travelMode: google.maps.TravelMode.DRIVING
@@ -180,8 +188,8 @@ const VendorCalendar = props => {
         </p>
       </header>{" "}
       <Container>
-        <Tabs defaultActiveKey="Upcoming" style={{ marginTop: "0.8rem" }}>
-          <Tab eventKey="Upcoming" title="Upcoming">
+        <Tabs defaultActiveKey="Today" style={{ marginTop: "0.8rem" }}>
+          <Tab eventKey="Today" title="Today">
             <Row>
             <Col md = "auto">
               <Button size = "lg"
@@ -198,7 +206,7 @@ const VendorCalendar = props => {
                 }}> Complete All</Button>
             <CardDeck style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
               {props.vendorResponse.jobs
-                .filter(job => job.status == "COMPLETE")
+                .filter(job => job.status == "COMPLETE" && istoday(job.start) )
                 .map(job => (
                   <a
                     style={{ cursor: "pointer" }}
@@ -272,6 +280,45 @@ const VendorCalendar = props => {
             </Col>
             </Row>
           </Tab>
+          <Tab eventKey = "Upcoming"
+          title = "Upcoming" >
+            <CardColumns style = {
+              {
+                marginTop: "0.8rem"
+              }
+            } > {
+              props.vendorResponse.jobs
+              .filter(job => (job.status == "COMPLETE" && !(istoday(job.start))))
+              .map(job => (<Card border = "warning"
+                bg = "warning"
+                text = "black"
+                style = {
+                  {
+                    width: "18rem"
+                  }
+                } >
+                <Card.Header> {
+                  job.title
+                }</Card.Header> <Card.Body>
+                <Card.Title>
+                Completed
+                for {
+                  job.tenant_name
+                }
+                from {
+                  " "
+                } {
+                  shortFormatDateAll(job.start)
+                }
+                to {
+                  " "
+                } {
+                  shortFormatDateAll(job.end)
+                } </Card.Title> <Card.Text > {
+                  job.content
+                } </Card.Text> </Card.Body> </Card>
+              ))
+            } </CardColumns> </Tab>
           <Tab eventKey="Completed" title="Completed">
             <CardColumns style={{ marginTop: "0.8rem" }}>
               {props.vendorResponse.jobs
