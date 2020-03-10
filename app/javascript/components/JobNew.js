@@ -158,8 +158,15 @@ const JobNew = props => {
               placeholder="Job description"
             />
           </Form.Group>
-
           <div className="actions">
+              <Button
+                variant="primary"
+                type="submit"
+                href={"http://localhost:3000/calendar"}
+                style={{ marginRight: "0.8rem" }}
+              >
+                Back
+              </Button>          
             {state.loading ? (
               <Button
                 variant="primary"
@@ -184,7 +191,7 @@ const JobNew = props => {
                 Submit
               </Button>
             )}
-            <a href={"http://localhost:3000/calendar"}>Back</a>
+
           </div>
         </Form>
 
@@ -200,7 +207,7 @@ const JobNew = props => {
             <Button
               variant="primary"
               onClick={e =>
-                (window.location.href = "/calendar/calendar_submission")
+                (window.location.href = "/calendar/vendor_selection")
               }
             >
               Continue
