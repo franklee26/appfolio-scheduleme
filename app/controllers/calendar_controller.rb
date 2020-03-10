@@ -568,7 +568,7 @@ class CalendarController < ApplicationController
       post_job_loc = default_address
       post_job_start = default_end
 
-      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]+(8).hours}' and start > '#{default_start+(8).hours}' order by start desc limit 1;")
+      prev_job = Job.find_by_sql("select * from jobs where start < '#{f_time[:start]+(7).hours}' and start > '#{default_start+(7).hours}' order by start desc limit 1;")
       if prev_job.length == 1
         prev_job = prev_job[0]
         prev_tenant = Tenant.find(prev_job.tenant_id)        
@@ -583,7 +583,7 @@ class CalendarController < ApplicationController
         end
       end
 
-      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]+(8).hours}' and start < '#{default_end+(8).hours}' order by start asc limit 1;")
+      post_job = Job.find_by_sql("select * from jobs where start > '#{f_time[:start]+(7).hours}' and start < '#{default_end+(7).hours}' order by start asc limit 1;")
       if post_job.length == 1
         post_job = post_job[0]
         post_tenant = Tenant.find(post_job.tenant_id)
