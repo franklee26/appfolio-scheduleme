@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 import Modal from "react-bootstrap/Modal";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
@@ -21,6 +22,7 @@ import {
 import StarRatings from "react-star-ratings";
 import { Switch, Route, MemoryRouter } from "react-router-dom";
 import VendorCalendar from "./VendorCalendar.js";
+import CalendarProfile from "./CalendarProfile.js";
 
 /*
 isLoaded: mounting landowner response
@@ -331,23 +333,63 @@ const CalendarIndex = props => {
   } else if (!isLoaded) {
     return (
       <div>
-        <h1>Loading data...</h1>
+        <Spinner
+            variant="primary"
+            animation="border"
+            style={{
+              width: "5rem",
+              height: "5rem",
+              position: "fixed",
+              top: "50vh",
+              left: "50vw"
+            }}
+          />
       </div>
     );
   } else if (props.user_type == "Tenant" && !isLoaded2) {
     return (
       <div>
-        <h1>Getting tenant information...</h1>
+        <Spinner
+            variant="primary"
+            animation="border"
+            style={{
+              width: "5rem",
+              height: "5rem",
+              position: "fixed",
+              top: "50vh",
+              left: "50vw"
+            }}
+          />
       </div>
     );
   } else if ((!isLoaded2 || !isLoaded3) && props.user_type == "Landowner") {
     return (
       <div>
-        <h1>Finishing last retrieves...</h1>
+        <Spinner
+            variant="primary"
+            animation="border"
+            style={{
+              width: "5rem",
+              height: "5rem",
+              position: "fixed",
+              top: "50vh",
+              left: "50vw"
+            }}
+          />
       </div>
     );
   } else if (props.user_type == "Vendor" && mapState.loading_maps) {
-    return <div>Loading maps...</div>;
+    return <div><Spinner
+    variant="primary"
+    animation="border"
+    style={{
+      width: "5rem",
+      height: "5rem",
+      position: "fixed",
+      top: "50vh",
+      left: "50vw"
+    }}
+  /></div>;
   } else if (props.user_type == "Tenant") {
     if (!tenantResponse.street_address) {
       return <TenantStreetAddress />;
@@ -355,10 +397,10 @@ const CalendarIndex = props => {
     return (
       <div>
         <header className="bg-dark py-1">
-          <h1 align="center" class="display-1 text-white mt-5 mb-2">
+          <h1 align="center" className="display-1 text-white mt-5 mb-2">
             {props.user_type} Homepage
           </h1>
-          <p align="center" class="lead text-light">
+          <p align="center" className="lead text-light">
             View your scheduled and completed jobs, or submit a new job request
             here!
           </p>
@@ -399,8 +441,7 @@ const CalendarIndex = props => {
                         variant="outline-dark"
                         style={{ marginRight: "0.8rem" }}
                         onClick={() =>
-                          (window.location.href =
-                            "/calendar/vendor_selection")
+                          (window.location.href = "/calendar/vendor_selection")
                         }
                       >
                         Continue
@@ -568,18 +609,12 @@ const CalendarIndex = props => {
               </CardColumns>
             </Tab>
             <Tab eventKey="Profile" title="Profile">
-              {props.user.landowner_id == 0 ? (
-                <h2>
-                  You do not have a landowner yet! Your landowner will assign
-                  you.
-                </h2>
-              ) : (
-                <h2>
-                  {" "}
-                  Your assigned landowner is {landownerResponse.name} with email{" "}
-                  {landownerResponse.email}{" "}
-                </h2>
-              )}
+              <CalendarProfile
+                user={props.user}
+                landowner={
+                  props.user.landowner_id == 0 ? null : landownerResponse
+                }
+              />
             </Tab>
           </Tabs>
           <TenantReviewSuccess show={reviewSuccess} />

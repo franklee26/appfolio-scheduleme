@@ -9,6 +9,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import { shortFormatDateAll, dayExporter } from "./Events.js";
+import { VendorCompleteAll } from "./CalendarModals.js";
 const { compose, withProps, lifecycle } = require("recompose");
 const {
   withScriptjs,
@@ -47,27 +48,6 @@ const handleCompleteJob = (event, job_id) => {
         window.location.reload(false);
       } else {
         alert("Failed to mark job as complete.");
-      }
-    });
-};
-
-const handleCompleteAllJobs = (event, id) => {
-  event.preventDefault();
-  fetch(`http://localhost:3000/jobs/finishAll`, {
-      method: "PATCH",
-      headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            vendor_id: id,
-    })})
-    .then(response => response.json())
-    .then(response => {
-      if (response.status == 200) {
-        alert("Successfully marked all jobs as complete.");
-        window.location.reload(false);
-      } else {
-        alert("Failed to mark all jobs as complete.");
       }
     });
 };
@@ -168,6 +148,28 @@ const VendorCalendar = props => {
       {props.directions && <DirectionsRenderer directions={props.directions} />}
     </GoogleMap>
   ));
+
+  const [completeAllState, setCompleteAllState] = useState(false)
+
+  const handleCompleteAllJobs = (event, id) => {
+    event.preventDefault();
+    fetch(`http://localhost:3000/jobs/finishAll`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              vendor_id: id,
+      })})
+      .then(response => response.json())
+      .then(response => {
+        if (response.status == 200) {
+          setCompleteAllState(true);
+        } else {
+          alert("Failed to mark all jobs as complete.");
+        }
+      });
+  };
 
   return (
     <div>
@@ -334,6 +336,8 @@ const VendorCalendar = props => {
           </Tab>
         </Tabs>
       </Container>
+
+      <VendorCompleteAll show={completeAllState}/>
     </div>
   );
 };
