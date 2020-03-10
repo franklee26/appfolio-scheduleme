@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
-  protect_from_forgery :except => [:new_temp_job, :complete]
+  protect_from_forgery :except => [:new_temp_job, :complete, :finishAll]
 
   # GET /jobs
   # GET /jobs.json
@@ -33,6 +33,22 @@ class JobsController < ApplicationController
     job.status = "VENDOR COMPLETE"
     job.save!
 
+    render json: {status: 200}
+  end
+
+  def finishAll
+    body = JSON(request.body.read)
+    vendor_ID = body["vendor_id"]
+    to_update_ids = Job.all.select{ 
+      |j| (j.status == "COMPLETE" &&  j.vendor_id == vendor_ID )
+    }.map { 
+      |j| j.id 
+    }
+    to_update_ids.each do |id|
+      job = Job.find(id)
+      job.status = "VENDOR COMPLETE"
+      job.save!
+    end
     render json: {status: 200}
   end
 

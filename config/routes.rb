@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   post 'jobs/complete', to: 'jobs#complete'
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
   patch 'jobs/finish/:job_id', to: 'jobs#finish'
+  patch 'jobs/finishAll', to: 'jobs#finishAll'
 
   # reviews
   post 'reviews/new_review', to: 'reviews#new_temp_review'
