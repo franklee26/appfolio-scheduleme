@@ -137,7 +137,7 @@ const JobNew = props => {
                 <option>Plumber</option>
                 <option>Carpenter</option>
                 <option>Gardener</option>
-                <option>Household cleaning</option>
+                <option>Household Cleaning</option>
                 <option>Internet and Cable</option>
                 <option>Other</option>
               </Form.Control>

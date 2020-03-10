@@ -172,7 +172,7 @@ end
     @reviews = Review.all.filter { |r| reviewed_job_ids.include? r.job_id }
 
     # for mapping review to tenant name (no direct association for this yet)
-    @review_to_tenant = @reviews.to_h { |r| [r.id, Job.find(r.job_id).tenant.name] }
+    @review_to_tenant = @reviews.to_h { |r| [r.id, Job.find(r.job_id).tenant] }
   end
 
   def search
