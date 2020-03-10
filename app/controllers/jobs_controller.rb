@@ -40,7 +40,7 @@ class JobsController < ApplicationController
     body = JSON(request.body.read)
     vendor_ID = body["vendor_id"]
     to_update_ids = Job.all.select{ 
-      |j| (j.status == "COMPLETE" &&  j.vendor_id == vendor_ID )
+      |j| (j.status == "COMPLETE" &&  j.vendor_id == vendor_ID && (j.start).day == Time.now.day && (j.start).month == Time.now.month && (j.start).year == Time.now.year)
     }.map { 
       |j| j.id 
     }
