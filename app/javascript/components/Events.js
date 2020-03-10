@@ -161,7 +161,7 @@ const Events = props => {
                       href={`/calendar/calendar_submission/${job.id}`}
                     >
                       {" "}
-                      Add To Calendar{" "}
+                      Select{" "}
                     </Button></td>
 
     </tr>

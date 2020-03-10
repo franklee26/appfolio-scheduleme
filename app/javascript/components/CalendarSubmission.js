@@ -82,6 +82,9 @@ const CalendarSubmission = props => {
             </a>
           ))}
         </CardColumns>
+          <Button style={{ marginRight: "0.8rem" }} href={`/calendar/events/${props.vendor_id}`}>
+          Back
+        </Button>
         <Button href="/calendar">Home</Button>
 
         <Modal show={show}>

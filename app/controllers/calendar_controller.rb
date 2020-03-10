@@ -24,6 +24,8 @@ class CalendarController < ApplicationController
     all_calendars = get_user_calendars(access_token)
     @calendars = all_calendars.filter { |c| c.summary != "Holidays in United States" && c.summary != @user.email && c.summary != "Contacts" }
     @job_id = params[:job_id]
+    job = Job.find(@job_id)
+    @vendor_id = job.vendor_id
   end
 
   def vendor_selection
