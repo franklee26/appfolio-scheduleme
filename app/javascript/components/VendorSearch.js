@@ -163,67 +163,70 @@ class VendorSearch extends Component {
                     <div>
                       <h1 align="center">Vendors</h1>
                       {this.state.list.length ? (
-                        this.state.list.map(vendor => (
-                          <div className="container">
-                            <OverlayTrigger
-                              placement="right"
-                              delay={{ show: 250, hide: 400 }}
-                              width="500"
-                              overlay={
-                                <Tooltip>Click For More Information</Tooltip>
-                              }
-                            >
-                              <div
-                                style={{ cursor: "pointer" }}
-                                class="card flex-row flex-wrap"
-                                onClick={e =>
-                                  this.handleVendorListClick(e, vendor)
+                        <div style={{ overflow: "auto", height: "500px" }}>
+                          {this.state.list.map(vendor => (
+                            <div className="container">
+                              <OverlayTrigger
+                                placement="right"
+                                delay={{ show: 250, hide: 400 }}
+                                width="500"
+                                overlay={
+                                  <Tooltip>Click For More Information</Tooltip>
                                 }
                               >
-                                <div class="card-header border-0">
-                                  <Image
-                                    src={vendor.profile_pic}
-                                    width="150"
-                                    height="150"
-                                    style={{ border: "1px solid #595757" }}
-                                    rounded
-                                  />
-                                </div>
-                                <div class="card-block px-2" width="600">
-                                  <h4 class="card-title">
-                                    {vendor.name}:{" "}
-                                    {vendor.occupation
-                                      ? vendor.occupation
-                                      : "None"}
-                                    <br></br>
-                                    <StarRatings
-                                      rating={parseFloat(
-                                        vendor.rating
-                                          ? vendor.rating.toFixed(2)
-                                          : "0.0"
-                                      )}
-                                      starDimension="19px"
-                                      starSpacing="1px"
-                                      starRatedColor="gold"
-                                      numberOfStars={5}
-                                      name="rating"
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  class="card flex-row flex-wrap"
+                                  onClick={e =>
+                                    this.handleVendorListClick(e, vendor)
+                                  }
+                                >
+                                  <div class="card-header border-0">
+                                    <Image
+                                      src={vendor.profile_pic}
+                                      width="150"
+                                      height="150"
+                                      style={{ border: "1px solid #595757" }}
+                                      rounded
                                     />
-                                  </h4>
-                                  <p class="card-text">
-                                    <b>Phone</b>: {vendor.phone_number}
-                                    <br></br>
-                                    <b>Email</b>: {vendor.email}
-                                    <br></br>
-                                    <b>Address</b>: {vendor.street_address},{" "}
-                                    {vendor.city}, {vendor.state}, {vendor.zip}
-                                  </p>
+                                  </div>
+                                  <div class="card-block px-2" width="600">
+                                    <h4 class="card-title">
+                                      {vendor.name}:{" "}
+                                      {vendor.occupation
+                                        ? vendor.occupation
+                                        : "None"}
+                                      <br></br>
+                                      <StarRatings
+                                        rating={parseFloat(
+                                          vendor.rating
+                                            ? vendor.rating.toFixed(2)
+                                            : "0.0"
+                                        )}
+                                        starDimension="19px"
+                                        starSpacing="1px"
+                                        starRatedColor="gold"
+                                        numberOfStars={5}
+                                        name="rating"
+                                      />
+                                    </h4>
+                                    <p class="card-text">
+                                      <b>Phone</b>: {vendor.phone_number}
+                                      <br></br>
+                                      <b>Email</b>: {vendor.email}
+                                      <br></br>
+                                      <b>Address</b>: {vendor.street_address},{" "}
+                                      {vendor.city}, {vendor.state},{" "}
+                                      {vendor.zip}
+                                    </p>
+                                  </div>
+                                  <div class="w-100"></div>
                                 </div>
-                                <div class="w-100"></div>
-                              </div>
-                            </OverlayTrigger>
-                            <br></br>
-                          </div>
-                        ))
+                              </OverlayTrigger>
+                              <br></br>
+                            </div>
+                          ))}
+                        </div>
                       ) : (
                         <label> No results found. </label>
                       )}
