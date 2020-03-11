@@ -9,7 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Jumbotron from "react-bootstrap/Jumbotron";
-import { shortFormatDateAll } from "./Events.js";
+import { shortFormatDateAll, shortFormatTime, shortFormatDate } from "./Events.js";
 import $ from "jquery";
 import {
   LandownerRemoveVendor,
@@ -23,6 +23,7 @@ import StarRatings from "react-star-ratings";
 import { Switch, Route, MemoryRouter } from "react-router-dom";
 import VendorCalendar from "./VendorCalendar.js";
 import CalendarProfile from "./CalendarProfile.js";
+import Table from "react-bootstrap/Table";
 
 /*
 isLoaded: mounting landowner response
@@ -484,129 +485,147 @@ const CalendarIndex = props => {
                   .filter(job => job.status == "COMPLETE")
                   .map(job => (
                     <Card
-                      bg="warning"
                       text="dark"
-                      border="warning"
-                      style={{ width: "18rem" }}
+                      border="primary"
+                      style={{ width: "20rem" }}
                     >
                       <Card.Header>{job.title}</Card.Header>
                       <Card.Body>
-                        <Card.Title>
-                          Scheduled for {shortFormatDateAll(job.start)} to{" "}
-                          {shortFormatDateAll(job.end)} assigned to{" "}
-                          {job.vendor_name}
-                        </Card.Title>
-                        <Card.Text>Description: {job.content}</Card.Text>
+                        <b>Vendor: </b>
+                        {job.vendor_name}
+                        <br />
+                        <b>Date: </b>
+                        {shortFormatDate(job.start)}
+                        <br />
+                        <b>Time: </b>
+                        {shortFormatTime(job.start)} -{" "}
+                        {shortFormatTime(job.end)} <br />
+                        <b>Description: </b> {job.content}
+                        <br />
                       </Card.Body>
                     </Card>
                   ))}
               </CardColumns>
             </Tab>
             <Tab eventKey="Completed" title="Completed">
-              <CardColumns style={{ marginTop: "0.8rem" }}>
-                {tenantResponse.jobs
-                  .filter(job => job.status == "VENDOR COMPLETE")
-                  .map(job => (
-                    <Card
-                      bg="success"
-                      text="white"
-                      border="success"
-                      style={{ width: "18rem" }}
-                    >
-                      <Card.Header>{job.title}</Card.Header>
-                      <Card.Body>
-                        <Card.Title>
-                          Completed by {job.vendor_name} from{" "}
-                          {shortFormatDateAll(job.start)} to{" "}
-                          {shortFormatDateAll(job.end)}
-                        </Card.Title>
-                        <Card.Text>Description: {job.content}</Card.Text>
-                        {job.reviewed ? (
-                          <Button variant="primary" disabled>
-                            Reviewed
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="primary"
-                            onClick={() =>
-                              SETSTATE({
-                                showM: true,
-                                TITLE: job.title,
-                                JID: job.id,
-                                VID: job.vendor_id
-                              })
-                            }
-                          >
-                            Review
-                          </Button>
-                        )}
-
-                        <Modal
-                          show={showM}
-                          onHide={e => SETSTATE({ ...STATE, showM: false })}
-                        >
-                          <Modal.Header closeButton>
-                            <Modal.Title>{TITLE}</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <Form>
-                              <Form.Group controlId="starRating">
-                                <Form.Label style={{ marginRight: "1.0rem" }}>
-                                  Rate
-                                </Form.Label>
-                                <StarRatings
-                                  rating={parseFloat(rate)}
-                                  starRatedColor="gold"
-                                  starHoverColor="gold"
-                                  starSpacing="2px"
-                                  changeRating={(rating, name) =>
-                                    SetState({ ...State, rate: rating })
-                                  }
-                                  numberOfStars={5}
-                                  name="rating"
-                                />
-                              </Form.Group>
-
-                              <Form.Group controlId="exampleForm.ControlTextarea1">
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                  as="textarea"
-                                  rows="6"
-                                  placeholder="Review Description"
-                                  onChange={event =>
-                                    SetState({
-                                      ...State,
-                                      text: event.target.value
-                                    })
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button
-                              variant="danger"
-                              onClick={e =>
-                                SETSTATE({ ...STATE, showM: false })
-                              }
-                            >
-                              Exit
-                            </Button>
+              <Table hover size="sm" class="table bg-info">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Completed By</th>
+                    <th>Rating</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tenantResponse.jobs
+                    .filter(job => job.status === "VENDOR COMPLETE")
+                    .map(job => (
+                      <tr>
+                        {console.log(job)}
+                        <td>{job.title}</td>
+                        <td>{shortFormatDate(job.start)}</td>
+                        <td>
+                          {shortFormatTime(job.start)} -{" "}
+                          {shortFormatTime(job.end)}
+                        </td>
+                        <td>{job.vendor_name}</td>
+                        <td>
+                          {job.reviewed ? (
+                            <StarRatings
+                              rating={parseFloat(job.vendor_rating.toFixed(2))}
+                              starDimension="17px"
+                              starSpacing="2px"
+                              starRatedColor="gold"
+                              numberOfStars={5}
+                              name="rating"
+                            />
+                          ) : (
                             <Button
                               variant="primary"
-                              onClick={event => {
-                                SETSTATE({ ...STATE, showM: false });
-                                handleJobReview(event, JID, text, rate, VID);
-                              }}
+                              size="sm"
+                              onClick={() =>
+                                SETSTATE({
+                                  showM: true,
+                                  TITLE: job.title,
+                                  JID: job.id,
+                                  VID: job.vendor_id
+                                })
+                              }
                             >
-                              Submit
+                              Review
                             </Button>
-                          </Modal.Footer>
-                        </Modal>
-                      </Card.Body>
-                    </Card>
-                  ))}
-              </CardColumns>
+                          )}
+                          <Modal
+                            show={showM}
+                            onHide={e => SETSTATE({ ...STATE, showM: false })}
+                          >
+                            <Modal.Header closeButton>
+                              <Modal.Title>{TITLE}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                              <Form>
+                                <Form.Group controlId="starRating">
+                                  <Form.Label style={{ marginRight: "1.0rem" }}>
+                                    Rate
+                                  </Form.Label>
+                                  <StarRatings
+                                    rating={parseFloat(rate)}
+                                    starRatedColor="gold"
+                                    starHoverColor="gold"
+                                    starSpacing="2px"
+                                    changeRating={(rating, name) =>
+                                      SetState({ ...State, rate: rating })
+                                    }
+                                    numberOfStars={5}
+                                    name="rating"
+                                  />
+                                </Form.Group>
+
+                                <Form.Group controlId="exampleForm.ControlTextarea1">
+                                  <Form.Label>Description</Form.Label>
+                                  <Form.Control
+                                    as="textarea"
+                                    rows="6"
+                                    placeholder="Review Description"
+                                    onChange={event =>
+                                      SetState({
+                                        ...State,
+                                        text: event.target.value
+                                      })
+                                    }
+                                  />
+                                </Form.Group>
+                              </Form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                              <Button
+                                variant="danger"
+                                onClick={e =>
+                                  SETSTATE({ ...STATE, showM: false })
+                                }
+                              >
+                                Exit
+                              </Button>
+                              <Button
+                                variant="primary"
+                                onClick={event => {
+                                  SETSTATE({ ...STATE, showM: false });
+                                  handleJobReview(event, JID, text, rate, VID);
+                                }}
+                              >
+                                Submit
+                              </Button>
+                            </Modal.Footer>
+                          </Modal>
+                        </td>
+                        <td>{job.content}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </Table>
             </Tab>
             <Tab eventKey="Profile" title="Profile">
               <CalendarProfile

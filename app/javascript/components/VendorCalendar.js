@@ -8,7 +8,7 @@ import Tab from "react-bootstrap/Tab";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import { shortFormatDateAll, dayExporter } from "./Events.js";
+import { shortFormatDateAll, dayExporter, shortFormatDate, shortFormatTime } from "./Events.js";
 import { VendorCompleteAll } from "./CalendarModals.js";
 const { compose, withProps, lifecycle } = require("recompose");
 const {
@@ -220,17 +220,11 @@ const VendorCalendar = props => {
                         job => job.status == "COMPLETE" && istoday(job.start)
                       )
                       .map(job => (
-                        <a
-                          style={{ cursor: "pointer" }}
-                          href="#"
-                          onClick={e => handleCompleteJob(e, job.id)}
-                        >
                           <Card
-                            border="warning"
-                            bg="warning"
+                            border="info"
                             text="dark"
                             style={{
-                              width: "18rem",
+                              width: "20rem",
                               display: "flex",
                               marginTop: "10px"
                             }}
@@ -244,17 +238,29 @@ const VendorCalendar = props => {
                                 : ""}
                             </Card.Header>
                             <Card.Body>
-                              <Card.Title>
-                                Requested by {job.tenant_name}{" "}
-                              </Card.Title>
-                              <Card.Text>
-                                {job.content} scheduled from{" "}
-                                {shortFormatDateAll(job.start)} to{" "}
-                                {shortFormatDateAll(job.end)}
-                              </Card.Text>
+                            <Card.Text>
+                              <b>Tenant Name: </b>
+                              {job.tenant_name}
+                              <br />
+                              <b>Time: </b>
+                              {shortFormatDate(job.start)}
+                              <br />
+                              <b>Time: </b>
+                              {shortFormatTime(job.start)} -{" "}
+                              {shortFormatTime(job.end)}
+                              <br />
+                              <b>Description: </b>
+                              {job.content}
+                              <br />
+                            </Card.Text>
+                            <Button
+                              variant="outline-info"
+                              onClick={e => handleCompleteJob(e, job.id)}
+                            >
+                              Mark As Complete
+                            </Button>                            
                             </Card.Body>
                           </Card>
-                        </a>
                       ))}
                   </div>
                 </Col>
