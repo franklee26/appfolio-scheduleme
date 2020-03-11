@@ -97,3 +97,23 @@ export const TenantStreetAddress = () => (
   </Modal.Footer>
 </Modal>
 )
+
+export const VendorCompleteAll = props => (
+  <Modal show={props.show}>
+  <Modal.Header>
+    <Modal.Title>Success</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>You have completed all jobs</Modal.Body>
+  <Modal.Footer>
+    <Button
+      variant="primary"
+      onClick={e =>
+        (window.location.href =
+          "http://localhost:3000/calendar")
+      }
+    >
+      Done
+    </Button>
+  </Modal.Footer>
+</Modal>
+)

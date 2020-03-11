@@ -79,7 +79,11 @@ class CustomNavbar extends React.Component {
             <Nav.Link href="/vendors/search">Vendors</Nav.Link>
           </Nav>
           {!this.state.logged_in && (
-            <Button variant="outline-primary" href="/calendar/login" style={{marginRight: "0.8rem"}}>
+            <Button
+              variant="outline-primary"
+              href="/calendar/login"
+              style={{ marginRight: "0.8rem" }}
+            >
               Login
             </Button>
           )}

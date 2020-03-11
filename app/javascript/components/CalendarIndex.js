@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import CardColumns from "react-bootstrap/CardColumns";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 import Modal from "react-bootstrap/Modal";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
@@ -26,6 +27,7 @@ import StarRatings from "react-star-ratings";
 import { Switch, Route, MemoryRouter } from "react-router-dom";
 import VendorCalendar from "./VendorCalendar.js";
 import Table from "react-bootstrap/Table";
+import CalendarProfile from "./CalendarProfile.js";
 
 /*
 isLoaded: mounting landowner response
@@ -135,7 +137,6 @@ const CalendarIndex = props => {
         }
       });
   };
-
 
   const handleClickVendor = (event, landowner_id, vendor_id) => {
     event.preventDefault();
@@ -337,23 +338,67 @@ const CalendarIndex = props => {
   } else if (!isLoaded) {
     return (
       <div>
-        <h1>Loading data...</h1>
+        <Spinner
+          variant="primary"
+          animation="border"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            position: "fixed",
+            top: "50vh",
+            left: "50vw"
+          }}
+        />
       </div>
     );
   } else if (props.user_type == "Tenant" && !isLoaded2) {
     return (
       <div>
-        <h1>Getting tenant information...</h1>
+        <Spinner
+          variant="primary"
+          animation="border"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            position: "fixed",
+            top: "50vh",
+            left: "50vw"
+          }}
+        />
       </div>
     );
   } else if ((!isLoaded2 || !isLoaded3) && props.user_type == "Landowner") {
     return (
       <div>
-        <h1>Finishing last retrieves...</h1>
+        <Spinner
+          variant="primary"
+          animation="border"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            position: "fixed",
+            top: "50vh",
+            left: "50vw"
+          }}
+        />
       </div>
     );
   } else if (props.user_type == "Vendor" && mapState.loading_maps) {
-    return <div>Loading maps...</div>;
+    return (
+      <div>
+        <Spinner
+          variant="primary"
+          animation="border"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            position: "fixed",
+            top: "50vh",
+            left: "50vw"
+          }}
+        />
+      </div>
+    );
   } else if (props.user_type == "Tenant") {
     if (!tenantResponse.street_address) {
       return <TenantStreetAddress />;
@@ -361,10 +406,10 @@ const CalendarIndex = props => {
     return (
       <div>
         <header className="bg-dark py-1">
-          <h1 align="center" class="display-1 text-white mt-5 mb-2">
+          <h1 align="center" className="display-1 text-white mt-5 mb-2">
             {props.user_type} Homepage
           </h1>
-          <p align="center" class="lead text-light">
+          <p align="center" className="lead text-light">
             View your scheduled and completed jobs, or submit a new job request
             here!
           </p>
@@ -405,8 +450,7 @@ const CalendarIndex = props => {
                         variant="outline-dark"
                         style={{ marginRight: "0.8rem" }}
                         onClick={() =>
-                          (window.location.href =
-                            "/calendar/calendar_submission")
+                          (window.location.href = "/calendar/vendor_selection")
                         }
                       >
                         Continue
@@ -505,80 +549,82 @@ const CalendarIndex = props => {
                             />
                           ) : (
                             <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() =>
-                              SETSTATE({
-                                showM: true,
-                                TITLE: job.title,
-                                JID: job.id,
-                                VID: job.vendor_id
-                              })
-                            }
-                          >Review</Button>
-                          )}
-                                                  <Modal
-                          show={showM}
-                          onHide={e => SETSTATE({ ...STATE, showM: false })}
-                        >
-                          <Modal.Header closeButton>
-                            <Modal.Title>{TITLE}</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <Form>
-                              <Form.Group controlId="starRating">
-                                <Form.Label style={{ marginRight: "1.0rem" }}>
-                                  Rate
-                                </Form.Label>
-                                <StarRatings
-                                  rating={parseFloat(rate)}
-                                  starRatedColor="gold"
-                                  starHoverColor="gold"
-                                  starSpacing="2px"
-                                  changeRating={(rating, name) =>
-                                    SetState({ ...State, rate: rating })
-                                  }
-                                  numberOfStars={5}
-                                  name="rating"
-                                />
-                              </Form.Group>
-
-                              <Form.Group controlId="exampleForm.ControlTextarea1">
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                  as="textarea"
-                                  rows="6"
-                                  placeholder="Review Description"
-                                  onChange={event =>
-                                    SetState({
-                                      ...State,
-                                      text: event.target.value
-                                    })
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button
-                              variant="danger"
-                              onClick={e =>
-                                SETSTATE({ ...STATE, showM: false })
+                              variant="primary"
+                              size="sm"
+                              onClick={() =>
+                                SETSTATE({
+                                  showM: true,
+                                  TITLE: job.title,
+                                  JID: job.id,
+                                  VID: job.vendor_id
+                                })
                               }
                             >
-                              Exit
+                              Review
                             </Button>
-                            <Button
-                              variant="primary"
-                              onClick={event => {
-                                SETSTATE({ ...STATE, showM: false });
-                                handleJobReview(event, JID, text, rate, VID);
-                              }}
-                            >
-                              Submit
-                            </Button>
-                          </Modal.Footer>
-                        </Modal>
+                          )}
+                          <Modal
+                            show={showM}
+                            onHide={e => SETSTATE({ ...STATE, showM: false })}
+                          >
+                            <Modal.Header closeButton>
+                              <Modal.Title>{TITLE}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                              <Form>
+                                <Form.Group controlId="starRating">
+                                  <Form.Label style={{ marginRight: "1.0rem" }}>
+                                    Rate
+                                  </Form.Label>
+                                  <StarRatings
+                                    rating={parseFloat(rate)}
+                                    starRatedColor="gold"
+                                    starHoverColor="gold"
+                                    starSpacing="2px"
+                                    changeRating={(rating, name) =>
+                                      SetState({ ...State, rate: rating })
+                                    }
+                                    numberOfStars={5}
+                                    name="rating"
+                                  />
+                                </Form.Group>
+
+                                <Form.Group controlId="exampleForm.ControlTextarea1">
+                                  <Form.Label>Description</Form.Label>
+                                  <Form.Control
+                                    as="textarea"
+                                    rows="6"
+                                    placeholder="Review Description"
+                                    onChange={event =>
+                                      SetState({
+                                        ...State,
+                                        text: event.target.value
+                                      })
+                                    }
+                                  />
+                                </Form.Group>
+                              </Form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                              <Button
+                                variant="danger"
+                                onClick={e =>
+                                  SETSTATE({ ...STATE, showM: false })
+                                }
+                              >
+                                Exit
+                              </Button>
+                              <Button
+                                variant="primary"
+                                onClick={event => {
+                                  SETSTATE({ ...STATE, showM: false });
+                                  handleJobReview(event, JID, text, rate, VID);
+                                }}
+                              >
+                                Submit
+                              </Button>
+                            </Modal.Footer>
+                          </Modal>
                         </td>
                         <td>{job.content}</td>
                       </tr>
@@ -587,18 +633,12 @@ const CalendarIndex = props => {
               </Table>
             </Tab>
             <Tab eventKey="Profile" title="Profile">
-              {props.user.landowner_id == 0 ? (
-                <h2>
-                  You do not have a landowner yet! Your landowner will assign
-                  you.
-                </h2>
-              ) : (
-                <h2>
-                  {" "}
-                  Your assigned landowner is {landownerResponse.name} with email{" "}
-                  {landownerResponse.email}{" "}
-                </h2>
-              )}
+              <CalendarProfile
+                user={props.user}
+                landowner={
+                  props.user.landowner_id == 0 ? null : landownerResponse
+                }
+              />
             </Tab>
           </Tabs>
           <TenantReviewSuccess show={reviewSuccess} />
@@ -796,65 +836,3 @@ const CalendarIndex = props => {
 };
 
 export default CalendarIndex;
-/*<Modal
-                            show={showM}
-                            onHide={e => SETSTATE({ ...STATE, showM: false })}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>{TITLE}</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              <Form>
-                                <Form.Group controlId="starRating">
-                                  <Form.Label style={{ marginRight: "1.0rem" }}>
-                                    Rate
-                                  </Form.Label>
-                                  <StarRatings
-                                    rating={parseFloat(rate)}
-                                    starRatedColor="gold"
-                                    starHoverColor="gold"
-                                    starSpacing="2px"
-                                    changeRating={(rating, name) =>
-                                      SetState({ ...State, rate: rating })
-                                    }
-                                    numberOfStars={5}
-                                    name="rating"
-                                  />
-                                </Form.Group>
-
-                                <Form.Group controlId="exampleForm.ControlTextarea1">
-                                  <Form.Label>Description</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows="6"
-                                    placeholder="Review Description"
-                                    onChange={event =>
-                                      SetState({
-                                        ...State,
-                                        text: event.target.value
-                                      })
-                                    }
-                                  />
-                                </Form.Group>
-                              </Form>
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="danger"
-                                onClick={e =>
-                                  SETSTATE({ ...STATE, showM: false })
-                                }
-                              >
-                                Exit
-                              </Button>
-                              <Button
-                                variant="primary"
-                                onClick={event => {
-                                  SETSTATE({ ...STATE, showM: false });
-                                  handleJobReview(event, JID, text, rate, VID);
-                                }}
-                              >
-                                Submit
-                              </Button>
-                            </Modal.Footer>
-                          </Modal>*/

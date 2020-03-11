@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
-  protect_from_forgery :except => [:new_temp_job, :complete]
+  protect_from_forgery :except => [:new_temp_job, :complete, :finishAll]
 
   # GET /jobs
   # GET /jobs.json
@@ -36,16 +36,35 @@ class JobsController < ApplicationController
     render json: {status: 200}
   end
 
+  def finishAll
+    body = JSON(request.body.read)
+    vendor_ID = body["vendor_id"]
+    to_update_ids = Job.all.select{ 
+      |j| (j.status == "COMPLETE" &&  j.vendor_id == vendor_ID && (j.start).day == Time.now.day && (j.start).month == Time.now.month && (j.start).year == Time.now.year)
+    }.map { 
+      |j| j.id 
+    }
+    to_update_ids.each do |id|
+      job = Job.find(id)
+      job.status = "VENDOR COMPLETE"
+      job.save!
+    end
+    render json: {status: 200}
+  end
+
   def complete
     body = JSON(request.body.read)
-    
-    job_id = body["job"]["id"]
-    job_content = body["job"]["content"]
-    job_tenant_id = body["job"]["tenant_id"]
-    # first make this job done!
+
+    # Get job
+    job_id = body["job_id"]
     job = Job.find(job_id)
+    job_content = job.content
+    job_tenant_id = job.tenant_id
+
+    # first make this job done!
     job.status = "COMPLETE"
     job.save!
+    
     # now delete all the jobs
     to_delete_ids = Job.all.select{ 
       |j| (j.status == "LANDOWNER APPROVED" || 

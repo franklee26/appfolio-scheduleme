@@ -91,7 +91,7 @@ const JobNew = props => {
     <div>
       <header className="bg-dark py-3">
         <h1 align="center" className="display-3 text-white mt-5 mb-2">
-          Submit a new Job
+          Submit a Job
         </h1>
       </header>
       <div className="container">
@@ -137,7 +137,7 @@ const JobNew = props => {
                 <option>Plumber</option>
                 <option>Carpenter</option>
                 <option>Gardener</option>
-                <option>Household cleaning</option>
+                <option>Household Cleaning</option>
                 <option>Internet and Cable</option>
                 <option>Other</option>
               </Form.Control>
@@ -158,8 +158,15 @@ const JobNew = props => {
               placeholder="Job description"
             />
           </Form.Group>
-
           <div className="actions">
+            <Button
+              variant="primary"
+              type="submit"
+              href={"http://localhost:3000/calendar"}
+              style={{ marginRight: "0.8rem" }}
+            >
+              Back
+            </Button>
             {state.loading ? (
               <Button
                 variant="primary"
@@ -184,7 +191,6 @@ const JobNew = props => {
                 Submit
               </Button>
             )}
-            <a href={"http://localhost:3000/calendar"}>Back</a>
           </div>
         </Form>
 
@@ -200,7 +206,7 @@ const JobNew = props => {
             <Button
               variant="primary"
               onClick={e =>
-                (window.location.href = "/calendar/calendar_submission")
+                (window.location.href = "/calendar/vendor_selection")
               }
             >
               Continue

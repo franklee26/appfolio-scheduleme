@@ -19,11 +19,11 @@ Rails.application.routes.draw do
   get 'calendar/get_ids', to: 'calendar#get_ids'
   get 'calendar/login', to: 'calendar#user_selection'
   get 'calendar/callback', to: 'calendar#callback'
-  get 'calendar/calendar_submission', to: 'calendar#calendar_submission'
-  get 'calendar/vendor_selection/:calendar_id', to: 'calendar#vendor_selection', calendar_id: /[^\/]+/
-  get 'calendar/events/:calendar_id/:vendor_id', to: 'calendar#events', calendar_id: /[^\/]+/, vendor_id: /[^\/]+/
+  get 'calendar/calendar_submission/:job_id', to: 'calendar#calendar_submission', job_id: /[^\/]+/
+  get 'calendar/vendor_selection', to: 'calendar#vendor_selection'
+  get 'calendar/events/:vendor_id', to: 'calendar#events', vendor_id: /[^\/]+/
   get 'calendar/:calendar_id/response', to: 'calendar#get', calendar_id: /[^\/]+/
-  post 'calendar/:calendar_id/:start/:end', to: 'calendar#post', calendar_id: /[^\/]+/, start: /[^\/]+/, end: /[^\/]+/
+  get 'calendar/post/:job_id/:calendar_id', to: 'calendar#post', job_id: /[^\/]+/, calendar_id: /[^\/]+/
   get 'calendar/schedule/:landowner_id/:tenant_id', to: 'calendar#schedule'
   patch 'calendar/add_default', to: 'calendar#add_default'
 
@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   post 'jobs/complete', to: 'jobs#complete'
   post 'jobs/new_temp_job', to: 'jobs#new_temp_job'
   patch 'jobs/finish/:job_id', to: 'jobs#finish'
+  patch 'jobs/finishAll', to: 'jobs#finishAll'
 
   # reviews
   post 'reviews/new_review', to: 'reviews#new_temp_review'

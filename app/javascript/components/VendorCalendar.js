@@ -2,10 +2,19 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CardColumns from "react-bootstrap/CardColumns";
+import CardDeck from "react-bootstrap/CardDeck";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import { shortFormatDateAll, dayExporter, shortFormatDate,
-  shortFormatTime } from "./Events.js";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
+import {
+  shortFormatDateAll,
+  dayExporter,
+  shortFormatDate,
+  shortFormatTime
+} from "./Events.js";
+import { VendorCompleteAll } from "./CalendarModals.js";
 const { compose, withProps, lifecycle } = require("recompose");
 const {
   withScriptjs,
@@ -48,9 +57,43 @@ const handleCompleteJob = (event, job_id) => {
     });
 };
 
+const handleCompleteAllJobs = (event, id) => {
+  event.preventDefault();
+  fetch(`http://localhost:3000/jobs/finishAll`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      vendor_id: id
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      if (response.status == 200) {
+        alert("Successfully marked all jobs as complete.");
+        window.location.reload(false);
+      } else {
+        alert("Failed to mark all jobs as complete.");
+      }
+    });
+};
+export const istoday = date => {
+  var today = new Date();
+  var jobdate = new Date(date);
+  if (
+    today.getFullYear() === jobdate.getFullYear() &&
+    today.getDay() === jobdate.getDay() &&
+    today.getMonth() === jobdate.getMonth()
+  ) {
+    return true;
+  }
+  return false;
+};
+
 const VendorCalendar = props => {
   var filtered = props.vendorResponse.jobs.filter(
-    job => job.status == "COMPLETE"
+    job => job.status == "COMPLETE" && istoday(job.start)
   );
   const [mapState, setMapState] = useState({
     start_home: true,
@@ -72,7 +115,7 @@ const VendorCalendar = props => {
   const handleMapCycle = () => {
     // check current index and see if I can cycle
     const jobs = props.state.vendorResponse.jobs.filter(
-      job => job.status == "COMPLETE"
+      job => job.status == "COMPLETE" && istoday(job.start)
     );
     if (mapState.job_index >= jobs.length - 1) {
       alert("Error: Can't cycle");
@@ -113,13 +156,13 @@ const VendorCalendar = props => {
             origin:
               mapState.job_index > 0
                 ? props.vendorResponse.jobs.filter(
-                    job => job.status == "COMPLETE"
+                    job => job.status == "COMPLETE" && istoday(job.start)
                   )[mapState.job_index - 1].address
                 : "1100 Anacapa St, Santa Barbara, CA 93101",
             destination:
               mapState.job_index != null
                 ? props.vendorResponse.jobs.filter(
-                    job => job.status == "COMPLETE"
+                    job => job.status == "COMPLETE" && istoday(job.start)
                   )[mapState.job_index].address
                 : "1100 Anacapa St, Santa Barbara, CA 93101",
             travelMode: google.maps.TravelMode.DRIVING
@@ -145,6 +188,29 @@ const VendorCalendar = props => {
     </GoogleMap>
   ));
 
+  const [completeAllState, setCompleteAllState] = useState(false);
+
+  const handleCompleteAllJobs = (event, id) => {
+    event.preventDefault();
+    fetch(`http://localhost:3000/jobs/finishAll`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        vendor_id: id
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.status == 200) {
+          setCompleteAllState(true);
+        } else {
+          alert("Failed to mark all jobs as complete.");
+        }
+      });
+  };
+
   return (
     <div>
       <header class="bg-dark py-1">
@@ -155,23 +221,114 @@ const VendorCalendar = props => {
           View your assigned and completed jobs
         </p>
       </header>{" "}
-      <div className="container">
-        <Tabs defaultActiveKey="Upcoming" style={{ marginTop: "0.8rem" }}>
+      <Container>
+        <Tabs defaultActiveKey="Today" style={{ marginTop: "0.8rem" }}>
+          <Tab eventKey="Today" title="Today">
+            <Row>
+              <Col md="auto">
+                <Button
+                  size="lg"
+                  onClick={e => handleCompleteAllJobs(e, props.user.id)}
+                  variant="info"
+                  style={{
+                    marginTop: "0.8rem",
+                    marginBottom: "0.8rem",
+                    marginLeft: "0.8rem"
+                  }}
+                >
+                  {" "}
+                  Complete All
+                </Button>
+                <div style={{ overflow: "auto", height: "792px" }}>
+                  {props.vendorResponse.jobs
+                    .filter(
+                      job => job.status == "COMPLETE" && istoday(job.start)
+                    )
+                    .map(job => (
+                      <a
+                        style={{ cursor: "pointer" }}
+                        href="#"
+                        onClick={e => handleCompleteJob(e, job.id)}
+                      >
+                        <Card
+                          border="warning"
+                          bg="warning"
+                          text="dark"
+                          style={{
+                            width: "18rem",
+                            display: "flex",
+                            marginTop: "10px"
+                          }}
+                        >
+                          <Card.Header>
+                            {job.title}{" "}
+                            {mapState.job_index != null &&
+                            filtered[mapState.job_index].content === job.content
+                              ? " 🕔"
+                              : ""}
+                          </Card.Header>
+                          <Card.Body>
+                            <Card.Title>
+                              Requested by {job.tenant_name}{" "}
+                            </Card.Title>
+                            <Card.Text>
+                              {job.content} scheduled from{" "}
+                              {shortFormatDateAll(job.start)} to{" "}
+                              {shortFormatDateAll(job.end)}
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>
+                      </a>
+                    ))}
+                </div>
+              </Col>
+              <Col>
+                <Button
+                  size="lg"
+                  variant="info"
+                  onClick={() => handleMapBackCycle()}
+                  style={{ marginTop: "0.8rem" }}
+                >
+                  Back
+                </Button>
+                <Button
+                  size="lg"
+                  variant="info"
+                  onClick={() => handleMapCycle()}
+                  style={{ marginTop: "0.8rem", marginLeft: "0.8rem" }}
+                >
+                  Next
+                </Button>
+                {filtered.length ? (
+                  <div>
+                    <h2 style={{ marginTop: "0.8rem" }}>
+                      {filtered[mapState.job_index].title}:{" "}
+                      {mapState.job_index == 0
+                        ? props.user.name
+                        : filtered[mapState.job_index - 1].tenant_name}{" "}
+                      ➡️ {filtered[mapState.job_index].tenant_name} (To{" "}
+                      {filtered[mapState.job_index].address})
+                    </h2>
+                    <VendorMap isMarkerShown />
+                  </div>
+                ) : (
+                  ""
+                )}
+              </Col>
+            </Row>
+          </Tab>
           <Tab eventKey="Upcoming" title="Upcoming">
-            <CardColumns style={{ marginTop: "0.8rem" }}>
+            <CardColumns
+              style={{
+                marginTop: "0.8rem"
+              }}
+            >
+              {" "}
               {props.vendorResponse.jobs
-                .filter(job => job.status == "COMPLETE")
+                .filter(job => job.status == "COMPLETE" && !istoday(job.start))
                 .map(job => (
-                  <a
-                    style={{ cursor: "pointer" }}
-                    href="#"
-                    onClick={e => handleCompleteJob(e, job.id)}
-                  >
-                    <Card
-                      border="info"
-                      text="dark"
-                      style={{ width: "20rem" }}
-                    >
+                  <a>
+                    <Card border="info" text="dark" style={{ width: "20rem" }}>
                       <Card.Header>
                         {job.title}{" "}
                         {mapState.job_index != null &&
@@ -181,27 +338,26 @@ const VendorCalendar = props => {
                       </Card.Header>
                       <Card.Body>
                         <Card.Text>
-                      <b>Tenant Name: </b>
-                      {job.tenant_name}
-                      <br />  
-                      <b>Time: </b>
-                      {shortFormatDate(job.start)}
-                      <br />                      
-                      <b>Time: </b>
-                      {shortFormatTime(job.start)} - {shortFormatTime(job.end)}
-                      <br />
-                      <b>Description: </b>
-                      {job.content}
-                      <br />
+                          <b>Tenant Name: </b>
+                          {job.tenant_name}
+                          <br />
+                          <b>Time: </b>
+                          {shortFormatDate(job.start)}
+                          <br />
+                          <b>Time: </b>
+                          {shortFormatTime(job.start)} -{" "}
+                          {shortFormatTime(job.end)}
+                          <br />
+                          <b>Description: </b>
+                          {job.content}
+                          <br />
                         </Card.Text>
-                    <Button
-                      variant="outline-info"
-                      onClick={e =>
-                        handleCompleteJob(e, job.id)
-                      }
-                    >
-                    Mark As Complete        
-                    </Button>         
+                        <Button
+                          variant="outline-info"
+                          onClick={e => handleCompleteJob(e, job.id)}
+                        >
+                          Mark As Complete
+                        </Button>
                       </Card.Body>
                     </Card>
                   </a>
@@ -300,7 +456,8 @@ const VendorCalendar = props => {
             </ul>
           </Tab>
         </Tabs>
-      </div>
+      </Container>
+      <VendorCompleteAll show={completeAllState} />
     </div>
   );
 };

@@ -40,6 +40,9 @@ class TenantsController < ApplicationController
       }
       tenant_jobs << job_obj
     end
+
+    tenant_jobs = tenant_jobs.sort_by {|t| t[:start]}
+
     response = {
       "id": @tenant.id,
       "name": @tenant.name,
