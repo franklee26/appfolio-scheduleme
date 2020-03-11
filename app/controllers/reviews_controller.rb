@@ -34,6 +34,11 @@ class ReviewsController < ApplicationController
     end
   end
   # GET /reviews/1/edit
+  def get
+    @review = Review.find(params[:job_id])
+    render json: {status: 200}
+  end
+
   def edit
   end
 

@@ -136,6 +136,7 @@ const CalendarIndex = props => {
       });
   };
 
+
   const handleClickVendor = (event, landowner_id, vendor_id) => {
     event.preventDefault();
     fetch("http://localhost:3000/landowner/add_vendor", {
@@ -468,31 +469,44 @@ const CalendarIndex = props => {
               </CardColumns>
             </Tab>
             <Tab eventKey="Completed" title="Completed">
-              <CardColumns style={{ marginTop: "0.8rem" }}>
-                {tenantResponse.jobs
-                  .filter(job => job.status == "VENDOR COMPLETE")
-                  .map(job => (
-                    <Card border="success" style={{ width: "20rem" }}>
-                      <Card.Header>{job.title}</Card.Header>
-                      <Card.Body>
-                        <b>Vendor: </b>
-                        {job.vendor_name}
-                        <br />
-                        <b>Date: </b>
-                        {shortFormatDate(job.start)}
-                        <br />
-                        <b>Time: </b>
-                        {shortFormatTime(job.start)} -{" "}
-                        {shortFormatTime(job.end)} <br />
-                        <b>Description: </b> {job.content}
-                        <br />
-                        {job.reviewed ? (
-                          <Button variant="primary" disabled>
-                            Reviewed
-                          </Button>
-                        ) : (
-                          <Button
+              <Table hover size="sm" class="table bg-info">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Completed By</th>
+                    <th>Rating</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tenantResponse.jobs
+                    .filter(job => job.status === "VENDOR COMPLETE")
+                    .map(job => (
+                      <tr>
+                        {console.log(job)}
+                        <td>{job.title}</td>
+                        <td>{shortFormatDate(job.start)}</td>
+                        <td>
+                          {shortFormatTime(job.start)} -{" "}
+                          {shortFormatTime(job.end)}
+                        </td>
+                        <td>{job.vendor_name}</td>
+                        <td>
+                          {job.reviewed ? (
+                            <StarRatings
+                              rating={parseFloat(job.vendor_rating.toFixed(2))}
+                              starDimension="17px"
+                              starSpacing="2px"
+                              starRatedColor="gold"
+                              numberOfStars={5}
+                              name="rating"
+                            />
+                          ) : (
+                            <Button
                             variant="primary"
+                            size="sm"
                             onClick={() =>
                               SETSTATE({
                                 showM: true,
@@ -501,11 +515,9 @@ const CalendarIndex = props => {
                                 VID: job.vendor_id
                               })
                             }
-                          >
-                            Review
-                          </Button>
-                        )}
-                        <Modal
+                          >Review</Button>
+                          )}
+                                                  <Modal
                           show={showM}
                           onHide={e => SETSTATE({ ...STATE, showM: false })}
                         >
@@ -567,47 +579,6 @@ const CalendarIndex = props => {
                             </Button>
                           </Modal.Footer>
                         </Modal>
-                      </Card.Body>
-                    </Card>
-                  ))}
-              </CardColumns>
-              <Table hover size="sm" class="table bg-info">
-                <thead>
-                  <tr>
-                    <th>Job Title</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Completed By</th>
-                    <th>Rating</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tenantResponse.jobs
-                    .filter(job => job.status === "VENDOR COMPLETE")
-                    .map(job => (
-                      <tr>
-                        {console.log(job)}
-                        <td>{job.title}</td>
-                        <td>{shortFormatDate(job.start)}</td>
-                        <td>
-                          {shortFormatTime(job.start)} -{" "}
-                          {shortFormatTime(job.end)}
-                        </td>
-                        <td>{job.vendor_name}</td>
-                        <td>
-                          {job.reviewed ? (
-                            <StarRatings
-                              rating={parseFloat(job.vendor_rating.toFixed(2))}
-                              starDimension="17px"
-                              starSpacing="2px"
-                              starRatedColor="gold"
-                              numberOfStars={5}
-                              name="rating"
-                            />
-                          ) : (
-                            <Button>Review</Button>
-                          )}
                         </td>
                         <td>{job.content}</td>
                       </tr>
