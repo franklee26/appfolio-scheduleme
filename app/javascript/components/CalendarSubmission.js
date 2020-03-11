@@ -1,11 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
+import Modal from "react-bootstrap/Modal";
 import CardColumns from "react-bootstrap/CardColumns";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button";
 
 const CalendarSubmission = props => {
-  console.log(props.calendar);
+
+  const [state, setState] = useState({
+    error: null,
+    show: false
+  });
+
+  //handle click and post request
+  const handleClickPost = (event, job_id, calendarID) => {
+    event.preventDefault();
+    fetch(
+      `http://localhost:3000/calendar/post/${job_id}/${calendarID}`)
+      .then(res => res.json())
+      .then(
+        res => {
+          setState({ ...state, show: true });
+        },
+        error => {
+          alert(`Failed to add event to calendar with error ${error}`);
+        }
+      )
+      .then(res =>
+        fetch("http://localhost:3000/jobs/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            job_id: job_id
+          })
+        })
+      );
+  };
+
+  console.log(props.calendars);
+  console.log(props.user);
+  console.log(props.job_id);
+
+  const {
+    error,
+    show
+  } = state;
+  if (error) {
+    return <div>Error in mount: {error.message}</div>;
+  }
   return (
     <div>
       <header className="bg-dark py-3">
@@ -18,8 +60,8 @@ const CalendarSubmission = props => {
       <div className="container">
         <view align="center">
           <ProgressBar
-            now={50}
-            label="Step 2/4"
+            now={100}
+            label="Step 4/4"
             style={{
               height: "35px",
               fontSize: "25px",
@@ -30,7 +72,7 @@ const CalendarSubmission = props => {
         </view>
         <CardColumns>
           {props.calendars.map(calendar => (
-            <a style={{ cursor: "pointer" }} href={`/calendar/vendor_selection/${calendar.id}`}>
+            <a style={{ cursor: "pointer" }} onClick={e => handleClickPost(e, props.job_id, calendar.id)}>
               <Card border="info" style={{ width: "18rem" }}>
                 <Card.Body>
                   <Card.Title>{calendar.summary}</Card.Title>
@@ -40,7 +82,28 @@ const CalendarSubmission = props => {
             </a>
           ))}
         </CardColumns>
+          <Button style={{ marginRight: "0.8rem" }} href={`/calendar/events/${props.vendor_id}`}>
+          Back
+        </Button>
         <Button href="/calendar">Home</Button>
+
+        <Modal show={show}>
+          <Modal.Header>
+            <Modal.Title>Successfully submitted job!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Your job is scheduled! The job event has been added to your calendar
+            as a confirmation.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={e => (window.location.href = "/calendar")}
+            >
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );
